@@ -4,15 +4,17 @@ This folder captures the current state of the game concept discussed so far: a m
 
 ## Concept Art & Visualizations
 
-### First-Person View (Grace Period UI)
-![First-person perspective showing prompt-driven creation with grace period UI, neon cyberpunk aesthetic](concept-01-first-person.png)
+### First-Person View (Grace Period UI) — ChatGPT
+![First-person perspective showing prompt-driven creation with grace period UI, neon cyberpunk aesthetic](concept-01-chatgpt.png)
 
 **Scene:** Player using `/create` command to build a chunky cyber-tree. Multiple collaborators (AstroCoder, PixelFriend, VibeMaster) visible in shared world. UI shows generation phase, grace period countdown, and multiplayer overlay.
 
-### Overhead View (Collaborative Snapshot)
-![Overhead perspective showing full world layout with multiple player creations and structures](concept-02-overhead.png)
+### Overhead Collaborative View — Gemini 3.0 Pro
+![Overhead perspective showing full world layout with multiple player creations and structures](concept-02-gemini.png)
 
-**Scene:** Same world from above, showing the full environmental layout, player bases, stacked structures, and the archive/snapshot control UI. World metadata visible (host, collaboration mode).
+**Scene:** Third-person over-the-shoulder view of "GianPaj" actively creating in the "Neon Oasis" world. Shows grace period mechanics, holographic UI panel, multiple collaborating players (AstroCoder, PixlFriend, VibeMaster), and the vibrant voxel environment with the snapshot archive.
+
+**Prompt Details:** See [`image-prompts.md`](image-prompts.md) for the full AI generation prompts used to create these visualizations.
 
 ---
 
