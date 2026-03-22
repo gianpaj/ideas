@@ -2,6 +2,20 @@
 
 This folder captures the current state of the game concept discussed so far: a multiplayer, prompt-first, voxel-native social sandbox where players create and remix chunky 3D worlds in real time.
 
+## Concept Art & Visualizations
+
+### First-Person View (Grace Period UI)
+![First-person perspective showing prompt-driven creation with grace period UI, neon cyberpunk aesthetic](concept-01-first-person.png)
+
+**Scene:** Player using `/create` command to build a chunky cyber-tree. Multiple collaborators (AstroCoder, PixelFriend, VibeMaster) visible in shared world. UI shows generation phase, grace period countdown, and multiplayer overlay.
+
+### Overhead View (Collaborative Snapshot)
+![Overhead perspective showing full world layout with multiple player creations and structures](concept-02-overhead.png)
+
+**Scene:** Same world from above, showing the full environmental layout, player bases, stacked structures, and the archive/snapshot control UI. World metadata visible (host, collaboration mode).
+
+---
+
 ## Included documents
 
 - `01-product-vision.md` — product thesis, fantasy, pillars, player fantasy
