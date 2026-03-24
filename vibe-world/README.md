@@ -1,6 +1,36 @@
-# Vibe World — Current State Bundle
+# Vibe World
 
-This folder captures the current state of the game concept discussed so far: a multiplayer, prompt-first, voxel-native social sandbox where players create and remix chunky 3D worlds in real time.
+This folder is the current design and early implementation-spec bundle for Vibe World: a multiplayer, prompt-first, voxel-native social sandbox where players create and remix chunky 3D worlds in real time.
+
+## Current status
+
+The concept has moved past loose brainstorming and into early implementation planning.
+
+The current V1 decisions are:
+
+- multiplayer backend: `SpacetimeDB`
+- AI generation: external worker/service
+- V1 editing scope: spawned objects only
+- V1 world types: both public and private
+- public worlds: non-destructive remixing
+- private worlds: destructive edits may be enabled
+- player identity: anonymous temporary nicknames
+- target room size: about 20 concurrent players
+
+## Recommended reading order
+
+If you want the fastest path from concept to implementation context, read:
+
+1. `01-product-vision.md`
+2. `02-core-game-rules.md`
+3. `04-object-and-creation-system.md`
+4. `05-technical-architecture.md`
+5. `prototype-v1-scope.md`
+6. `spacetimedb-v1-schema.md`
+7. `object-state-machine.md`
+8. `prompt-ir-spec.md`
+9. `world-settings-schema.md`
+10. `public-world-permission-matrix.md`
 
 ## Concept Art & Visualizations
 
@@ -16,19 +46,34 @@ This folder captures the current state of the game concept discussed so far: a m
 
 **Prompt Details:** See [`image-prompts.md`](image-prompts.md) for the full AI generation prompts used to create these visualizations.
 
----
+## Document structure
 
-## Included documents
+### Concept and product shape
 
-- `01-product-vision.md` — product thesis, fantasy, pillars, player fantasy
-- `02-core-game-rules.md` — current ruleset for public/private worlds, editing, resets, archives
-- `03-worlds-hosting-and-governance.md` — server/world model, host powers, presets, persistence
-- `04-object-and-creation-system.md` — voxel object philosophy, grace periods, prompt-first creation, terminal mode
-- `05-technical-architecture.md` — authoritative multiplayer stack, conflict handling, object lifecycle, AI pipeline
-- `06-research-landscape-3d-voxel-ai.md` — current research findings on 3D/voxel AI models and what is relevant
-- `07-open-questions-and-next-steps.md` — unresolved design decisions and recommended prototype roadmap
-- `spacetimedb-v1-schema.md` — first multiplayer schema and reducer boundary proposal for V1
-- `prototype-v1-scope.md` — high-level implementation scope and phased plan for the first playable
+- `01-product-vision.md` — product thesis, fantasy, pillars, and player fantasy
+- `03-worlds-hosting-and-governance.md` — world model, host powers, presets, and persistence framing
+- `06-research-landscape-3d-voxel-ai.md` — external research and technology landscape
+
+### Rules and gameplay
+
+- `02-core-game-rules.md` — public/private rules, editing, resets, and archive behavior
+- `04-object-and-creation-system.md` — object philosophy, grace periods, prompt-first creation, and object grammar
+
+### Architecture and V1 implementation specs
+
+- `05-technical-architecture.md` — authoritative multiplayer stack, object lifecycle, and AI pipeline
+- `07-open-questions-and-next-steps.md` — roadmap notes and remaining open design questions
+- `prototype-v1-scope.md` — high-level scope and phased implementation plan for the first playable
+- `spacetimedb-v1-schema.md` — first multiplayer schema and reducer boundary proposal
+- `object-state-machine.md` — authoritative live object lifecycle
+- `prompt-ir-spec.md` — first constrained prompt intermediate representation
+- `world-settings-schema.md` — host-configurable world settings for V1
+- `public-world-permission-matrix.md` — action-by-role permission model for public/private/archive contexts
+
+### Support files
+
+- `image-prompts.md` — prompts used to generate concept images
+- `AGENTS.md` — local guidance for future agents and implementation work
 
 ## Snapshot summary
 
@@ -45,3 +90,8 @@ The current concept is:
 ## Research note
 
 The research bundle reflects public materials reviewed on March 22, 2026. The strongest near-term fit is not a single end-to-end text-to-voxel model, but a constrained system where AI produces structured object operations inside a world-native voxel grammar.
+
+## Repository note
+
+The `json-render/` directory is a local reference checkout used for analysis.
+It is not part of the Vibe World source of truth and is ignored from version control.

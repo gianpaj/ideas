@@ -242,8 +242,12 @@ The next documents worth writing after this bundle are:
 - `spacetimedb-v1-schema.md`
 - `prototype-v1-scope.md`
 
-The first two concrete follow-up specs now drafted are:
+All six immediate follow-up specs are now drafted:
 
+- `world-settings-schema.md`
+- `object-state-machine.md`
+- `prompt-ir-spec.md`
+- `public-world-permission-matrix.md`
 - `spacetimedb-v1-schema.md`
 - `prototype-v1-scope.md`
 
