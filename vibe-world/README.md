@@ -27,6 +27,8 @@ This folder captures the current state of the game concept discussed so far: a m
 - `05-technical-architecture.md` — authoritative multiplayer stack, conflict handling, object lifecycle, AI pipeline
 - `06-research-landscape-3d-voxel-ai.md` — current research findings on 3D/voxel AI models and what is relevant
 - `07-open-questions-and-next-steps.md` — unresolved design decisions and recommended prototype roadmap
+- `spacetimedb-v1-schema.md` — first multiplayer schema and reducer boundary proposal for V1
+- `prototype-v1-scope.md` — high-level implementation scope and phased plan for the first playable
 
 ## Snapshot summary
 

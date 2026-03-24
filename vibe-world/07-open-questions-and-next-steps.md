@@ -242,6 +242,11 @@ The next documents worth writing after this bundle are:
 - `spacetimedb-v1-schema.md`
 - `prototype-v1-scope.md`
 
+The first two concrete follow-up specs now drafted are:
+
+- `spacetimedb-v1-schema.md`
+- `prototype-v1-scope.md`
+
 ## Bottom line
 
 The concept is now strong enough to move from brainstorming into early product and technical specification work.
