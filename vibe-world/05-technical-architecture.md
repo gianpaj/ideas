@@ -208,3 +208,92 @@ Even in permissive worlds, the platform should cap:
 A voxel-native engine or subsystem may be appropriate for world geometry, but the core architectural requirement is not a specific renderer. It is a **stable, authoritative, world-native representation** that supports fast structured edits.
 
 This is why voxel or chunk-native representations are attractive, even if some final render choices evolve later.
+
+## V1 backend choice
+
+As of **March 24, 2026**, the recommended backend choice for the first multiplayer prototype is:
+
+- **SpacetimeDB**
+
+### Why SpacetimeDB is a good fit for V1
+
+The first prototype is primarily a **shared-state multiplayer sandbox**, not a physics-heavy action game.
+
+The main problems V1 needs to solve are:
+
+- room and world state,
+- anonymous player presence,
+- object creation and remixing,
+- grace periods,
+- object edit locks,
+- cooldown timers,
+- public/private world rule differences,
+- archive snapshot metadata,
+- authoritative server validation.
+
+SpacetimeDB aligns well with this because it is naturally oriented around:
+
+- authoritative shared state,
+- reducers for validated writes,
+- live subscriptions for multiplayer updates,
+- durable structured data rather than ad hoc in-memory room state.
+
+This is a strong match for the current design direction of:
+
+- **server-authoritative world state**,
+- **delta-style updates**,
+- **versioned world objects**,
+- **clear object lifecycle states**.
+
+### Why not make AI generation live inside the multiplayer database
+
+Even with SpacetimeDB, the AI generation pipeline should remain a **separate service boundary**.
+
+The recommended architecture for V1 is:
+
+**client intent -> AI worker/service -> validated structured object draft -> SpacetimeDB reducer -> subscribed clients**
+
+This preserves the project's core principle:
+
+**player intent -> structured intermediate representation -> deterministic world-native builder**
+
+The database should own authoritative state transitions.
+The AI service should own prompt interpretation and draft generation.
+
+### Why SpacetimeDB over Colyseus for this prototype
+
+Colyseus remains a valid option, but it is a better fit when the project is centered on:
+
+- custom room loops,
+- action-game simulation,
+- heavier bespoke realtime networking,
+- more manually managed persistence.
+
+For this prototype, the product risk is less about twitch simulation and more about:
+
+- shared object state staying consistent,
+- permissions and locks behaving clearly,
+- room/world rules being easy to enforce,
+- snapshotting and persistence being straightforward.
+
+That makes SpacetimeDB the better V1 choice.
+
+### Practical implication for V1
+
+The first prototype should model multiplayer state around durable entities such as:
+
+- worlds,
+- players,
+- objects,
+- object locks,
+- object lifecycle state,
+- world settings,
+- snapshot records.
+
+This should make it easier to build:
+
+- one small hosted room,
+- both public and private world presets,
+- non-destructive public remixing,
+- destructive private editing,
+- prompt-first rough drafts for about 20 concurrent players.

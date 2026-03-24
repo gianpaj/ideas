@@ -187,8 +187,49 @@ Features:
 2. define the world settings schema,
 3. define the object schema and state machine,
 4. define the prompt-to-object intermediate representation,
-5. decide on first engine/network stack,
+5. define the first `SpacetimeDB` schema and reducer boundaries,
 6. build a minimal playable hosted room.
+
+## Chosen V1 multiplayer stack
+
+As of **March 24, 2026**, the recommended V1 multiplayer backend is:
+
+- **SpacetimeDB** for authoritative shared state,
+- an **external AI worker/service** for prompt-to-draft generation,
+- a client renderer/game layer that subscribes to authoritative world updates.
+
+### Why this is now the working decision
+
+This matches the current prototype goals better than keeping the stack undecided.
+
+The first playable is mainly about:
+
+- shared room state,
+- object lifecycle and permissions,
+- public/private world rule differences,
+- edit locks and cooldowns,
+- rough-draft prompt creation,
+- archive-ready world state.
+
+The prototype is not primarily trying to validate:
+
+- high-speed combat simulation,
+- dense custom tick-loop gameplay,
+- physics-heavy competitive networking.
+
+That makes a state-oriented multiplayer backend a better fit than a more simulation-centric server approach.
+
+### Working V1 boundary
+
+The intended V1 flow is:
+
+**client prompt or edit intent -> AI worker/service -> validated structured draft -> SpacetimeDB reducer -> subscribed clients**
+
+This keeps:
+
+- AI generation outside the authoritative database runtime,
+- authoritative world transitions inside the multiplayer backend,
+- the world model aligned with the structured-IR direction already described in the architecture notes.
 
 ## Suggested first technical spec documents
 
@@ -198,6 +239,7 @@ The next documents worth writing after this bundle are:
 - `object-state-machine.md`
 - `prompt-ir-spec.md`
 - `public-world-permission-matrix.md`
+- `spacetimedb-v1-schema.md`
 - `prototype-v1-scope.md`
 
 ## Bottom line
