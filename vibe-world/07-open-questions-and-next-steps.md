@@ -255,6 +255,8 @@ The next implementation-facing follow-up specs now drafted are:
 
 - `reducer-api-spec.md`
 - `ai-worker-contract.md`
+- `client-interaction-model.md`
+- `archive-ux-spec.md`
 
 ## Bottom line
 

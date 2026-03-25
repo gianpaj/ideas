@@ -71,6 +71,8 @@ If you want the fastest path from concept to implementation context, read:
 - `public-world-permission-matrix.md` — action-by-role permission model for public/private/archive contexts
 - `reducer-api-spec.md` — first high-level reducer surface for the authoritative backend
 - `ai-worker-contract.md` — request/response boundary for the external AI generation service
+- `client-interaction-model.md` — first player-facing interaction flow for the live client
+- `archive-ux-spec.md` — first archive-mode experience and read-only memory presentation spec
 
 ### Support files
 

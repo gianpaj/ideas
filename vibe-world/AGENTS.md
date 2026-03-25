@@ -84,5 +84,6 @@ It is not the canonical game project and should not be treated as the source of 
 
 ## Preferred next docs if more planning is needed
 
-- client interaction model
-- archive UX spec
+- implementation milestone breakdown
+- client/server event map
+- gameplay test plan
