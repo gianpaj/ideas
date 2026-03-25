@@ -69,6 +69,8 @@ If you want the fastest path from concept to implementation context, read:
 - `prompt-ir-spec.md` — first constrained prompt intermediate representation
 - `world-settings-schema.md` — host-configurable world settings for V1
 - `public-world-permission-matrix.md` — action-by-role permission model for public/private/archive contexts
+- `reducer-api-spec.md` — first high-level reducer surface for the authoritative backend
+- `ai-worker-contract.md` — request/response boundary for the external AI generation service
 
 ### Support files
 

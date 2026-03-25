@@ -84,8 +84,5 @@ It is not the canonical game project and should not be treated as the source of 
 
 ## Preferred next docs if more planning is needed
 
-- implementation milestone breakdown
-- reducer API spec
-- AI worker contract
 - client interaction model
 - archive UX spec

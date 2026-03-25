@@ -251,6 +251,11 @@ All six immediate follow-up specs are now drafted:
 - `spacetimedb-v1-schema.md`
 - `prototype-v1-scope.md`
 
+The next implementation-facing follow-up specs now drafted are:
+
+- `reducer-api-spec.md`
+- `ai-worker-contract.md`
+
 ## Bottom line
 
 The concept is now strong enough to move from brainstorming into early product and technical specification work.
