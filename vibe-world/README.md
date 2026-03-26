@@ -79,6 +79,10 @@ If you want the fastest path from concept to implementation context, read:
 - `image-prompts.md` — prompts used to generate concept images
 - `AGENTS.md` — local guidance for future agents and implementation work
 
+### Prototypes
+
+- `prototype/scene-planning-bench/` — Python benchmark prototype for evaluating plain LLM scene-planning outputs against strict schemas and deterministic scorers
+
 ## Snapshot summary
 
 The current concept is:
@@ -99,3 +103,6 @@ The research bundle reflects public materials reviewed on March 22, 2026. The st
 
 The `json-render/` directory is a local reference checkout used for analysis.
 It is not part of the Vibe World source of truth and is ignored from version control.
+
+The `prototype/scene-planning-bench/` directory is the first real implementation artifact in this folder.
+It exists to benchmark the scene-planning layer described in the design docs without yet building the full multiplayer game.

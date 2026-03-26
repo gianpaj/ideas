@@ -1,0 +1,67 @@
+{
+  "task_id": "three_red_barrels_around_campfire_001",
+  "category": "constraints",
+  "difficulty": "medium",
+  "scene_id": "forest_cabin_001",
+  "prompts": [
+    "Place three red barrels in a triangle around the campfire."
+  ],
+  "allowed_response_types": ["scene_actions"],
+  "gold_response": {
+    "schema_version": "1.0",
+    "response_type": "scene_actions",
+    "actions": [
+      {
+        "action_type": "spawn_layout",
+        "object_spec": {
+          "category": "barrel",
+          "asset_id": null,
+          "style": null,
+          "variant": null
+        },
+        "transform": {
+          "position": {
+            "mode": "relative",
+            "reference_object": "campfire_1",
+            "relation": "around",
+            "offset_meters": 2.5,
+            "absolute": null
+          },
+          "rotation": null,
+          "scale": null
+        },
+        "attributes": {
+          "color": "red",
+          "material": null,
+          "count": 3,
+          "layout": "triangle"
+        },
+        "constraints": {
+          "grounded": true,
+          "non_overlapping": true,
+          "preserve_paths_clear": true
+        },
+        "references": ["campfire_1"],
+        "confidence": 0.91
+      }
+    ],
+    "notes": null,
+    "uncertainty": {
+      "has_ambiguity": false,
+      "fields": []
+    }
+  },
+  "scoring_profile": {
+    "profile_id": "default_v1",
+    "weights": {
+      "schema_validity": 0.25,
+      "action_type": 0.25,
+      "argument_match": 0.30,
+      "spatial_match": 0.20
+    },
+    "hard_fail_on_schema_invalid": true
+  },
+  "metadata": {
+    "constraint_type": "layout"
+  }
+}

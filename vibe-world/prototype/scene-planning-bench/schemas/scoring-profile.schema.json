@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["profile_id", "weights", "hard_fail_on_schema_invalid"],
+  "properties": {
+    "profile_id": { "type": "string" },
+    "hard_fail_on_schema_invalid": { "type": "boolean" },
+    "weights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_validity",
+        "action_type",
+        "argument_match",
+        "spatial_match"
+      ],
+      "properties": {
+        "schema_validity": { "type": "number" },
+        "action_type": { "type": "number" },
+        "argument_match": { "type": "number" },
+        "spatial_match": { "type": "number" }
+      }
+    }
+  }
+}

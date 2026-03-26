@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["scene_id", "objects", "allowed_catalog"],
+  "properties": {
+    "scene_id": { "type": "string" },
+    "objects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "category", "position"],
+        "properties": {
+          "id": { "type": "string" },
+          "category": { "type": "string" },
+          "position": {
+            "type": "array",
+            "items": { "type": "number" },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "allowed_catalog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["categories", "action_types"],
+      "properties": {
+        "categories": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "action_types": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

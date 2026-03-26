@@ -1,0 +1,36 @@
+{
+  "task_id": "add_house_near_lake_001",
+  "category": "ambiguity",
+  "difficulty": "medium",
+  "scene_id": "forest_cabin_001",
+  "prompts": [
+    "Add a house near the lake."
+  ],
+  "allowed_response_types": ["clarification_request"],
+  "gold_response": {
+    "schema_version": "1.0",
+    "response_type": "clarification_request",
+    "clarification": {
+      "question": "Which lake should the house be placed near?",
+      "missing_fields": ["reference_object"]
+    },
+    "notes": "Scene context does not contain a lake reference.",
+    "uncertainty": {
+      "has_ambiguity": true,
+      "fields": ["reference_object"]
+    }
+  },
+  "scoring_profile": {
+    "profile_id": "default_v1",
+    "weights": {
+      "schema_validity": 0.25,
+      "action_type": 0.25,
+      "argument_match": 0.30,
+      "spatial_match": 0.20
+    },
+    "hard_fail_on_schema_invalid": true
+  },
+  "metadata": {
+    "requires_clarification": true
+  }
+}

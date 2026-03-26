@@ -1,0 +1,29 @@
+{
+  "scene_id": "forest_cabin_001",
+  "objects": [
+    {
+      "id": "cabin_1",
+      "category": "cabin",
+      "position": [0.0, 0.0, 0.0],
+      "tags": ["building"]
+    },
+    {
+      "id": "campfire_1",
+      "category": "campfire",
+      "position": [4.0, 0.0, 2.0],
+      "tags": ["fire", "centerpiece"]
+    }
+  ],
+  "allowed_catalog": {
+    "categories": ["tree", "barrel", "house", "cabin", "campfire"],
+    "action_types": [
+      "add_object",
+      "remove_object",
+      "move_object",
+      "set_color",
+      "replace_object",
+      "spawn_layout",
+      "annotate_constraint"
+    ]
+  }
+}

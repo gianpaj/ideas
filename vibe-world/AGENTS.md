@@ -1,10 +1,13 @@
 # Vibe World — Local Agent Notes
 
-This folder is a design and planning bundle for the `vibe-world` idea.
+This folder is a design and planning bundle for the `vibe-world` idea, with a small benchmark prototype now living under `prototype/scene-planning-bench/`.
 
 ## Current status
 
-The project is still in the **design / pre-implementation** stage.
+The game project itself is still in the **design / pre-implementation** stage.
+There is now one implementation artifact:
+
+- `prototype/scene-planning-bench/` for evaluating plain LLM scene-planning output
 
 The current V1 decisions are:
 

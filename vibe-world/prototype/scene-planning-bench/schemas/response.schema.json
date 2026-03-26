@@ -1,0 +1,224 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "response_type", "uncertainty"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "response_type": {
+      "type": "string",
+      "enum": ["scene_actions", "scene_patch", "clarification_request", "refusal"]
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/action"
+      }
+    },
+    "patch": {
+      "type": "object"
+    },
+    "clarification": {
+      "$ref": "#/$defs/clarification"
+    },
+    "refusal": {
+      "$ref": "#/$defs/refusal"
+    },
+    "notes": {
+      "type": ["string", "null"]
+    },
+    "uncertainty": {
+      "$ref": "#/$defs/uncertainty"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "response_type": { "const": "scene_actions" }
+        },
+        "required": ["response_type"]
+      },
+      "then": {
+        "required": ["actions"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "response_type": { "const": "scene_patch" }
+        },
+        "required": ["response_type"]
+      },
+      "then": {
+        "required": ["patch"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "response_type": { "const": "clarification_request" }
+        },
+        "required": ["response_type"]
+      },
+      "then": {
+        "required": ["clarification"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "response_type": { "const": "refusal" }
+        },
+        "required": ["response_type"]
+      },
+      "then": {
+        "required": ["refusal"]
+      }
+    }
+  ],
+  "$defs": {
+    "uncertainty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["has_ambiguity", "fields"],
+      "properties": {
+        "has_ambiguity": { "type": "boolean" },
+        "fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "clarification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["question", "missing_fields"],
+      "properties": {
+        "question": { "type": "string" },
+        "missing_fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "refusal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason"],
+      "properties": {
+        "reason": { "type": "string" },
+        "safe_alternative": { "type": ["string", "null"] }
+      }
+    },
+    "objectSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category"],
+      "properties": {
+        "category": { "type": "string" },
+        "asset_id": { "type": ["string", "null"] },
+        "style": { "type": ["string", "null"] },
+        "variant": { "type": ["string", "null"] }
+      }
+    },
+    "positionSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": { "type": "string", "enum": ["absolute", "relative"] },
+        "reference_object": { "type": ["string", "null"] },
+        "relation": {
+          "type": ["string", "null"],
+          "enum": [null, "left_of", "right_of", "behind", "in_front_of", "around"]
+        },
+        "offset_meters": { "type": ["number", "null"] },
+        "absolute": {
+          "type": ["array", "null"],
+          "items": { "type": "number" },
+          "minItems": 3,
+          "maxItems": 3
+        }
+      }
+    },
+    "transformSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": { "$ref": "#/$defs/positionSpec" },
+        "rotation": {
+          "type": ["array", "null"],
+          "items": { "type": "number" }
+        },
+        "scale": {
+          "type": ["array", "null"],
+          "items": { "type": "number" }
+        }
+      }
+    },
+    "attributesSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "color": { "type": ["string", "null"] },
+        "material": { "type": ["string", "null"] },
+        "count": { "type": ["integer", "null"] },
+        "layout": { "type": ["string", "null"] }
+      }
+    },
+    "constraintSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "grounded": { "type": ["boolean", "null"] },
+        "non_overlapping": { "type": ["boolean", "null"] },
+        "preserve_paths_clear": { "type": ["boolean", "null"] }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action_type", "confidence"],
+      "properties": {
+        "action_type": {
+          "type": "string",
+          "enum": [
+            "add_object",
+            "remove_object",
+            "move_object",
+            "rotate_object",
+            "scale_object",
+            "set_material",
+            "set_color",
+            "duplicate_object",
+            "group_objects",
+            "ungroup_objects",
+            "replace_object",
+            "set_relation",
+            "clear_area",
+            "spawn_layout",
+            "annotate_constraint"
+          ]
+        },
+        "target": { "type": ["string", "null"] },
+        "object_spec": { "$ref": "#/$defs/objectSpec" },
+        "transform": { "$ref": "#/$defs/transformSpec" },
+        "attributes": { "$ref": "#/$defs/attributesSpec" },
+        "constraints": { "$ref": "#/$defs/constraintSpec" },
+        "references": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        }
+      }
+    }
+  }
+}

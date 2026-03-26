@@ -1,0 +1,67 @@
+{
+  "task_id": "add_pine_tree_left_of_cabin_001",
+  "category": "single_turn",
+  "difficulty": "easy",
+  "scene_id": "forest_cabin_001",
+  "prompts": [
+    "Add a pine tree to the left of the cabin."
+  ],
+  "allowed_response_types": ["scene_actions"],
+  "gold_response": {
+    "schema_version": "1.0",
+    "response_type": "scene_actions",
+    "actions": [
+      {
+        "action_type": "add_object",
+        "object_spec": {
+          "category": "tree",
+          "asset_id": null,
+          "style": "low_poly",
+          "variant": "pine"
+        },
+        "transform": {
+          "position": {
+            "mode": "relative",
+            "reference_object": "cabin_1",
+            "relation": "left_of",
+            "offset_meters": 3.0,
+            "absolute": null
+          },
+          "rotation": null,
+          "scale": null
+        },
+        "attributes": {
+          "color": null,
+          "material": null,
+          "count": 1,
+          "layout": null
+        },
+        "constraints": {
+          "grounded": true,
+          "non_overlapping": true,
+          "preserve_paths_clear": null
+        },
+        "references": ["cabin_1"],
+        "confidence": 0.95
+      }
+    ],
+    "notes": null,
+    "uncertainty": {
+      "has_ambiguity": false,
+      "fields": []
+    }
+  },
+  "scoring_profile": {
+    "profile_id": "default_v1",
+    "weights": {
+      "schema_validity": 0.25,
+      "action_type": 0.25,
+      "argument_match": 0.30,
+      "spatial_match": 0.20
+    },
+    "hard_fail_on_schema_invalid": true
+  },
+  "metadata": {
+    "paraphrase_group": "pine_tree_left_of_cabin"
+  }
+}

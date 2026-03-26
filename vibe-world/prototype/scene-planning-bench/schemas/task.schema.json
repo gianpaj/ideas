@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "category",
+    "difficulty",
+    "scene_id",
+    "prompts",
+    "allowed_response_types",
+    "gold_response",
+    "scoring_profile"
+  ],
+  "properties": {
+    "task_id": { "type": "string" },
+    "category": { "type": "string" },
+    "difficulty": { "type": "string" },
+    "scene_id": { "type": "string" },
+    "prompts": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "allowed_response_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["scene_actions", "scene_patch", "clarification_request", "refusal"]
+      }
+    },
+    "gold_response": {
+      "$ref": "response.schema.json"
+    },
+    "scoring_profile": {
+      "$ref": "scoring-profile.schema.json"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}
