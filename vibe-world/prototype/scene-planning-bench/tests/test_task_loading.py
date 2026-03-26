@@ -1,6 +1,12 @@
 from pathlib import Path
 
-from scene_planning_bench.registry import load_suite, load_task, load_tasks_from_suite, project_root
+from scene_planning_bench.registry import (
+    load_suite,
+    load_task,
+    load_tasks_from_suite,
+    project_root,
+    resolve_suite_task_paths,
+)
 
 
 def test_load_single_task() -> None:
@@ -23,4 +29,11 @@ def test_load_tasks_from_suite() -> None:
 def test_load_suite() -> None:
     suite = load_suite(project_root() / "configs" / "suites" / "v1_core.yaml")
     assert suite.suite_id == "v1_core"
-    assert suite.task_paths
+    assert suite.task_roots
+
+
+def test_resolve_suite_task_paths_from_roots() -> None:
+    suite = load_suite(project_root() / "configs" / "suites" / "v1_core.yaml")
+    task_paths = resolve_suite_task_paths(suite)
+    assert len(task_paths) == 3
+    assert task_paths[0].startswith("tasks/v1_core/")

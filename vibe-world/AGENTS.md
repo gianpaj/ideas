@@ -9,6 +9,8 @@ There is now one implementation artifact:
 
 - `prototype/scene-planning-bench/` for evaluating plain LLM scene-planning output
 
+That prototype now has its own local [`prototype/scene-planning-bench/AGENTS.md`](prototype/scene-planning-bench/AGENTS.md) with subproject-specific guidance.
+
 The current V1 decisions are:
 
 - multiplayer backend: `SpacetimeDB`

@@ -11,7 +11,7 @@ defaults:
   response_schema_path: schemas/response.schema.json
   scene_schema_path: schemas/scene.schema.json
   task_schema_path: schemas/task.schema.json
-task_paths:
-  - tasks/v1_core/single_turn/add_pine_tree_left_of_cabin_001.json
-  - tasks/v1_core/constraints/three_red_barrels_around_campfire_001.json
-  - tasks/v1_core/ambiguity/add_house_near_lake_001.json
+task_roots:
+  - tasks/v1_core/single_turn
+  - tasks/v1_core/constraints
+  - tasks/v1_core/ambiguity

@@ -1,5 +1,10 @@
 from scene_planning_bench.registry import load_task, project_root
-from scene_planning_bench.validation import load_schema, validate_with_schema
+from scene_planning_bench.utils import read_json, read_yaml
+from scene_planning_bench.validation import (
+    load_schema,
+    validate_with_schema,
+    validate_with_schema_path,
+)
 
 
 def test_valid_gold_response_passes_schema() -> None:
@@ -20,7 +25,31 @@ def test_invalid_payload_fails_schema() -> None:
     payload = {
         "schema_version": "1.0",
         "response_type": "scene_actions",
-        "uncertainty": {"has_ambiguity": False, "fields": []}
+        "uncertainty": {"has_ambiguity": False, "fields": []},
     }
     errors = validate_with_schema(payload, schema)
     assert errors
+
+
+def test_task_file_passes_schema_with_refs() -> None:
+    root = project_root()
+    errors = validate_with_schema_path(
+        read_json(
+            root
+            / "tasks"
+            / "v1_core"
+            / "single_turn"
+            / "add_pine_tree_left_of_cabin_001.json"
+        ),
+        root / "schemas" / "task.schema.json",
+    )
+    assert errors == []
+
+
+def test_suite_config_passes_schema() -> None:
+    root = project_root()
+    errors = validate_with_schema_path(
+        read_yaml(root / "configs" / "suites" / "v1_core.yaml"),
+        root / "schemas" / "suite.schema.json",
+    )
+    assert errors == []

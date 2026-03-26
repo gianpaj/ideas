@@ -17,6 +17,8 @@ This prototype focuses on:
 
 Inspect is now used for one of the execution paths, while the scoring logic remains deterministic and local to this package.
 
+Implementation notes for future agents live in [`AGENTS.md`](AGENTS.md).
+
 ## Commands
 
 ```bash

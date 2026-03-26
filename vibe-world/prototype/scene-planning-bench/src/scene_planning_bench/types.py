@@ -230,7 +230,14 @@ class SuiteConfig(BaseModel):
     description: str | None = None
     defaults: SuiteDefaults = Field(default_factory=SuiteDefaults)
     suite_id: str
-    task_paths: list[str]
+    task_paths: list[str] = Field(default_factory=list)
+    task_roots: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def validate_task_sources(self) -> "SuiteConfig":
+        if not self.task_paths and not self.task_roots:
+            raise ValueError("suite config must provide task_paths or task_roots")
+        return self
 
 
 class LoadedTask(BaseModel):

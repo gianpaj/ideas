@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["suite_id"],
+  "properties": {
+    "suite_id": { "type": "string" },
+    "description": { "type": "string" },
+    "defaults": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "system_prompt": { "type": "string" },
+        "response_schema_path": { "type": "string" },
+        "scene_schema_path": { "type": "string" },
+        "task_schema_path": { "type": "string" }
+      }
+    },
+    "task_paths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "task_roots": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "anyOf": [
+    { "required": ["task_paths"] },
+    { "required": ["task_roots"] }
+  ]
+}
