@@ -39,8 +39,9 @@ If you want the fastest path from concept to implementation context, read:
 7. `object-state-machine.md`
 8. `prompt-ir-spec.md`
 9. `scene-runtime-module-design.md`
-10. `world-settings-schema.md`
-11. `public-world-permission-matrix.md`
+10. `scene-runtime-extraction-plan.md`
+11. `world-settings-schema.md`
+12. `public-world-permission-matrix.md`
 
 ## Concept Art & Visualizations
 
@@ -78,6 +79,7 @@ If you want the fastest path from concept to implementation context, read:
 - `object-state-machine.md` — authoritative live object lifecycle
 - `prompt-ir-spec.md` — first constrained prompt intermediate representation
 - `scene-runtime-module-design.md` — reusable runtime module boundary from AI worker through validation, normalization, and render draft output
+- `scene-runtime-extraction-plan.md` — staged implementation plan for carving the shared runtime layer out of the benchmark package
 - `world-settings-schema.md` — host-configurable world settings for V1
 - `public-world-permission-matrix.md` — action-by-role permission model for public/private/archive contexts
 - `reducer-api-spec.md` — first high-level reducer surface for the authoritative backend
