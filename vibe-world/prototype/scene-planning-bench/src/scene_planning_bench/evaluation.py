@@ -57,6 +57,7 @@ def evaluate_output(
     return RunResult(
         sample_id=sample_id,
         task_id=task.task_id,
+        paraphrase_group=task.metadata.get("paraphrase_group"),
         prompt_index=prompt_index,
         prompt_text=prompt_text,
         adapter_name=adapter_name,

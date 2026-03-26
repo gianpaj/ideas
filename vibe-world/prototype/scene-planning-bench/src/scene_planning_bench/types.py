@@ -253,6 +253,7 @@ class RunResult(BaseModel):
 
     sample_id: str
     task_id: str
+    paraphrase_group: str | None = None
     prompt_index: int | None = None
     prompt_text: str | None = None
     adapter_name: str

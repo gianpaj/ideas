@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from scene_planning_bench.adapters.mock_adapter import MockAdapter
@@ -16,7 +17,10 @@ def test_runner_smoke(tmp_path: Path) -> None:
     assert all(result.schema_valid for result in results)
     assert all(result.sample_id.endswith("::prompt_0") for result in results)
     assert summary_path.exists()
-    assert (tmp_path / "outputs" / "aggregate.json").exists()
+    aggregate = json.loads((tmp_path / "outputs" / "aggregate.json").read_text())
+    assert aggregate["task_count"] == 3
+    assert aggregate["paraphrase_group_count"] == 1
+    assert "pine_tree_left_of_cabin" in aggregate["by_paraphrase_group"]
 
 
 def test_inspect_runner_smoke(tmp_path: Path) -> None:
@@ -30,5 +34,6 @@ def test_inspect_runner_smoke(tmp_path: Path) -> None:
     assert all(result.schema_valid for result in results)
     assert all(result.inspect_log_location for result in results)
     assert summary_path.exists()
-    assert (tmp_path / "inspect_outputs" / "aggregate.json").exists()
+    aggregate = json.loads((tmp_path / "inspect_outputs" / "aggregate.json").read_text())
+    assert aggregate["task_count"] == 3
     assert list((tmp_path / "inspect_outputs" / "inspect_logs").glob("*.json"))

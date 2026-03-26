@@ -38,6 +38,7 @@ Each run writes:
 
 - `summary.csv`
 - `aggregate.json`
+- `aggregate.json` includes per-task and per-paraphrase-group summaries
 - `run_manifest.json`
 - `tasks/*.json`
 - `inspect_logs/*.json` for Inspect-backed runs
