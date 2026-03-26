@@ -2,6 +2,7 @@ from scene_planning_bench.registry import load_task, project_root
 from scene_planning_bench.utils import read_json, read_yaml
 from scene_planning_bench.validation import (
     load_schema,
+    parse_response_json,
     validate_with_schema,
     validate_with_schema_path,
 )
@@ -53,3 +54,23 @@ def test_suite_config_passes_schema() -> None:
         root / "schemas" / "suite.schema.json",
     )
     assert errors == []
+
+
+def test_parse_response_json_accepts_fenced_json() -> None:
+    response = parse_response_json(
+        """```json
+        {
+          "schema_version": "1.0",
+          "response_type": "clarification_request",
+          "clarification": {
+            "question": "Which lake should the house be placed near?",
+            "missing_fields": ["reference_object"]
+          },
+          "uncertainty": {
+            "has_ambiguity": true,
+            "fields": ["reference_object"]
+          }
+        }
+        ```"""
+    )
+    assert response.response_type.value == "clarification_request"
