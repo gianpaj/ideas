@@ -14,6 +14,7 @@ dependencies = [
     "pydantic>=2.12.5",
     "python-dotenv>=1.2.2",
     "pyyaml>=6.0.3",
+    "termgraph>=0.7.6",
     "typer>=0.24.1",
 ]
 
