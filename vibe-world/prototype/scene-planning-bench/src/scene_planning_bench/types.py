@@ -263,8 +263,45 @@ class RunResult(BaseModel):
     argument_match_score: float
     spatial_match_score: float
     total_score: float
+    total_time_seconds: float | None = None
+    working_time_seconds: float | None = None
+    input_tokens: int | None = None
+    output_tokens: int | None = None
+    total_tokens: int | None = None
+    total_cost_usd: float | None = None
+    score_per_total_second: float | None = None
+    score_per_working_second: float | None = None
+    score_per_1k_tokens: float | None = None
+    score_per_dollar: float | None = None
     raw_output: str
     parsed_response: dict[str, Any] | None = None
     prompt_bundle: list[dict[str, Any]] | None = None
     inspect_log_location: str | None = None
     errors: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def populate_efficiency_metrics(self) -> "RunResult":
+        if self.score_per_total_second is None and self.total_time_seconds not in (None, 0):
+            self.score_per_total_second = round(
+                self.total_score / self.total_time_seconds,
+                6,
+            )
+        if (
+            self.score_per_working_second is None
+            and self.working_time_seconds not in (None, 0)
+        ):
+            self.score_per_working_second = round(
+                self.total_score / self.working_time_seconds,
+                6,
+            )
+        if self.score_per_1k_tokens is None and self.total_tokens not in (None, 0):
+            self.score_per_1k_tokens = round(
+                self.total_score / (self.total_tokens / 1000),
+                6,
+            )
+        if self.score_per_dollar is None and self.total_cost_usd not in (None, 0):
+            self.score_per_dollar = round(
+                self.total_score / self.total_cost_usd,
+                6,
+            )
+        return self

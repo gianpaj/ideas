@@ -12,6 +12,12 @@ from scene_planning_bench.types import BenchmarkTask, RunResult
 from scene_planning_bench.validation import parse_response_json, validate_with_schema
 
 
+def _safe_ratio(numerator: float, denominator: float | None) -> float | None:
+    if denominator is None or denominator <= 0:
+        return None
+    return round(numerator / denominator, 6)
+
+
 def evaluate_output(
     task: BenchmarkTask,
     raw_output: str,
@@ -23,6 +29,12 @@ def evaluate_output(
     prompt_text: str | None = None,
     prompt_bundle: list[dict[str, Any]] | None = None,
     inspect_log_location: str | None = None,
+    total_time_seconds: float | None = None,
+    working_time_seconds: float | None = None,
+    input_tokens: int | None = None,
+    output_tokens: int | None = None,
+    total_tokens: int | None = None,
+    total_cost_usd: float | None = None,
 ) -> RunResult:
     schema_valid = False
     response_type_match = False
@@ -67,6 +79,20 @@ def evaluate_output(
         argument_match_score=argument_match_score,
         spatial_match_score=spatial_match_score,
         total_score=total_score,
+        total_time_seconds=total_time_seconds,
+        working_time_seconds=working_time_seconds,
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
+        total_tokens=total_tokens,
+        total_cost_usd=total_cost_usd,
+        score_per_total_second=_safe_ratio(total_score, total_time_seconds),
+        score_per_working_second=_safe_ratio(total_score, working_time_seconds),
+        score_per_1k_tokens=(
+            round(total_score / (total_tokens / 1000), 6)
+            if total_tokens is not None and total_tokens > 0
+            else None
+        ),
+        score_per_dollar=_safe_ratio(total_score, total_cost_usd),
         raw_output=raw_output,
         parsed_response=parsed_payload,
         prompt_bundle=prompt_bundle,

@@ -23,6 +23,9 @@ def test_build_run_manifest_counts_tasks_and_samples() -> None:
             argument_match_score=1.0,
             spatial_match_score=1.0,
             total_score=1.0,
+            total_time_seconds=2.0,
+            total_tokens=1000,
+            total_cost_usd=0.01,
             raw_output="{}",
         ),
         RunResult(
@@ -35,6 +38,9 @@ def test_build_run_manifest_counts_tasks_and_samples() -> None:
             argument_match_score=1.0,
             spatial_match_score=1.0,
             total_score=1.0,
+            total_time_seconds=3.0,
+            total_tokens=1200,
+            total_cost_usd=0.02,
             raw_output="{}",
         ),
     ]

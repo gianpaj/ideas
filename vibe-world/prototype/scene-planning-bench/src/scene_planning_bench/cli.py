@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any
+import os
 
 import typer
 
@@ -25,6 +26,14 @@ from scene_planning_bench.validation import (
 )
 
 app = typer.Typer(no_args_is_help=True, add_completion=False)
+
+
+def _provider_setup_hint(model: str) -> str | None:
+    if model.startswith("openai/"):
+        return (
+            "OpenAI runs require the `openai` package and `OPENAI_API_KEY` in the environment."
+        )
+    return None
 
 
 def _resolve_output_dir(suite: str, output_dir: Path | None, label: str) -> Path:
@@ -170,14 +179,32 @@ def run_inspect_model(
     output_dir: Path | None = None,
     model_args_file: Path | None = None,
 ) -> None:
+    provider_hint = _provider_setup_hint(model)
+    if model.startswith("openai/") and not os.getenv("OPENAI_API_KEY"):
+        typer.echo(
+            "missing OPENAI_API_KEY for OpenAI model runs",
+            err=True,
+        )
+        if provider_hint:
+            typer.echo(provider_hint, err=True)
+        raise typer.Exit(code=1)
+
     output = _resolve_output_dir(suite, output_dir, model)
     model_args = read_data_file(model_args_file) if model_args_file else {}
-    _, results, summary_path = run_suite_with_inspect(
-        suite,
-        output,
-        model=model,
-        model_args=model_args,
-    )
+    try:
+        _, results, summary_path = run_suite_with_inspect(
+            suite,
+            output,
+            model=model,
+            model_args=model_args,
+        )
+    except Exception as exc:
+        typer.echo(f"run failed for model {model}", err=True)
+        typer.echo(str(exc), err=True)
+        if provider_hint:
+            typer.echo(provider_hint, err=True)
+        raise typer.Exit(code=1) from exc
+
     manifest_path = _write_manifest(
         suite,
         output,

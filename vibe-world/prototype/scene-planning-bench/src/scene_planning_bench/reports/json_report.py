@@ -18,6 +18,12 @@ def build_aggregate_report(results: list[RunResult]) -> dict[str, Any]:
             "adapter_names": [],
             "mean_total_score": 0.0,
             "schema_valid_rate": 0.0,
+            "mean_total_time_seconds": None,
+            "mean_working_time_seconds": None,
+            "mean_total_tokens": None,
+            "total_cost_usd": None,
+            "score_per_total_second": None,
+            "score_per_dollar": None,
             "by_task": {},
             "by_paraphrase_group": {},
         }
@@ -29,6 +35,15 @@ def build_aggregate_report(results: list[RunResult]) -> dict[str, Any]:
                 sum(result.total_score for result in task_results) / len(task_results),
                 6,
             ),
+            "mean_total_time_seconds": _mean_optional(
+                [result.total_time_seconds for result in task_results]
+            ),
+            "mean_total_tokens": _mean_optional(
+                [result.total_tokens for result in task_results]
+            ),
+            "total_cost_usd": _sum_optional(
+                [result.total_cost_usd for result in task_results]
+            ),
         }
         for task_id, task_results in _group_results(results, key="task_id").items()
     }
@@ -39,6 +54,15 @@ def build_aggregate_report(results: list[RunResult]) -> dict[str, Any]:
                 sum(result.total_score for result in group_results)
                 / len(group_results),
                 6,
+            ),
+            "mean_total_time_seconds": _mean_optional(
+                [result.total_time_seconds for result in group_results]
+            ),
+            "mean_total_tokens": _mean_optional(
+                [result.total_tokens for result in group_results]
+            ),
+            "total_cost_usd": _sum_optional(
+                [result.total_cost_usd for result in group_results]
             ),
             "task_ids": sorted({result.task_id for result in group_results}),
         }
@@ -61,6 +85,24 @@ def build_aggregate_report(results: list[RunResult]) -> dict[str, Any]:
             sum(1 for result in results if result.schema_valid) / len(results),
             6,
         ),
+        "mean_total_time_seconds": _mean_optional(
+            [result.total_time_seconds for result in results]
+        ),
+        "mean_working_time_seconds": _mean_optional(
+            [result.working_time_seconds for result in results]
+        ),
+        "mean_total_tokens": _mean_optional(
+            [result.total_tokens for result in results]
+        ),
+        "total_cost_usd": _sum_optional([result.total_cost_usd for result in results]),
+        "score_per_total_second": _ratio_from_totals(
+            sum(result.total_score for result in results),
+            _sum_optional([result.total_time_seconds for result in results]),
+        ),
+        "score_per_dollar": _ratio_from_totals(
+            sum(result.total_score for result in results),
+            _sum_optional([result.total_cost_usd for result in results]),
+        ),
         "by_task": by_task,
         "by_paraphrase_group": by_paraphrase_group,
     }
@@ -78,6 +120,29 @@ def _group_results(
             continue
         grouped.setdefault(group_key, []).append(result)
     return grouped
+
+
+def _mean_optional(values: list[float | int | None]) -> float | None:
+    present = [value for value in values if value is not None]
+    if not present:
+        return None
+    return round(sum(present) / len(present), 6)
+
+
+def _sum_optional(values: list[float | None]) -> float | None:
+    present = [value for value in values if value is not None]
+    if not present:
+        return None
+    return round(sum(present), 8)
+
+
+def _ratio_from_totals(
+    numerator: float,
+    denominator: float | None,
+) -> float | None:
+    if denominator is None or denominator <= 0:
+        return None
+    return round(numerator / denominator, 6)
 
 
 def write_run_reports(
@@ -108,6 +173,16 @@ def write_run_reports(
             "argument_match_score": result.argument_match_score,
             "spatial_match_score": result.spatial_match_score,
             "total_score": result.total_score,
+            "total_time_seconds": result.total_time_seconds,
+            "working_time_seconds": result.working_time_seconds,
+            "input_tokens": result.input_tokens,
+            "output_tokens": result.output_tokens,
+            "total_tokens": result.total_tokens,
+            "total_cost_usd": result.total_cost_usd,
+            "score_per_total_second": result.score_per_total_second,
+            "score_per_working_second": result.score_per_working_second,
+            "score_per_1k_tokens": result.score_per_1k_tokens,
+            "score_per_dollar": result.score_per_dollar,
             "inspect_log_location": result.inspect_log_location,
             "errors": " | ".join(result.errors),
         }

@@ -30,6 +30,8 @@ uv run scene-planning-bench compare-runs outputs/runs/<run-a>/summary.csv output
 uv run pytest
 ```
 
+For OpenAI-backed runs, set `OPENAI_API_KEY` in the shell first.
+
 ## Output layout
 
 Runs now default to timestamped folders under `outputs/runs/`.
@@ -39,6 +41,7 @@ Each run writes:
 - `summary.csv`
 - `aggregate.json`
 - `aggregate.json` includes per-task and per-paraphrase-group summaries
+- `summary.csv` also includes per-sample latency, token usage, and optional cost fields for Inspect-backed runs
 - `run_manifest.json`
 - `tasks/*.json`
 - `inspect_logs/*.json` for Inspect-backed runs

@@ -7,7 +7,7 @@ from typing import Any
 from inspect_ai import Task, eval as inspect_eval
 from inspect_ai.dataset import Sample
 from inspect_ai.log import EvalLog, EvalSample
-from inspect_ai.model import ChatMessageSystem, ChatMessageUser, ModelOutput
+from inspect_ai.model import ChatMessageSystem, ChatMessageUser, ModelOutput, ModelUsage
 from inspect_ai.scorer import Score, Target, mean, scorer, stderr
 
 from scene_planning_bench.evaluation import evaluate_output
@@ -141,7 +141,37 @@ def _run_result_from_sample(sample: EvalSample, log_location: str) -> RunResult:
         raise ValueError(f"inspect sample {sample.id} missing benchmark score metadata")
     payload = dict(score.metadata)
     payload["inspect_log_location"] = log_location
+    payload.update(_extract_sample_metrics(sample))
     return RunResult.model_validate(payload)
+
+
+def _extract_sample_metrics(sample: EvalSample) -> dict[str, Any]:
+    usages = list(sample.model_usage.values())
+    return {
+        "total_time_seconds": sample.total_time,
+        "working_time_seconds": sample.working_time,
+        "input_tokens": _sum_usage_field(usages, "input_tokens"),
+        "output_tokens": _sum_usage_field(usages, "output_tokens"),
+        "total_tokens": _sum_usage_field(usages, "total_tokens"),
+        "total_cost_usd": _sum_usage_field(usages, "total_cost"),
+    }
+
+
+def _sum_usage_field(
+    usages: list[ModelUsage],
+    field_name: str,
+) -> int | float | None:
+    values = [
+        getattr(usage, field_name)
+        for usage in usages
+        if getattr(usage, field_name) is not None
+    ]
+    if not values:
+        return None
+    total = sum(values)
+    if isinstance(total, float):
+        return round(total, 8)
+    return total
 
 
 def run_suite_with_inspect(

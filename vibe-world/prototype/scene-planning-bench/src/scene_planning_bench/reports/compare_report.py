@@ -23,4 +23,16 @@ def compare_summaries(left: Path, right: Path) -> pd.DataFrame:
         how="outer",
     )
     merged["score_delta"] = merged["right_total_score"] - merged["left_total_score"]
+    if "left_total_time_seconds" in merged.columns and "right_total_time_seconds" in merged.columns:
+        merged["time_delta_seconds"] = (
+            merged["right_total_time_seconds"] - merged["left_total_time_seconds"]
+        )
+    if "left_total_cost_usd" in merged.columns and "right_total_cost_usd" in merged.columns:
+        merged["cost_delta_usd"] = (
+            merged["right_total_cost_usd"] - merged["left_total_cost_usd"]
+        )
+    if "left_score_per_dollar" in merged.columns and "right_score_per_dollar" in merged.columns:
+        merged["score_per_dollar_delta"] = (
+            merged["right_score_per_dollar"] - merged["left_score_per_dollar"]
+        )
     return merged
