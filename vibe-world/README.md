@@ -81,7 +81,7 @@ If you want the fastest path from concept to implementation context, read:
 
 ### Prototypes
 
-- `prototype/scene-planning-bench/` — Python benchmark prototype for evaluating plain LLM scene-planning outputs against strict schemas and deterministic scorers
+- `prototype/scene-planning-bench/` — Python benchmark prototype for evaluating plain LLM scene-planning outputs against strict schemas, prompt bundles, deterministic scorers, and Inspect-backed execution logs
 
 ## Snapshot summary
 

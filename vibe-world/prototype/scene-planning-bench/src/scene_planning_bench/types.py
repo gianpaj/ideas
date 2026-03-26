@@ -208,9 +208,27 @@ class BenchmarkTask(BaseModel):
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
+class SuiteDefaults(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    system_prompt: str = (
+        "You are a scene-planning assistant.\n"
+        "Output JSON only.\n"
+        "Use schema_version 1.0.\n"
+        "Do not invent unsupported categories or actions.\n"
+        "If the request is ambiguous, return a clarification_request.\n"
+        "If the request is impossible or unsupported, return a refusal."
+    )
+    response_schema_path: str = "schemas/response.schema.json"
+    scene_schema_path: str = "schemas/scene.schema.json"
+    task_schema_path: str = "schemas/task.schema.json"
+
+
 class SuiteConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
+    description: str | None = None
+    defaults: SuiteDefaults = Field(default_factory=SuiteDefaults)
     suite_id: str
     task_paths: list[str]
 
@@ -226,7 +244,10 @@ class LoadedTask(BaseModel):
 class RunResult(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
+    sample_id: str
     task_id: str
+    prompt_index: int | None = None
+    prompt_text: str | None = None
     adapter_name: str
     schema_valid: bool
     response_type_match: bool
@@ -236,4 +257,6 @@ class RunResult(BaseModel):
     total_score: float
     raw_output: str
     parsed_response: dict[str, Any] | None = None
+    prompt_bundle: list[dict[str, Any]] | None = None
+    inspect_log_location: str | None = None
     errors: list[str] = Field(default_factory=list)

@@ -4,8 +4,9 @@ from pathlib import Path
 
 import typer
 
+from scene_planning_bench.inspect_runner import run_suite_with_inspect_mock
 from scene_planning_bench.adapters.mock_adapter import MockAdapter
-from scene_planning_bench.registry import load_tasks_from_suite, project_root
+from scene_planning_bench.registry import load_suite, load_tasks_from_suite, project_root
 from scene_planning_bench.reports.compare_report import compare_summaries
 from scene_planning_bench.runner import run_suite_with_adapter
 from scene_planning_bench.validation import load_schema, validate_with_schema
@@ -18,7 +19,8 @@ def validate_data(
     suite: str = "configs/suites/v1_core.yaml",
 ) -> None:
     root = project_root()
-    response_schema = load_schema(root / "schemas" / "response.schema.json")
+    suite_config = load_suite(root / suite)
+    response_schema = load_schema(root / suite_config.defaults.response_schema_path)
     tasks = load_tasks_from_suite(root / suite)
     invalid = 0
 
@@ -47,6 +49,17 @@ def run_mock(
     root = project_root()
     output = output_dir or root / "outputs" / "latest"
     _, summary_path = run_suite_with_adapter(suite, MockAdapter(), output)
+    typer.echo(f"wrote summary to {summary_path}")
+
+
+@app.command("run-inspect-mock")
+def run_inspect_mock(
+    suite: str = "configs/suites/v1_core.yaml",
+    output_dir: Path | None = None,
+) -> None:
+    root = project_root()
+    output = output_dir or root / "outputs" / "inspect_mock_latest"
+    _, _, summary_path = run_suite_with_inspect_mock(suite, output)
     typer.echo(f"wrote summary to {summary_path}")
 
 
