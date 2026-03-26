@@ -4,7 +4,16 @@ This folder is the current design and early implementation-spec bundle for Vibe 
 
 ## Current status
 
-The concept has moved past loose brainstorming and into early implementation planning.
+The project has moved beyond loose brainstorming and now sits between design definition and early implementation.
+
+So far, Vibe World has:
+
+- a documented V1 product and systems direction across the design/spec files in this folder
+- a concrete multiplayer backend choice: `SpacetimeDB`
+- a concrete AI generation direction: external worker/service
+- a defined V1 editing scope: spawned objects only
+- a defined V1 world model: both public and private worlds
+- a first implementation artifact: the `prototype/scene-planning-bench/` scene bench prototype for evaluating scene-planning outputs against strict schemas, prompt bundles, deterministic scorers, and Inspect-backed execution logs
 
 The current V1 decisions are:
 
@@ -78,6 +87,72 @@ If you want the fastest path from concept to implementation context, read:
 
 - `image-prompts.md` — prompts used to generate concept images
 - `AGENTS.md` — local guidance for future agents and implementation work
+
+## Roadmap
+
+### Phase diagram
+
+```mermaid
+flowchart LR
+    P0["Phase 0<br/>Design Foundation"] --> P1["Phase 1<br/>Scene Bench"]
+    P1 --> P2["Phase 2<br/>Contracts & Backend"]
+    P2 --> P3["Phase 3<br/>First Playable"]
+    P3 --> P4["Phase 4<br/>Multiplayer Worlds"]
+    P4 --> P5["Phase 5<br/>V1 Hardening"]
+```
+
+### Phase 0 — Design foundation
+
+**Status:** done
+
+This phase established the core shape of the project.
+
+- Product vision, world rules, object model, and architecture direction are documented.
+- Core V1 decisions are made for backend, AI boundaries, editing scope, and public/private world behavior.
+- The repo has moved beyond brainstorming into structured design and implementation planning.
+
+### Phase 1 — Scene bench prototype
+
+**Status:** in progress
+
+This is where the project is today.
+
+- The current implementation wedge is `prototype/scene-planning-bench/`.
+- It benchmarks scene-planning outputs against strict schemas, prompt bundles, deterministic scorers, and Inspect-backed execution logs.
+- The goal of this phase is to validate prompt/spec approaches before building the full multiplayer loop.
+
+### Phase 2 — Contracts and backend
+
+**Goal:** lock the machine-readable interfaces and authoritative rules
+
+- Finalize the scene-planning contract, schemas, and scoring criteria.
+- Define the AI worker boundary that can reliably consume planning outputs.
+- Finalize the first `SpacetimeDB` schema, reducer surface, and object lifecycle rules.
+
+### Phase 3 — First playable
+
+**Goal:** get the first end-to-end creation loop working
+
+- Connect client actions to authoritative world state.
+- Wire AI-assisted object creation into the backend flow.
+- Add the first in-world grace-period editing flow for spawned objects only.
+
+### Phase 4 — Multiplayer worlds
+
+**Goal:** turn the prototype loop into a real shared-world experience
+
+- Add basic public/private world configuration behavior.
+- Implement permission behavior aligned with the current rules docs.
+- Validate room behavior and collaboration flow in small multiplayer sessions.
+
+### Phase 5 — V1 hardening
+
+**Goal:** make the system stable enough for a stronger V1 milestone
+
+- Test toward the target of about 20 concurrent players per room.
+- Improve generation quality, latency, and reliability of the external AI worker/service.
+- Iterate on archive, remix, moderation, and host-governance systems.
+- Prepare the jump from benchmark-driven infrastructure to a fuller playable V1.
 
 ### Prototypes
 
