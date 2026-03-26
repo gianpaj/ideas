@@ -12,6 +12,11 @@ def default_run_output_dir(root: Path, suite_id: str, label: str) -> Path:
     return root / "outputs" / "runs" / run_name
 
 
+def default_matrix_output_dir(root: Path, suite_id: str, label: str) -> Path:
+    run_name = f"{utc_timestamp_slug()}_{slugify(suite_id)}_{slugify(label)}"
+    return root / "outputs" / "matrices" / run_name
+
+
 def build_run_manifest(
     *,
     suite_id: str,

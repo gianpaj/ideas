@@ -1,0 +1,11 @@
+matrix_id: example_cross_provider
+suite: configs/suites/v1_core.yaml
+models:
+  - model: openai/gpt-5.4-nano
+    label: gpt54_nano
+  - model: openai/gpt-5.4-mini
+    label: gpt54_mini
+  - model: anthropic/claude-sonnet-4-5
+    label: claude_sonnet
+  - model: google/gemini-2.5-flash
+    label: gemini_flash

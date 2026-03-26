@@ -240,6 +240,23 @@ class SuiteConfig(BaseModel):
         return self
 
 
+class MatrixModelConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    model: str
+    enabled: bool = True
+    model_args_file: str | None = None
+    label: str | None = None
+
+
+class RunMatrixConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    matrix_id: str
+    suite: str = "configs/suites/v1_core.yaml"
+    models: list[MatrixModelConfig]
+
+
 class LoadedTask(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 

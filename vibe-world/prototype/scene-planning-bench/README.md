@@ -26,11 +26,12 @@ uv run scene-planning-bench validate-data
 uv run scene-planning-bench run-mock
 uv run scene-planning-bench run-inspect-mock
 uv run scene-planning-bench run-inspect-model openai/gpt-5.4-mini
+uv run scene-planning-bench run-matrix configs/matrices/example_cross_provider.yaml
 uv run scene-planning-bench compare-runs outputs/runs/<run-a>/summary.csv outputs/runs/<run-b>/summary.csv
 uv run pytest
 ```
 
-For OpenAI-backed runs, set `OPENAI_API_KEY` in the shell first.
+Provider runs load `.env` automatically if present. Start from [`.env.example`](./.env.example).
 
 ## Output layout
 
@@ -45,3 +46,10 @@ Each run writes:
 - `run_manifest.json`
 - `tasks/*.json`
 - `inspect_logs/*.json` for Inspect-backed runs
+
+Matrix runs write combined artifacts under `outputs/matrices/`:
+
+- `matrix_summary.csv`
+- `matrix_leaderboard.csv`
+- `matrix_manifest.json`
+- `runs/<model-label>/...` per model

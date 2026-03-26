@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+from dotenv import load_dotenv
 
 
 def read_json(path: Path) -> Any:
@@ -21,6 +22,12 @@ def read_data_file(path: Path) -> Any:
     if path.suffix in {".yaml", ".yml"}:
         return read_yaml(path)
     return read_json(path)
+
+
+def load_env(path: Path) -> bool:
+    if not path.exists():
+        return False
+    return load_dotenv(path, override=False)
 
 
 def write_json(path: Path, data: Any) -> None:

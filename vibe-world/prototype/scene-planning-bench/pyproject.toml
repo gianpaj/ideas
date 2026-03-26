@@ -5,11 +5,14 @@ description = "Plain LLM scene-planning benchmark"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "anthropic>=0.86.0",
+    "google-genai>=1.68.0",
     "inspect-ai>=0.3.201",
     "jsonschema>=4.26.0",
     "openai>=2.30.0",
     "pandas>=3.0.1",
     "pydantic>=2.12.5",
+    "python-dotenv>=1.2.2",
     "pyyaml>=6.0.3",
     "typer>=0.24.1",
 ]

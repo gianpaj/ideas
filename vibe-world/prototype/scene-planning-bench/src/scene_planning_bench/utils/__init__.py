@@ -1,4 +1,5 @@
 from .io import (
+    load_env,
     read_data_file,
     read_json,
     read_yaml,
@@ -9,6 +10,7 @@ from .io import (
 )
 
 __all__ = [
+    "load_env",
     "read_data_file",
     "read_json",
     "read_yaml",
