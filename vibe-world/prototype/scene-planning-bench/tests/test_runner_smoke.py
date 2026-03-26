@@ -16,6 +16,7 @@ def test_runner_smoke(tmp_path: Path) -> None:
     assert all(result.schema_valid for result in results)
     assert all(result.sample_id.endswith("::prompt_0") for result in results)
     assert summary_path.exists()
+    assert (tmp_path / "outputs" / "aggregate.json").exists()
 
 
 def test_inspect_runner_smoke(tmp_path: Path) -> None:
@@ -29,4 +30,5 @@ def test_inspect_runner_smoke(tmp_path: Path) -> None:
     assert all(result.schema_valid for result in results)
     assert all(result.inspect_log_location for result in results)
     assert summary_path.exists()
+    assert (tmp_path / "inspect_outputs" / "aggregate.json").exists()
     assert list((tmp_path / "inspect_outputs" / "inspect_logs").glob("*.json"))

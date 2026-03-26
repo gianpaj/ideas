@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import typer
 
-from scene_planning_bench.inspect_runner import run_suite_with_inspect_mock
+from scene_planning_bench.inspect_runner import run_suite_with_inspect, run_suite_with_inspect_mock
 from scene_planning_bench.adapters.mock_adapter import MockAdapter
 from scene_planning_bench.registry import (
     load_suite,
@@ -14,7 +15,9 @@ from scene_planning_bench.registry import (
 )
 from scene_planning_bench.reports.compare_report import compare_summaries
 from scene_planning_bench.runner import run_suite_with_adapter
-from scene_planning_bench.utils import read_json, read_yaml
+from scene_planning_bench.run_layout import build_run_manifest, default_run_output_dir
+from scene_planning_bench.types import RunResult
+from scene_planning_bench.utils import read_data_file, read_json, read_yaml, write_json
 from scene_planning_bench.validation import (
     load_schema,
     validate_with_schema,
@@ -22,6 +25,40 @@ from scene_planning_bench.validation import (
 )
 
 app = typer.Typer(no_args_is_help=True, add_completion=False)
+
+
+def _resolve_output_dir(suite: str, output_dir: Path | None, label: str) -> Path:
+    if output_dir is not None:
+        return output_dir
+    root = project_root()
+    suite_config = load_suite(root / suite)
+    return default_run_output_dir(root, suite_config.suite_id, label)
+
+
+def _write_manifest(
+    suite: str,
+    output_dir: Path,
+    run_kind: str,
+    adapter_name: str,
+    results: list[RunResult],
+    summary_path: Path,
+    *,
+    extra: dict[str, Any] | None = None,
+) -> Path:
+    root = project_root()
+    suite_config = load_suite(root / suite)
+    manifest = build_run_manifest(
+        suite_id=suite_config.suite_id,
+        run_kind=run_kind,
+        adapter_name=adapter_name,
+        output_dir=output_dir,
+        results=results,
+        summary_path=summary_path,
+        extra=extra,
+    )
+    manifest_path = output_dir / "run_manifest.json"
+    write_json(manifest_path, manifest)
+    return manifest_path
 
 
 @app.command("validate-data")
@@ -92,10 +129,18 @@ def run_mock(
     suite: str = "configs/suites/v1_core.yaml",
     output_dir: Path | None = None,
 ) -> None:
-    root = project_root()
-    output = output_dir or root / "outputs" / "latest"
-    _, summary_path = run_suite_with_adapter(suite, MockAdapter(), output)
+    output = _resolve_output_dir(suite, output_dir, "mock")
+    results, summary_path = run_suite_with_adapter(suite, MockAdapter(), output)
+    manifest_path = _write_manifest(
+        suite,
+        output,
+        "adapter",
+        "mock",
+        results,
+        summary_path,
+    )
     typer.echo(f"wrote summary to {summary_path}")
+    typer.echo(f"wrote manifest to {manifest_path}")
 
 
 @app.command("run-inspect-mock")
@@ -103,10 +148,50 @@ def run_inspect_mock(
     suite: str = "configs/suites/v1_core.yaml",
     output_dir: Path | None = None,
 ) -> None:
-    root = project_root()
-    output = output_dir or root / "outputs" / "inspect_mock_latest"
-    _, _, summary_path = run_suite_with_inspect_mock(suite, output)
+    output = _resolve_output_dir(suite, output_dir, "inspect-mock")
+    _, results, summary_path = run_suite_with_inspect_mock(suite, output)
+    manifest_path = _write_manifest(
+        suite,
+        output,
+        "inspect",
+        "mockllm/scene-planning-bench",
+        results,
+        summary_path,
+        extra={"inspect_log_dir": str(output / "inspect_logs")},
+    )
     typer.echo(f"wrote summary to {summary_path}")
+    typer.echo(f"wrote manifest to {manifest_path}")
+
+
+@app.command("run-inspect-model")
+def run_inspect_model(
+    model: str,
+    suite: str = "configs/suites/v1_core.yaml",
+    output_dir: Path | None = None,
+    model_args_file: Path | None = None,
+) -> None:
+    output = _resolve_output_dir(suite, output_dir, model)
+    model_args = read_data_file(model_args_file) if model_args_file else {}
+    _, results, summary_path = run_suite_with_inspect(
+        suite,
+        output,
+        model=model,
+        model_args=model_args,
+    )
+    manifest_path = _write_manifest(
+        suite,
+        output,
+        "inspect",
+        model,
+        results,
+        summary_path,
+        extra={
+            "inspect_log_dir": str(output / "inspect_logs"),
+            "model_args_file": str(model_args_file) if model_args_file else None,
+        },
+    )
+    typer.echo(f"wrote summary to {summary_path}")
+    typer.echo(f"wrote manifest to {manifest_path}")
 
 
 @app.command("compare-runs")

@@ -32,7 +32,6 @@ uv run pytest
 
 ## Expected next implementation layers
 
-- generic Inspect model execution beyond mock mode
 - richer scoring modules for ambiguity/state/spatial correctness
-- run manifests and aggregate reports
 - paraphrase-group analysis
+- HTML or notebook-friendly report views
