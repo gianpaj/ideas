@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import json
 from typing import Any
 
 from scene_planning_bench.types import BenchmarkTask, SceneDefinition
+from scene_runtime.contracts import PlanningRequest
+from scene_runtime.prompting import build_prompt_bundle as build_runtime_prompt_bundle
 
 
 def build_prompt_bundle(
@@ -13,31 +14,19 @@ def build_prompt_bundle(
     response_schema: dict[str, Any],
     prompt_text: str,
 ) -> list[dict[str, str]]:
-    scene_payload = scene.model_dump(mode="json", exclude_none=True)
-    task_payload = {
-        "task_id": task.task_id,
-        "category": task.category,
-        "difficulty": task.difficulty,
-        "allowed_response_types": [
-            response_type.value for response_type in task.allowed_response_types
-        ],
-    }
-    return [
-        {"role": "system", "content": system_prompt},
-        {
-            "role": "system",
-            "content": (
-                "Scene context JSON:\n"
-                + json.dumps(scene_payload, indent=2)
-                + "\n\n"
-                + "Task metadata JSON:\n"
-                + json.dumps(task_payload, indent=2)
-                + "\n\n"
-                + "Response schema JSON Schema:\n"
-                + json.dumps(response_schema, indent=2)
-                + "\n\n"
-                + "Return only a JSON object that conforms to the schema."
-            ),
+    request = PlanningRequest(
+        request_id=f"{task.task_id}::prompt_bundle",
+        scene=scene,
+        user_prompt=prompt_text,
+        system_prompt=system_prompt,
+        response_schema=response_schema,
+        metadata={
+            "task_id": task.task_id,
+            "category": task.category,
+            "difficulty": task.difficulty,
+            "allowed_response_types": [
+                response_type.value for response_type in task.allowed_response_types
+            ],
         },
-        {"role": "user", "content": prompt_text},
-    ]
+    )
+    return build_runtime_prompt_bundle(request, metadata_label="Task metadata JSON")

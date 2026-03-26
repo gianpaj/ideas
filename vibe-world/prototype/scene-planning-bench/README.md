@@ -10,12 +10,18 @@ This prototype focuses on:
 - deterministic task and scene loading
 - strict JSON validation
 - prompt-bundle assembly with stored scene and schema context
+- reusable runtime extraction for parsing, schema validation, and prompt construction
 - simple deterministic scoring
 - mock-model execution for smoke testing
 - Inspect-backed execution, logging, and replayable run artifacts
 - JSON and CSV artifacts for comparison outside Inspect
 
 Inspect is now used for one of the execution paths, while the scoring logic remains deterministic and local to this package.
+
+The project now contains two Python packages under `src/`:
+
+- `scene_planning_bench` for benchmark-specific loading, scoring, reporting, and CLI orchestration
+- `scene_runtime` for reusable planning models, parsing, schema validation, prompt construction, and future live-runtime contracts
 
 Implementation notes for future agents live in [`AGENTS.md`](AGENTS.md).
 

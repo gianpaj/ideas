@@ -15,7 +15,8 @@ It is not the multiplayer game and it is not the authoritative Vibe World backen
 
 ## Working rules
 
-- keep runtime code inside `src/scene_planning_bench/`
+- keep benchmark-specific code inside `src/scene_planning_bench/`
+- keep reusable planning/runtime code inside `src/scene_runtime/`
 - keep benchmark data in `tasks/`, `scenes/`, `schemas/`, and `configs/`
 - keep `README.md` current when commands or outputs change
 - prefer extending schemas and tests together
@@ -32,6 +33,6 @@ uv run pytest
 
 ## Expected next implementation layers
 
+- runtime normalization from validated response into a product-facing plan
+- render-draft conversion on top of the shared runtime contracts
 - richer scoring modules for ambiguity/state/spatial correctness
-- paraphrase-group analysis
-- HTML or notebook-friendly report views

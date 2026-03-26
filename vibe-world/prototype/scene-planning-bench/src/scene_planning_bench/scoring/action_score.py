@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from scene_planning_bench.types import ScenePlanningResponse
+from scene_runtime.models import ScenePlanningResponse
 
 
 def compute_action_type_score(
