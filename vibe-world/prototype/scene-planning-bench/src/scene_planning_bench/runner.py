@@ -26,6 +26,7 @@ def run_suite_with_adapter(
         results.append(
             evaluate_output(
                 loaded_task.task,
+                loaded_task.scene,
                 raw_output,
                 adapter.name,
                 response_schema,

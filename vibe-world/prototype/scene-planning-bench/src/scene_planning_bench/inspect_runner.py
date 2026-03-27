@@ -16,6 +16,7 @@ from scene_planning_bench.registry import load_suite, load_tasks_from_suite, pro
 from scene_planning_bench.reports.json_report import write_run_reports
 from scene_planning_bench.types import BenchmarkTask, RunResult
 from scene_planning_bench.validation import load_schema
+from scene_runtime import SceneDefinition
 
 SCORER_NAME = "scene_plan_benchmark"
 
@@ -38,8 +39,10 @@ def _prompt_bundle_to_chat_messages(
 def inspect_scene_plan_scorer(response_schema: dict[str, Any], adapter_name: str):
     async def score(state, target: Target) -> Score:
         task = BenchmarkTask.model_validate(state.metadata["task"])
+        scene = SceneDefinition.model_validate(state.metadata["scene"])
         result = evaluate_output(
             task,
+            scene,
             state.output.completion if state.output else "",
             adapter_name,
             response_schema,
@@ -91,6 +94,10 @@ def _build_dataset(
                     ),
                     metadata={
                         "task": loaded_task.task.model_dump(
+                            mode="json",
+                            exclude_none=True,
+                        ),
+                        "scene": loaded_task.scene.model_dump(
                             mode="json",
                             exclude_none=True,
                         ),

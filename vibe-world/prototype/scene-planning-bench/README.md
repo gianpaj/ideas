@@ -48,9 +48,9 @@ Each run writes:
 - `summary.csv`
 - `aggregate.json`
 - `aggregate.json` includes per-task and per-paraphrase-group summaries
-- `summary.csv` also includes per-sample latency, token usage, and optional cost fields for Inspect-backed runs
+- `summary.csv` also includes per-sample latency, token usage, optional cost fields, and runtime artifact counts
 - `run_manifest.json`
-- `tasks/*.json`
+- `tasks/*.json` with raw output, parsed response, normalized plan, render drafts, and diagnostics
 - `inspect_logs/*.json` for Inspect-backed runs
 
 Matrix runs write combined artifacts under `outputs/matrices/`:

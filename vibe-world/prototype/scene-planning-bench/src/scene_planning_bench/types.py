@@ -141,9 +141,12 @@ class RunResult(BaseModel):
     score_per_dollar: float | None = None
     raw_output: str
     parsed_response: dict[str, Any] | None = None
+    normalized_plan: dict[str, Any] | None = None
+    render_drafts: list[dict[str, Any]] = Field(default_factory=list)
     prompt_bundle: list[dict[str, Any]] | None = None
     inspect_log_location: str | None = None
     errors: list[str] = Field(default_factory=list)
+    diagnostics: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def populate_efficiency_metrics(self) -> "RunResult":

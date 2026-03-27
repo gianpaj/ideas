@@ -21,6 +21,7 @@ It is not the multiplayer game and it is not the authoritative Vibe World backen
 - keep `README.md` current when commands or outputs change
 - prefer extending schemas and tests together
 - treat prompt bundles and saved run artifacts as part of reproducibility, not optional extras
+- per-sample task artifacts should preserve both benchmark-facing outputs and runtime-layer outputs when available
 
 ## Useful commands
 

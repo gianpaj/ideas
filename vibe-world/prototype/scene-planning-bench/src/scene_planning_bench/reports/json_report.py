@@ -183,8 +183,15 @@ def write_run_reports(
             "score_per_working_second": result.score_per_working_second,
             "score_per_1k_tokens": result.score_per_1k_tokens,
             "score_per_dollar": result.score_per_dollar,
+            "normalized_intent_count": (
+                len(result.normalized_plan.get("intents", []))
+                if result.normalized_plan is not None
+                else 0
+            ),
+            "render_draft_count": len(result.render_drafts),
             "inspect_log_location": result.inspect_log_location,
             "errors": " | ".join(result.errors),
+            "diagnostics": " | ".join(result.diagnostics),
         }
         for result in results
     ]
