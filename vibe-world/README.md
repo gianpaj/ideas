@@ -40,8 +40,9 @@ If you want the fastest path from concept to implementation context, read:
 8. `prompt-ir-spec.md`
 9. `scene-runtime-module-design.md`
 10. `scene-runtime-extraction-plan.md`
-11. `world-settings-schema.md`
-12. `public-world-permission-matrix.md`
+11. `scene-runtime-typescript-port-plan.md`
+12. `world-settings-schema.md`
+13. `public-world-permission-matrix.md`
 
 ## Concept Art & Visualizations
 
@@ -80,6 +81,7 @@ If you want the fastest path from concept to implementation context, read:
 - `prompt-ir-spec.md` — first constrained prompt intermediate representation
 - `scene-runtime-module-design.md` — reusable runtime module boundary from AI worker through validation, normalization, and render draft output
 - `scene-runtime-extraction-plan.md` — staged implementation plan for carving the shared runtime layer out of the benchmark package
+- `scene-runtime-typescript-port-plan.md` — staged plan for a TypeScript consumer port and React Three Fiber demo while Python stays source of truth
 - `world-settings-schema.md` — host-configurable world settings for V1
 - `public-world-permission-matrix.md` — action-by-role permission model for public/private/archive contexts
 - `reducer-api-spec.md` — first high-level reducer surface for the authoritative backend
