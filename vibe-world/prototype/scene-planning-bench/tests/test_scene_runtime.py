@@ -138,6 +138,7 @@ def test_normalize_response_preserves_spawn_layout_as_layout_hint() -> None:
     assert intent.layout_hint is not None
     assert intent.layout_hint.layout_type == "triangle"
     assert intent.layout_hint.count == 3
+    assert intent.instance_count == 3
     assert intent.source_actions == [ActionType.SPAWN_LAYOUT]
 
 
@@ -168,3 +169,166 @@ def test_build_render_drafts_expands_layout_count_into_preview_nodes() -> None:
     assert draft.world_anchor.reference_object == "campfire_1"
     assert len(draft.primitive_nodes) == 3
     assert draft.primitive_nodes[1].transform["polar_angle_degrees"] == 120
+
+
+def test_normalize_response_merges_repeated_identical_create_actions() -> None:
+    root = project_root()
+    scene = load_scene(root / "scenes" / "forest_cabin_001.json")
+    response = parse_response_json(
+        """{
+          "schema_version": "1.0",
+          "response_type": "scene_actions",
+          "actions": [
+            {
+              "action_type": "add_object",
+              "object_spec": {
+                "category": "tree",
+                "variant": "pine"
+              },
+              "transform": {
+                "position": {
+                  "mode": "relative",
+                  "reference_object": "cabin_1",
+                  "relation": "left_of",
+                  "offset_meters": 3.0
+                }
+              },
+              "attributes": {
+                "count": 1
+              },
+              "constraints": {
+                "grounded": true,
+                "non_overlapping": true
+              },
+              "references": ["cabin_1"],
+              "confidence": 0.95
+            },
+            {
+              "action_type": "add_object",
+              "object_spec": {
+                "category": "tree",
+                "variant": "pine"
+              },
+              "transform": {
+                "position": {
+                  "mode": "relative",
+                  "reference_object": "cabin_1",
+                  "relation": "left_of",
+                  "offset_meters": 3.0
+                }
+              },
+              "attributes": {
+                "count": 1
+              },
+              "constraints": {
+                "grounded": true,
+                "non_overlapping": true
+              },
+              "references": ["cabin_1"],
+              "confidence": 0.95
+            }
+          ],
+          "uncertainty": {
+            "has_ambiguity": false,
+            "fields": []
+          }
+        }"""
+    )
+    request = PlanningRequest(
+        request_id="req_twice",
+        scene=scene,
+        user_prompt="Add two pine trees to the left of the cabin.",
+        system_prompt="System prompt",
+        response_schema=load_schema(root / "schemas" / "response.schema.json"),
+    )
+
+    normalized = normalize_response(request, response)
+
+    assert len(normalized.intents) == 1
+    intent = normalized.intents[0]
+    assert intent.instance_count == 2
+    assert intent.category == "tree"
+    assert len(intent.source_actions) == 2
+    assert normalized.diagnostics
+
+
+def test_build_render_drafts_uses_instance_count_when_layout_is_missing() -> None:
+    root = project_root()
+    scene = load_scene(root / "scenes" / "forest_cabin_001.json")
+    response = parse_response_json(
+        """{
+          "schema_version": "1.0",
+          "response_type": "scene_actions",
+          "actions": [
+            {
+              "action_type": "add_object",
+              "object_spec": {
+                "category": "tree",
+                "variant": "pine"
+              },
+              "transform": {
+                "position": {
+                  "mode": "relative",
+                  "reference_object": "cabin_1",
+                  "relation": "left_of",
+                  "offset_meters": 3.0
+                }
+              },
+              "attributes": {
+                "count": 1
+              },
+              "constraints": {
+                "grounded": true,
+                "non_overlapping": true
+              },
+              "references": ["cabin_1"],
+              "confidence": 0.95
+            },
+            {
+              "action_type": "add_object",
+              "object_spec": {
+                "category": "tree",
+                "variant": "pine"
+              },
+              "transform": {
+                "position": {
+                  "mode": "relative",
+                  "reference_object": "cabin_1",
+                  "relation": "left_of",
+                  "offset_meters": 3.0
+                }
+              },
+              "attributes": {
+                "count": 1
+              },
+              "constraints": {
+                "grounded": true,
+                "non_overlapping": true
+              },
+              "references": ["cabin_1"],
+              "confidence": 0.95
+            }
+          ],
+          "uncertainty": {
+            "has_ambiguity": false,
+            "fields": []
+          }
+        }"""
+    )
+    request = PlanningRequest(
+        request_id="req_many_trees",
+        scene=scene,
+        user_prompt="Add two pine trees to the left of the cabin.",
+        system_prompt="System prompt",
+        response_schema=load_schema(root / "schemas" / "response.schema.json"),
+    )
+
+    normalized = normalize_response(request, response)
+    drafts = build_render_drafts(normalized)
+
+    assert len(drafts) == 1
+    draft = drafts[0]
+    assert draft.display_name == "2 Trees"
+    assert len(draft.primitive_nodes) == 2
+    assert draft.primitive_nodes[1].transform["instance_index"] == 1
+    assert draft.warnings

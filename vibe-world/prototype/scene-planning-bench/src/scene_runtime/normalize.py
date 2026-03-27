@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from typing import Any
 
 from scene_runtime.contracts import (
@@ -66,6 +67,8 @@ def normalize_response(
         normalized = _normalize_action(request, action, index, diagnostics)
         if normalized is not None:
             intents.append(normalized)
+
+    intents = _merge_repeated_create_intents(intents, diagnostics)
 
     return NormalizedScenePlan(
         request_id=request.request_id,
@@ -142,6 +145,7 @@ def _normalize_action(
             else None
         ),
         style_tags=style_tags,
+        instance_count=_resolve_instance_count(layout_hint),
         layout_hint=layout_hint,
         source_actions=[action.action_type],
     )
@@ -212,3 +216,59 @@ def _build_layout_hint(action: Action) -> LayoutHint | None:
             )
         },
     )
+
+
+def _resolve_instance_count(layout_hint: LayoutHint | None) -> int:
+    if layout_hint is None or layout_hint.count is None or layout_hint.count < 1:
+        return 1
+    return layout_hint.count
+
+
+def _merge_repeated_create_intents(
+    intents: list[ObjectIntent],
+    diagnostics: list[str],
+) -> list[ObjectIntent]:
+    merged: list[ObjectIntent] = []
+    grouped_indexes: dict[str, int] = {}
+
+    for intent in intents:
+        if not _is_mergeable_repeated_create(intent):
+            merged.append(intent)
+            continue
+
+        key = _merge_key(intent)
+        existing_index = grouped_indexes.get(key)
+        if existing_index is None:
+            grouped_indexes[key] = len(merged)
+            merged.append(intent)
+            continue
+
+        existing = merged[existing_index]
+        existing.instance_count += intent.instance_count
+        existing.source_actions.extend(intent.source_actions)
+        diagnostics.append(
+            f"merged repeated create intent {intent.intent_id} into {existing.intent_id}"
+        )
+
+    return merged
+
+
+def _is_mergeable_repeated_create(intent: ObjectIntent) -> bool:
+    return (
+        intent.operation == IntentOperation.CREATE
+        and intent.target_object_id is None
+        and intent.layout_hint is None
+    )
+
+
+def _merge_key(intent: ObjectIntent) -> str:
+    payload = intent.model_dump(
+        mode="json",
+        exclude={
+            "intent_id",
+            "instance_count",
+            "source_actions",
+        },
+        exclude_none=True,
+    )
+    return json.dumps(payload, sort_keys=True)

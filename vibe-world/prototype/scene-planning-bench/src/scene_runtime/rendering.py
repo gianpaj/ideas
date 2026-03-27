@@ -27,7 +27,7 @@ def build_render_drafts(plan: NormalizedScenePlan) -> list[RenderDraftSpec]:
     for intent in plan.intents:
         warnings: list[str] = []
         anchor = _build_world_anchor(intent.transform_hints, warnings)
-        primitive_nodes = _build_primitive_nodes(intent)
+        primitive_nodes = _build_primitive_nodes(intent, warnings)
         if not primitive_nodes:
             warnings.append("intent did not produce any primitive nodes")
         drafts.append(
@@ -66,11 +66,11 @@ def _build_world_anchor(
     )
 
 
-def _build_primitive_nodes(intent) -> list[PrimitiveNode]:
-    count = 1
+def _build_primitive_nodes(intent, warnings: list[str]) -> list[PrimitiveNode]:
+    count = intent.instance_count or 1
     layout_type = None
     if intent.layout_hint is not None:
-        count = intent.layout_hint.count or 1
+        count = max(count, intent.layout_hint.count or 1)
         layout_type = intent.layout_hint.layout_type
 
     primitive = "cube"
@@ -81,9 +81,14 @@ def _build_primitive_nodes(intent) -> list[PrimitiveNode]:
     if intent.material_palette is not None:
         material = intent.material_palette.get("dominant")
 
+    if count > 1 and layout_type is None:
+        warnings.append(
+            "grouped instances have no explicit layout; preview uses indexed placeholders"
+        )
+
     nodes: list[PrimitiveNode] = []
     for index in range(count):
-        transform = {"node_index": index}
+        transform = {"instance_index": index}
         if layout_type == "triangle":
             transform["polar_angle_degrees"] = index * 120
         nodes.append(

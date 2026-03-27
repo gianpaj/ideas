@@ -67,6 +67,7 @@ class ObjectIntent(BaseModel):
     behavior_presets: list[str] = Field(default_factory=list)
     transform_hints: dict[str, Any] | None = None
     style_tags: list[str] = Field(default_factory=list)
+    instance_count: int = 1
     layout_hint: LayoutHint | None = None
     source_actions: list[ActionType] = Field(default_factory=list)
 
