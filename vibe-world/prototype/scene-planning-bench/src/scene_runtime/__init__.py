@@ -32,6 +32,7 @@ from scene_runtime.models import (
 )
 from scene_runtime.normalize import normalize_response
 from scene_runtime.parsing import parse_response_json
+from scene_runtime.pipeline import process_planning_request
 from scene_runtime.prompting import build_prompt_bundle
 from scene_runtime.rendering import build_render_drafts
 from scene_runtime.schema import (
@@ -76,6 +77,7 @@ __all__ = [
     "load_schema",
     "normalize_response",
     "parse_response_json",
+    "process_planning_request",
     "validate_with_schema",
     "validate_with_schema_path",
 ]

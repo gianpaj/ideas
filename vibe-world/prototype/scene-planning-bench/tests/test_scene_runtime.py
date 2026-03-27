@@ -13,6 +13,7 @@ from scene_runtime import (
     load_schema,
     normalize_response,
     parse_response_json,
+    process_planning_request,
 )
 
 
@@ -332,3 +333,86 @@ def test_build_render_drafts_uses_instance_count_when_layout_is_missing() -> Non
     assert len(draft.primitive_nodes) == 2
     assert draft.primitive_nodes[1].transform["instance_index"] == 1
     assert draft.warnings
+
+
+def test_process_planning_request_returns_full_success_outcome() -> None:
+    root = project_root()
+    scene = load_scene(root / "scenes" / "forest_cabin_001.json")
+    benchmark_task = load_task(
+        root
+        / "tasks"
+        / "v1_core"
+        / "constraints"
+        / "three_red_barrels_around_campfire_001.json"
+    )
+    request = PlanningRequest(
+        request_id="req_pipeline_ok",
+        scene=scene,
+        user_prompt=benchmark_task.prompts[0],
+        system_prompt="System prompt",
+        response_schema=load_schema(root / "schemas" / "response.schema.json"),
+    )
+    raw_output = benchmark_task.gold_response.model_dump_json(exclude_none=True)
+
+    outcome = process_planning_request(request, raw_output)
+
+    assert outcome.parsed_response is not None
+    assert outcome.schema_errors == []
+    assert outcome.normalized_plan is not None
+    assert outcome.render_drafts
+    assert outcome.render_drafts[0].display_name == "3 Barrels"
+
+
+def test_process_planning_request_stops_on_parse_error() -> None:
+    root = project_root()
+    scene = load_scene(root / "scenes" / "forest_cabin_001.json")
+    request = PlanningRequest(
+        request_id="req_pipeline_parse_fail",
+        scene=scene,
+        user_prompt="Add a pine tree.",
+        system_prompt="System prompt",
+        response_schema=load_schema(root / "schemas" / "response.schema.json"),
+    )
+
+    outcome = process_planning_request(request, "not json")
+
+    assert outcome.parsed_response is None
+    assert outcome.schema_errors == []
+    assert outcome.normalized_plan is None
+    assert outcome.render_drafts == []
+    assert outcome.diagnostics
+
+
+def test_process_planning_request_stops_on_schema_error() -> None:
+    root = project_root()
+    scene = load_scene(root / "scenes" / "forest_cabin_001.json")
+    request = PlanningRequest(
+        request_id="req_pipeline_schema_fail",
+        scene=scene,
+        user_prompt="Add a pine tree.",
+        system_prompt="System prompt",
+        response_schema={
+            "type": "object",
+            "required": ["notes"],
+            "properties": {
+                "notes": {"type": "string"},
+            },
+        },
+    )
+    raw_output = """{
+      "schema_version": "1.0",
+      "response_type": "scene_actions",
+      "actions": [],
+      "uncertainty": {
+        "has_ambiguity": false,
+        "fields": []
+      }
+    }"""
+
+    outcome = process_planning_request(request, raw_output)
+
+    assert outcome.parsed_response is not None
+    assert outcome.schema_errors
+    assert outcome.normalized_plan is None
+    assert outcome.render_drafts == []
+    assert outcome.diagnostics
