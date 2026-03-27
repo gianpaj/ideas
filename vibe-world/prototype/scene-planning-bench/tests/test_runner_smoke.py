@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+from scene_planning_bench.chart import infer_csv_from_manifest, render_matrix_table
+
 from scene_planning_bench.adapters.mock_adapter import MockAdapter
 from scene_planning_bench.cli import run_matrix
 from scene_planning_bench.inspect_runner import run_suite_with_inspect_mock
@@ -40,7 +42,9 @@ def test_inspect_runner_smoke(tmp_path: Path) -> None:
     assert all(result.score_per_total_second is not None for result in results)
     assert all(result.total_cost_usd is None for result in results)
     assert summary_path.exists()
-    aggregate = json.loads((tmp_path / "inspect_outputs" / "aggregate.json").read_text())
+    aggregate = json.loads(
+        (tmp_path / "inspect_outputs" / "aggregate.json").read_text()
+    )
     assert aggregate["task_count"] == 3
     assert aggregate["mean_total_time_seconds"] is not None
     assert aggregate["mean_total_tokens"] is not None
@@ -80,5 +84,96 @@ def test_run_matrix_smoke(tmp_path: Path) -> None:
     assert matrix_summary.exists()
     assert leaderboard.exists()
     assert manifest.exists()
-    summary = json.loads((tmp_path / "matrix_outputs" / "matrix_manifest.json").read_text())
+    summary = json.loads(
+        (tmp_path / "matrix_outputs" / "matrix_manifest.json").read_text()
+    )
     assert summary["model_count"] == 2
+
+
+def test_chart_resolves_csv_from_manifest(tmp_path: Path) -> None:
+    output_dir = tmp_path / "matrix_outputs"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    summary_csv = output_dir / "matrix_summary.csv"
+    summary_csv.write_text(
+        "\n".join(
+            [
+                "label,model,status,mean_total_score",
+                "mock_primary,openai/gpt-5.4-mini,success,0.91",
+                "mock_secondary,anthropic/claude-sonnet,success,0.87",
+            ]
+        )
+        + "\n"
+    )
+
+    leaderboard_csv = output_dir / "matrix_leaderboard.csv"
+    leaderboard_csv.write_text(
+        "\n".join(
+            [
+                "label,model,status,mean_total_score",
+                "mock_primary,openai/gpt-5.4-mini,success,0.91",
+            ]
+        )
+        + "\n"
+    )
+
+    manifest = output_dir / "matrix_manifest.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "summary_path": str(summary_csv),
+                "leaderboard_path": str(leaderboard_csv),
+            }
+        )
+    )
+
+    assert infer_csv_from_manifest(manifest, "summary") == summary_csv
+    assert infer_csv_from_manifest(manifest, "leaderboard") == leaderboard_csv
+
+
+def test_inception_provider_env_check() -> None:
+    """Verify inception/ prefix triggers INCEPTION_API_KEY check."""
+    import os
+    from unittest.mock import patch
+    from scene_planning_bench.cli import _require_provider_env
+
+    # Should not raise when key is set
+    with patch.dict(os.environ, {"INCEPTION_API_KEY": "test-key"}):
+        _require_provider_env("inception/mercury-2")
+
+    # Should raise when key is missing
+    with patch.dict(os.environ, {}, clear=True):
+        import typer
+        import pytest
+        with pytest.raises(typer.Exit):
+            _require_provider_env("inception/mercury-2")
+
+
+def test_chart_renders_matrix_table(capsys, tmp_path: Path) -> None:
+    csv_path = tmp_path / "matrix_summary.csv"
+    csv_path.write_text(
+        "\n".join(
+            [
+                "label,model,status,mean_total_score",
+                "gpt-5.4-mini,openai/gpt-5.4-mini,success,0.91",
+                "claude-sonnet,anthropic/claude-sonnet,success,0.87",
+                "gemini-flash,google/gemini-flash,success,0.89",
+            ]
+        )
+        + "\n"
+    )
+
+    render_matrix_table(
+        csv_path,
+        "mean_total_score",
+        row_field="label",
+        column_field="provider",
+    )
+
+    output = capsys.readouterr().out
+    assert "label" in output
+    assert "openai" in output
+    assert "anthropic" in output
+    assert "google" in output
+    assert "gpt-5.4-mini" in output
+    assert "0.9100" in output

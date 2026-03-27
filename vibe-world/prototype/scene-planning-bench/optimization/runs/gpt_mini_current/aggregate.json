@@ -1,0 +1,51 @@
+{
+  "adapter_names": [
+    "openai/gpt-5.4-mini"
+  ],
+  "by_paraphrase_group": {
+    "pine_tree_left_of_cabin": {
+      "mean_total_score": 1.0,
+      "mean_total_time_seconds": 3.159,
+      "mean_total_tokens": 2620.0,
+      "sample_count": 1,
+      "task_ids": [
+        "add_pine_tree_left_of_cabin_001"
+      ],
+      "total_cost_usd": null
+    }
+  },
+  "by_task": {
+    "add_house_near_lake_001": {
+      "mean_total_score": 1.0,
+      "mean_total_time_seconds": 3.18,
+      "mean_total_tokens": 2567.0,
+      "sample_count": 1,
+      "total_cost_usd": null
+    },
+    "add_pine_tree_left_of_cabin_001": {
+      "mean_total_score": 1.0,
+      "mean_total_time_seconds": 3.159,
+      "mean_total_tokens": 2620.0,
+      "sample_count": 1,
+      "total_cost_usd": null
+    },
+    "three_red_barrels_around_campfire_001": {
+      "mean_total_score": 1.0,
+      "mean_total_time_seconds": 3.284,
+      "mean_total_tokens": 2651.0,
+      "sample_count": 1,
+      "total_cost_usd": null
+    }
+  },
+  "mean_total_score": 1.0,
+  "mean_total_time_seconds": 3.207667,
+  "mean_total_tokens": 2612.666667,
+  "mean_working_time_seconds": 1.957333,
+  "paraphrase_group_count": 1,
+  "sample_count": 3,
+  "schema_valid_rate": 1.0,
+  "score_per_dollar": null,
+  "score_per_total_second": 0.311753,
+  "task_count": 3,
+  "total_cost_usd": null
+}

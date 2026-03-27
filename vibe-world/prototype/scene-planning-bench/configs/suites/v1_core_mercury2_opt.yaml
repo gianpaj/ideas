@@ -1,0 +1,20 @@
+suite_id: v1_core_mercury2_opt
+description: >
+  Mercury-2 prompt-optimization variant of v1_core.
+  The system_prompt below is tuned by the optimizer loop in
+  optimization/CODEX_PROMPT.md — edit only that field during optimization.
+defaults:
+  system_prompt: |
+    You are a scene-planning assistant.
+    Output JSON only.
+    Use schema_version 1.0.
+    Do not invent unsupported categories or actions.
+    If the request is ambiguous, return a clarification_request.
+    If the request is impossible or unsupported, return a refusal.
+  response_schema_path: schemas/response.schema.json
+  scene_schema_path: schemas/scene.schema.json
+  task_schema_path: schemas/task.schema.json
+task_roots:
+  - tasks/v1_core/single_turn
+  - tasks/v1_core/constraints
+  - tasks/v1_core/ambiguity

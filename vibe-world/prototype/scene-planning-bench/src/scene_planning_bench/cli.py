@@ -55,6 +55,10 @@ def _provider_setup_hint(model: str) -> str | None:
         return (
             "Google runs require the `google-genai` package and `GOOGLE_API_KEY` in the environment."
         )
+    if model.startswith("inception/"):
+        return (
+            "Inception Labs runs require the `openai` package and `INCEPTION_API_KEY` in the environment."
+        )
     return None
 
 
@@ -93,6 +97,8 @@ def _require_provider_env(model: str) -> None:
         missing_var = "ANTHROPIC_API_KEY"
     elif model.startswith("google/") and not os.getenv("GOOGLE_API_KEY"):
         missing_var = "GOOGLE_API_KEY"
+    elif model.startswith("inception/") and not os.getenv("INCEPTION_API_KEY"):
+        missing_var = "INCEPTION_API_KEY"
 
     if missing_var is not None:
         typer.echo(f"missing {missing_var} for model runs", err=True)
@@ -137,6 +143,23 @@ def _run_inspect_model_impl(
 ) -> tuple[list[RunResult], Path, Path]:
     _require_provider_env(model)
     model_args = read_data_file(model_args_file) if model_args_file else {}
+
+    # Remap OpenAI-compatible providers to openai/ prefix, injecting env vars
+    # that Inspect AI reads at model init time (not via model_args).
+    original_model = model
+    env_overrides: dict[str, str] = {}
+    if model.startswith("inception/"):
+        model_name = model.removeprefix("inception/")
+        model = f"openai/{model_name}"
+        env_overrides = {
+            "OPENAI_BASE_URL": "https://api.inceptionlabs.ai/v1",
+            "OPENAI_API_KEY": os.getenv("INCEPTION_API_KEY", ""),
+        }
+
+    _saved_env = {k: os.environ.get(k) for k in env_overrides}
+    for k, v in env_overrides.items():
+        os.environ[k] = v
+
     try:
         if model == "mockllm/scene-planning-bench" and model_args_file is None:
             _, results, summary_path = run_suite_with_inspect_mock(suite, output)
@@ -150,10 +173,16 @@ def _run_inspect_model_impl(
     except Exception as exc:
         typer.echo(f"run failed for model {model}", err=True)
         typer.echo(str(exc), err=True)
-        provider_hint = _provider_setup_hint(model)
+        provider_hint = _provider_setup_hint(original_model)
         if provider_hint:
             typer.echo(provider_hint, err=True)
         raise typer.Exit(code=1) from exc
+    finally:
+        for k, v in _saved_env.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
 
     manifest_path = _write_manifest(
         suite,
