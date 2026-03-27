@@ -30,8 +30,10 @@ from scene_runtime.models import (
     TransformSpec,
     Uncertainty,
 )
+from scene_runtime.normalize import normalize_response
 from scene_runtime.parsing import parse_response_json
 from scene_runtime.prompting import build_prompt_bundle
+from scene_runtime.rendering import build_render_drafts
 from scene_runtime.schema import (
     build_schema_registry,
     load_schema,
@@ -69,8 +71,10 @@ __all__ = [
     "Uncertainty",
     "WorldAnchor",
     "build_prompt_bundle",
+    "build_render_drafts",
     "build_schema_registry",
     "load_schema",
+    "normalize_response",
     "parse_response_json",
     "validate_with_schema",
     "validate_with_schema_path",

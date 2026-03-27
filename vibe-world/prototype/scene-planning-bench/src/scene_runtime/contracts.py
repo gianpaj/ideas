@@ -134,4 +134,5 @@ class PlanningOutcome(BaseModel):
     parsed_response: ScenePlanningResponse | None = None
     schema_errors: list[str] = Field(default_factory=list)
     normalized_plan: NormalizedScenePlan | None = None
+    render_drafts: list[RenderDraftSpec] = Field(default_factory=list)
     diagnostics: list[str] = Field(default_factory=list)

@@ -21,7 +21,7 @@ Inspect is now used for one of the execution paths, while the scoring logic rema
 The project now contains two Python packages under `src/`:
 
 - `scene_planning_bench` for benchmark-specific loading, scoring, reporting, and CLI orchestration
-- `scene_runtime` for reusable planning models, parsing, schema validation, prompt construction, and future live-runtime contracts
+- `scene_runtime` for reusable planning models, parsing, schema validation, prompt construction, normalization, and draft-render conversion
 
 Implementation notes for future agents live in [`AGENTS.md`](AGENTS.md).
 

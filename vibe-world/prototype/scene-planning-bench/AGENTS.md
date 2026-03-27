@@ -33,6 +33,6 @@ uv run pytest
 
 ## Expected next implementation layers
 
-- runtime normalization from validated response into a product-facing plan
-- render-draft conversion on top of the shared runtime contracts
+- benchmark consumption of normalized plans in saved run artifacts
+- stronger normalization for more action types and richer product-facing IR
 - richer scoring modules for ambiguity/state/spatial correctness

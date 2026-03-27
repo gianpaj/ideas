@@ -1,5 +1,6 @@
-from scene_planning_bench.registry import load_scene, project_root
+from scene_planning_bench.registry import load_scene, load_task, project_root
 from scene_runtime import (
+    ActionType,
     Clarification,
     NormalizedScenePlan,
     PlanKind,
@@ -8,7 +9,9 @@ from scene_runtime import (
     ResponseType,
     Uncertainty,
     build_prompt_bundle,
+    build_render_drafts,
     load_schema,
+    normalize_response,
     parse_response_json,
 )
 
@@ -79,3 +82,89 @@ def test_scene_runtime_normalized_plan_contract_is_instantiable() -> None:
     assert plan.plan_version == "0.1"
     assert plan.plan_kind == PlanKind.CLARIFICATION
     assert plan.clarification is not None
+
+
+def test_normalize_response_maps_add_object_to_create_intent() -> None:
+    root = project_root()
+    scene = load_scene(root / "scenes" / "forest_cabin_001.json")
+    benchmark_task = load_task(
+        root
+        / "tasks"
+        / "v1_core"
+        / "single_turn"
+        / "add_pine_tree_left_of_cabin_001.json"
+    )
+    request = PlanningRequest(
+        request_id="req_tree",
+        scene=scene,
+        user_prompt=benchmark_task.prompts[0],
+        system_prompt="System prompt",
+        response_schema=load_schema(root / "schemas" / "response.schema.json"),
+    )
+
+    normalized = normalize_response(request, benchmark_task.gold_response)
+
+    assert normalized.plan_kind == PlanKind.OBJECT_INTENT
+    assert len(normalized.intents) == 1
+    intent = normalized.intents[0]
+    assert intent.operation.value == "create"
+    assert intent.category == "tree"
+    assert intent.size_tier == "medium"
+    assert intent.source_actions == [ActionType.ADD_OBJECT]
+
+
+def test_normalize_response_preserves_spawn_layout_as_layout_hint() -> None:
+    root = project_root()
+    scene = load_scene(root / "scenes" / "forest_cabin_001.json")
+    benchmark_task = load_task(
+        root
+        / "tasks"
+        / "v1_core"
+        / "constraints"
+        / "three_red_barrels_around_campfire_001.json"
+    )
+    request = PlanningRequest(
+        request_id="req_barrels",
+        scene=scene,
+        user_prompt=benchmark_task.prompts[0],
+        system_prompt="System prompt",
+        response_schema=load_schema(root / "schemas" / "response.schema.json"),
+    )
+
+    normalized = normalize_response(request, benchmark_task.gold_response)
+
+    assert len(normalized.intents) == 1
+    intent = normalized.intents[0]
+    assert intent.layout_hint is not None
+    assert intent.layout_hint.layout_type == "triangle"
+    assert intent.layout_hint.count == 3
+    assert intent.source_actions == [ActionType.SPAWN_LAYOUT]
+
+
+def test_build_render_drafts_expands_layout_count_into_preview_nodes() -> None:
+    root = project_root()
+    scene = load_scene(root / "scenes" / "forest_cabin_001.json")
+    benchmark_task = load_task(
+        root
+        / "tasks"
+        / "v1_core"
+        / "constraints"
+        / "three_red_barrels_around_campfire_001.json"
+    )
+    request = PlanningRequest(
+        request_id="req_render",
+        scene=scene,
+        user_prompt=benchmark_task.prompts[0],
+        system_prompt="System prompt",
+        response_schema=load_schema(root / "schemas" / "response.schema.json"),
+    )
+
+    normalized = normalize_response(request, benchmark_task.gold_response)
+    drafts = build_render_drafts(normalized)
+
+    assert len(drafts) == 1
+    draft = drafts[0]
+    assert draft.display_name == "3 Barrels"
+    assert draft.world_anchor.reference_object == "campfire_1"
+    assert len(draft.primitive_nodes) == 3
+    assert draft.primitive_nodes[1].transform["polar_angle_degrees"] == 120
