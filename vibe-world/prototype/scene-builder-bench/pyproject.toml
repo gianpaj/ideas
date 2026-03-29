@@ -1,0 +1,24 @@
+[project]
+name = "scene-builder-bench"
+version = "0.1.0"
+description = "Deterministic Vibe World builder benchmark"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "jsonschema>=4.26.0",
+    "pydantic>=2.12.5",
+    "pyyaml>=6.0.3",
+    "typer>=0.24.1",
+]
+
+[project.scripts]
+scene-builder-bench = "scene_builder_bench:main"
+
+[build-system]
+requires = ["uv_build>=0.10.8,<0.11.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]

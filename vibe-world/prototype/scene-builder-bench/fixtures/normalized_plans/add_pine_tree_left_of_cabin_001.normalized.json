@@ -1,0 +1,42 @@
+{
+  "plan_version": "0.1",
+  "request_id": "add_pine_tree_left_of_cabin_001::prompt_0",
+  "plan_kind": "object_intent",
+  "source_response_type": "scene_actions",
+  "uncertainty": {
+    "has_ambiguity": false,
+    "fields": []
+  },
+  "intents": [
+    {
+      "intent_id": "add_pine_tree_left_of_cabin_001::prompt_0::intent_0",
+      "operation": "create",
+      "category": "tree",
+      "size_tier": "medium",
+      "parts": [
+        {
+          "part_id": "main",
+          "primitive": "column",
+          "category": "tree",
+          "variant": "pine"
+        }
+      ],
+      "material_palette": {
+        "dominant": "wood"
+      },
+      "behavior_presets": [],
+      "transform_hints": {
+        "position": {
+          "mode": "relative",
+          "reference_object": "cabin_1",
+          "relation": "left_of",
+          "offset_meters": 3
+        }
+      },
+      "style_tags": ["low_poly", "pine"],
+      "instance_count": 1,
+      "source_actions": ["add_object"]
+    }
+  ],
+  "diagnostics": []
+}

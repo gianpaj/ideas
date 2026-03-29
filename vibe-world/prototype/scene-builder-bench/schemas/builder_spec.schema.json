@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "builder_version",
+    "request_id",
+    "intent_id",
+    "operation",
+    "object_category",
+    "size_tier",
+    "parts",
+    "instances",
+    "materials",
+    "behaviors",
+    "placement",
+    "complexity",
+    "diagnostics"
+  ],
+  "properties": {
+    "builder_version": { "type": "string" },
+    "request_id": { "type": "string" },
+    "intent_id": { "type": "string" },
+    "operation": { "type": "string", "enum": ["create", "refine", "remix"] },
+    "target_object_id": { "type": ["string", "null"] },
+    "base_object_version": { "type": ["integer", "null"] },
+    "object_category": { "type": "string" },
+    "size_tier": { "type": "string" },
+    "parts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["part_id", "primitive", "material", "dimensions", "modifiers"],
+        "properties": {
+          "part_id": { "type": "string" },
+          "primitive": { "type": "string" },
+          "material": { "type": "string" },
+          "dimensions": {
+            "type": "array",
+            "items": { "type": "number" },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "modifiers": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "instances": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["instance_id", "anchor_mode", "offset"],
+        "properties": {
+          "instance_id": { "type": "string" },
+          "anchor_mode": { "type": "string" },
+          "reference_object": { "type": ["string", "null"] },
+          "relation": { "type": ["string", "null"] },
+          "offset": {
+            "type": "array",
+            "items": { "type": "number" },
+            "minItems": 3,
+            "maxItems": 3
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "attachments": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "materials": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "behaviors": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "placement": {
+      "type": "object",
+      "required": ["mode"],
+      "properties": {
+        "mode": { "type": "string" },
+        "reference_object": { "type": ["string", "null"] },
+        "relation": { "type": ["string", "null"] },
+        "offset_meters": { "type": ["number", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "complexity": {
+      "type": "object",
+      "required": ["part_count", "instance_count", "behavior_count"],
+      "properties": {
+        "part_count": { "type": "integer", "minimum": 0 },
+        "instance_count": { "type": "integer", "minimum": 1 },
+        "behavior_count": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}

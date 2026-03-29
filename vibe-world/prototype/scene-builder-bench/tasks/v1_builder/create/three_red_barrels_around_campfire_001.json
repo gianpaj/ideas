@@ -1,0 +1,11 @@
+{
+  "task_id": "three_red_barrels_around_campfire_001",
+  "operation": "create",
+  "input_plan_path": "fixtures/normalized_plans/three_red_barrels_around_campfire_001.normalized.json",
+  "expected_checks": {
+    "category": "barrel",
+    "instance_count": 3,
+    "part_count_min": 1,
+    "required_materials": ["red"]
+  }
+}

@@ -1,0 +1,7 @@
+suite_id: v1_builder
+description: Deterministic builder benchmark for normalized Vibe World scene plans.
+defaults:
+  builder_schema_path: schemas/builder_spec.schema.json
+  task_schema_path: schemas/builder_task.schema.json
+task_roots:
+  - tasks/v1_builder

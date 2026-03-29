@@ -1,0 +1,51 @@
+{
+  "plan_version": "0.1",
+  "request_id": "three_red_barrels_around_campfire_001::prompt_0",
+  "plan_kind": "object_intent",
+  "source_response_type": "scene_actions",
+  "uncertainty": {
+    "has_ambiguity": false,
+    "fields": []
+  },
+  "intents": [
+    {
+      "intent_id": "three_red_barrels_around_campfire_001::prompt_0::intent_0",
+      "operation": "create",
+      "category": "barrel",
+      "size_tier": "small",
+      "parts": [
+        {
+          "part_id": "main",
+          "primitive": "column",
+          "category": "barrel",
+          "variant": null
+        }
+      ],
+      "material_palette": {
+        "dominant": "red"
+      },
+      "behavior_presets": [],
+      "transform_hints": {
+        "position": {
+          "mode": "relative",
+          "reference_object": "campfire_1",
+          "relation": "around",
+          "offset_meters": 2.5
+        }
+      },
+      "style_tags": [],
+      "instance_count": 3,
+      "layout_hint": {
+        "layout_type": "triangle",
+        "count": 3,
+        "reference_object": "campfire_1",
+        "relation": "around",
+        "metadata": {
+          "offset_meters": 2.5
+        }
+      },
+      "source_actions": ["spawn_layout"]
+    }
+  ],
+  "diagnostics": []
+}

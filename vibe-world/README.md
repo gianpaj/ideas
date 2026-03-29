@@ -14,6 +14,7 @@ So far, Vibe World has:
 - a defined V1 editing scope: spawned objects only
 - a defined V1 world model: both public and private worlds
 - a first implementation artifact: the `prototype/scene-planning-bench/` scene bench prototype for evaluating scene-planning outputs against strict schemas, prompt bundles, deterministic scorers, and Inspect-backed execution logs
+- a second implementation artifact: the `prototype/scene-builder-bench/` builder benchmark scaffold for validating deterministic object-builder specs from normalized scene plans
 
 The current V1 decisions are:
 
@@ -164,6 +165,7 @@ This is where the project is today.
 ### Prototypes
 
 - `prototype/scene-planning-bench/` — Python benchmark prototype for evaluating plain LLM scene-planning outputs against strict schemas, prompt bundles, deterministic scorers, and Inspect-backed execution logs
+- `prototype/scene-builder-bench/` — Python benchmark scaffold for validating deterministic `BuilderSpec` output from normalized scene-plan fixtures
 
 ## Snapshot summary
 

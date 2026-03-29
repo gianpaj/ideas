@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["suite_id", "defaults"],
+  "properties": {
+    "suite_id": { "type": "string" },
+    "description": { "type": ["string", "null"] },
+    "defaults": {
+      "type": "object",
+      "required": ["builder_schema_path", "task_schema_path"],
+      "properties": {
+        "builder_schema_path": { "type": "string" },
+        "task_schema_path": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "task_paths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "task_roots": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}

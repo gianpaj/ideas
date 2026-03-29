@@ -1,0 +1,50 @@
+{
+  "builder_version": "0.1",
+  "request_id": "seed_tree_1",
+  "intent_id": "seed_tree_1::intent_0",
+  "operation": "create",
+  "target_object_id": null,
+  "base_object_version": null,
+  "object_category": "tree",
+  "size_tier": "medium",
+  "parts": [
+    {
+      "part_id": "main",
+      "primitive": "column",
+      "material": "wood",
+      "dimensions": [1.0, 2.0, 1.0],
+      "modifiers": ["pine"]
+    },
+    {
+      "part_id": "canopy",
+      "primitive": "blob",
+      "material": "moss_stone",
+      "dimensions": [2.0, 2.0, 2.0],
+      "modifiers": ["pine"]
+    }
+  ],
+  "instances": [
+    {
+      "instance_id": "instance_0",
+      "anchor_mode": "relative",
+      "reference_object": "cabin_1",
+      "relation": "left_of",
+      "offset": [3.0, 0.0, 0.0]
+    }
+  ],
+  "attachments": [],
+  "materials": ["wood", "moss_stone"],
+  "behaviors": [],
+  "placement": {
+    "mode": "relative",
+    "reference_object": "cabin_1",
+    "relation": "left_of",
+    "offset_meters": 3.0
+  },
+  "complexity": {
+    "part_count": 2,
+    "instance_count": 1,
+    "behavior_count": 0
+  },
+  "diagnostics": []
+}

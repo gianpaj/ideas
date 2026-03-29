@@ -1,0 +1,13 @@
+{
+  "task_id": "refine_tree_soft_glow_001",
+  "operation": "refine",
+  "input_plan_path": "fixtures/normalized_plans/refine_tree_soft_glow_001.normalized.json",
+  "object_context_path": "fixtures/object_contexts/tree_1.builder.json",
+  "expected_checks": {
+    "category": "tree",
+    "instance_count": 1,
+    "part_count_min": 2,
+    "required_materials": ["wood", "neon"],
+    "required_behaviors": ["glow"]
+  }
+}
