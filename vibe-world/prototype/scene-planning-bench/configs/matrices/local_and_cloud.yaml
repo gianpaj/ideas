@@ -1,6 +1,12 @@
-matrix_id: example_cross_provider
+matrix_id: local_and_cloud
 suite: configs/suites/v1_core.yaml
 models:
+  # Local models via llama-server (start server before running)
+  - model: llamacpp/Bonsai-8B.gguf
+    label: bonsai-8b
+    base_url: http://localhost:8080/v1
+
+  # Cloud models (require API keys in .env)
   - model: openai/gpt-5.4-mini
     label: gpt-5.4-mini
   - model: openai/gpt-5.4-nano

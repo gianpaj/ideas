@@ -96,6 +96,7 @@ class MatrixModelConfig(BaseModel):
     enabled: bool = True
     model_args_file: str | None = None
     label: str | None = None
+    base_url: str | None = None
 
 
 class RunMatrixConfig(BaseModel):

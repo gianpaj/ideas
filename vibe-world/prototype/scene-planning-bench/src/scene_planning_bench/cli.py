@@ -59,6 +59,11 @@ def _provider_setup_hint(model: str) -> str | None:
         return (
             "Inception Labs runs require the `openai` package and `INCEPTION_API_KEY` in the environment."
         )
+    if model.startswith("llamacpp/"):
+        return (
+            "llama.cpp runs require a llama-server running locally. "
+            "Start with: llama-server -m <model.gguf> -ngl 99 --port 8080"
+        )
     return None
 
 
@@ -90,6 +95,9 @@ def _load_default_env(env_file: Path | None = None) -> Path | None:
 
 
 def _require_provider_env(model: str) -> None:
+    if model.startswith("llamacpp/"):
+        return  # no API key needed for local llama-server
+
     missing_var: str | None = None
     if model.startswith("openai/") and not os.getenv("OPENAI_API_KEY"):
         missing_var = "OPENAI_API_KEY"
@@ -148,7 +156,15 @@ def _run_inspect_model_impl(
     # that Inspect AI reads at model init time (not via model_args).
     original_model = model
     env_overrides: dict[str, str] = {}
-    if model.startswith("inception/"):
+    if model.startswith("llamacpp/"):
+        model_name = model.removeprefix("llamacpp/")
+        base_url = os.getenv("LLAMACPP_BASE_URL", "http://localhost:8080/v1")
+        model = f"openai/{model_name}"
+        env_overrides = {
+            "OPENAI_BASE_URL": base_url,
+            "OPENAI_API_KEY": "llamacpp",
+        }
+    elif model.startswith("inception/"):
         model_name = model.removeprefix("inception/")
         model = f"openai/{model_name}"
         env_overrides = {
@@ -347,6 +363,9 @@ def run_matrix(
             continue
         label = entry.label or entry.model
         run_output = matrix_output / "runs" / label.replace("/", "_")
+        saved_base_url = os.environ.get("LLAMACPP_BASE_URL")
+        if entry.base_url:
+            os.environ["LLAMACPP_BASE_URL"] = entry.base_url
         try:
             _results, summary_path, manifest_path = _run_inspect_model_impl(
                 model=entry.model,
@@ -392,6 +411,12 @@ def run_matrix(
             )
             if not continue_on_error:
                 raise
+        finally:
+            if entry.base_url:
+                if saved_base_url is None:
+                    os.environ.pop("LLAMACPP_BASE_URL", None)
+                else:
+                    os.environ["LLAMACPP_BASE_URL"] = saved_base_url
 
     summary_path, leaderboard_path = write_matrix_reports(matrix_output, rows)
     manifest_path = write_matrix_manifest(
