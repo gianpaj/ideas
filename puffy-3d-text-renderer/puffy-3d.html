@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+ <head>
+ <meta charset="utf-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <title>Puffy 3D — gradient text painter</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com" />
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+ <link
+ href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,900&display=swap"
+ rel="stylesheet"
+ />
+ <style>
+ :root {
+ --bg: #050505;
+ --ink: #f4f4f5;
+ --muted: #71717a;
+ --line: rgba(255, 255, 255, 0.08);
+ --panel: rgba(255, 255, 255, 0.025);
+ --c1: #ff5b7f;
+ --c2: #ff2e93;
+ --c3: #c91dd6;
+ --c4: #7a1fb8;
+ --ui-font: "JetBrains Mono", ui-monospace, monospace;
+ }
+ * { box-sizing: border-box; margin: 0; padding: 0; }
+ html, body {
+ height: 100%;
+ background: var(--bg);
+ color: var(--ink);
+ font-family: var(--ui-font);
+ font-size: 13px;
+ overflow: hidden;
+ }
+ body { display: grid; grid-template-columns: 1fr 320px; }
+ @media (max-width: 860px) {
+ body { grid-template-columns: 1fr; grid-template-rows: 1fr auto; overflow: auto; }
+ }
+
+ .stage {
+ position: relative;
+ background:
+ radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201, 29, 214, 0.06), transparent 60%),
+ var(--bg);
+ }
+ #canvas { width: 100%; height: 100%; display: block; }
+
+ .stage::after {
+ content: "";
+ position: absolute; inset: 0;
+ pointer-events: none;
+ opacity: 0.05;
+ mix-blend-mode: overlay;
+ background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");
+ }
+
+ .loading {
+ position: absolute; inset: 0;
+ display: grid; place-items: center;
+ color: var(--muted);
+ font-size: 11px;
+ letter-spacing: 0.2em;
+ text-transform: uppercase;
+ pointer-events: none;
+ transition: opacity 0.3s;
+ }
+ .loading.hidden { opacity: 0; }
+
+ .panel {
+ background: #0a0a0b;
+ border-left: 1px solid var(--line);
+ padding: 28px 24px;
+ display: flex; flex-direction: column; gap: 22px;
+ overflow-y: auto;
+ }
+ @media (max-width: 860px) { .panel { border-left: 0; border-top: 1px solid var(--line); } }
+
+ .panel-header {
+ display: flex; align-items: baseline; justify-content: space-between;
+ padding-bottom: 18px; border-bottom: 1px solid var(--line);
+ }
+ .panel-header h1 {
+ font-family: "Fraunces", serif;
+ font-weight: 900;
+ font-size: 22px;
+ letter-spacing: -0.02em;
+ background: linear-gradient(135deg, var(--c1), var(--c3));
+ -webkit-background-clip: text; background-clip: text; color: transparent;
+ }
+ .panel-header .dot {
+ width: 8px; height: 8px; border-radius: 50%;
+ background: var(--c2); box-shadow: 0 0 12px var(--c2);
+ }
+
+ .field { display: flex; flex-direction: column; gap: 8px; }
+ .field label {
+ font-size: 10px; text-transform: uppercase; letter-spacing: 0.18em;
+ color: var(--muted);
+ display: flex; justify-content: space-between;
+ }
+ .field label span { color: var(--ink); font-weight: 500; }
+
+ .field input[type="text"], .field select {
+ background: var(--panel);
+ border: 1px solid var(--line);
+ color: var(--ink);
+ padding: 10px 12px;
+ border-radius: 4px;
+ font-family: var(--ui-font); font-size: 13px;
+ outline: none;
+ transition: border-color 0.15s;
+ }
+ .field input[type="text"]:focus, .field select:focus { border-color: var(--c2); }
+
+ .field input[type="range"] {
+ -webkit-appearance: none; appearance: none;
+ width: 100%; height: 4px;
+ background: linear-gradient(90deg, var(--c1), var(--c3));
+ border-radius: 2px; outline: none;
+ }
+ .field input[type="range"]::-webkit-slider-thumb {
+ -webkit-appearance: none; appearance: none;
+ width: 14px; height: 14px; border-radius: 50%;
+ background: var(--ink); cursor: pointer;
+ }
+ .field input[type="range"]::-moz-range-thumb {
+ width: 14px; height: 14px; border-radius: 50%;
+ background: var(--ink); cursor: pointer; border: none;
+ }
+
+ .swatches { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+ .swatches input[type="color"] {
+ width: 100%; height: 38px;
+ border: 1px solid var(--line); border-radius: 4px;
+ background: transparent; cursor: pointer;
+ }
+ .swatches input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
+ .swatches input[type="color"]::-webkit-color-swatch { border: none; border-radius: 2px; }
+
+ .font-selector {
+ display: flex; gap: 8px; align-items: stretch;
+ }
+ .font-selector button {
+ background: var(--panel);
+ border: 1px solid var(--line);
+ color: var(--ink);
+ width: 36px;
+ padding: 8px;
+ border-radius: 4px;
+ cursor: pointer;
+ font-family: var(--ui-font); font-size: 14px;
+ transition: border-color 0.15s, background 0.15s;
+ display: flex; align-items: center; justify-content: center;
+ }
+ .font-selector button:hover { border-color: var(--c2); background: rgba(255, 46, 147, 0.1); }
+ .font-selector button:active { background: rgba(255, 46, 147, 0.2); }
+ .font-selector select {
+ flex: 1;
+ }
+
+ .footer-note {
+ margin-top: auto; padding-top: 18px;
+ border-top: 1px solid var(--line);
+ color: var(--muted); font-size: 11px; line-height: 1.6;
+ }
+ </style>
+ </head>
+ <body>
+ <main class="stage">
+ <canvas id="canvas"></canvas>
+ <div class="loading" id="loading">Loading font…</div>
+ </main>
+
+ <aside class="panel">
+ <header class="panel-header">
+ <h1>puffy.3d</h1>
+ <span class="dot"></span>
+ </header>
+
+ <div class="field">
+ <label for="textInput">Text</label>
+ <input id="textInput" type="text" value="S" maxlength="20" />
+ </div>
+
+ <div class="field">
+ <label for="fontSelect">Font</label>
+ <div class="font-selector">
+ <button id="prevFont" title="Previous font">←</button>
+ <select id="fontSelect"></select>
+ <button id="nextFont" title="Next font">→</button>
+ </div>
+ </div>
+
+ <div class="field">
+ <label>Gradient (top → bottom)</label>
+ <div class="swatches">
+ <input type="color" id="c1" value="#ff5b7f" />
+ <input type="color" id="c4" value="#7a1fb8" />
+ </div>
+ </div>
+
+ <div class="field">
+ <label for="bevel">Puffiness <span id="bevelLabel">0.6</span></label>
+ <input id="bevel" type="range" min="0.1" max="1.5" step="0.05" value="0.6" />
+ </div>
+
+ <div class="field">
+ <label for="rough">Glossiness <span id="roughLabel">0.35</span></label>
+ <input id="rough" type="range" min="0" max="1" step="0.01" value="0.35" />
+ </div>
+
+ <div class="field">
+ <label for="lightAngle">Light angle <span id="lightLabel">135°</span></label>
+ <input id="lightAngle" type="range" min="0" max="360" step="1" value="135" />
+ </div>
+
+ <div class="field">
+ <label for="autoRotate">
+ <input type="checkbox" id="autoRotate" style="vertical-align: middle" />
+ Auto-rotate
+ </label>
+ </div>
+
+ <div class="footer-note">
+ Real 3D extruded geometry with a physical material. Drag to orbit, scroll to zoom. Light angle moves the highlight around the form.
+ </div>
+ </aside>
+
+ <script type="importmap">
+ {
+ "imports": {
+ "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+ "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+ }
+ }
+ </script>
+
+ <script type="module">
+ import * as THREE from "three";
+ import { FontLoader } from "three/addons/loaders/FontLoader.js";
+ import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
+ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+ const canvas = document.getElementById("canvas");
+ const stage = canvas.parentElement;
+ const loading = document.getElementById("loading");
+
+ // Top 50 Google Fonts (web-safe, commonly used)
+ const googleFonts = [
+ "Roboto", "Open Sans", "Lato", "Montserrat", "Raleway",
+ "Playfair Display", "Poppins", "Inter", "Oswald", "Ubuntu",
+ "Merriweather", "Nunito", "PT Sans", "Quicksand", "Dosis",
+ "Inconsolata", "Caveat", "Syne", "Work Sans", "Manrope",
+ "DM Sans", "IBM Plex Mono", "JetBrains Mono", "Courier Prime", "Space Mono",
+ "Overpass", "Outfit", "Cabin", "Mulish", "Varela Round",
+ "Barlow", "Crimson Text", "Source Code Pro", "Abril Fatface", "Pacifico",
+ "Fredoka", "Kanit", "Kumbh Sans", "Aleo", "Archivo",
+ "Libre Baskerville", "Bitter", "Noto Serif", "Exo 2", "Baskervville",
+ "Alegreya", "Titillium Web", "Alkaline", "Archivo Black", "Antonio"
+ ];
+
+ const fontSelect = document.getElementById("fontSelect");
+ const prevFontBtn = document.getElementById("prevFont");
+ const nextFontBtn = document.getElementById("nextFont");
+
+ // Populate font selector
+ googleFonts.forEach((font) => {
+ const option = document.createElement("option");
+ option.value = font.toLowerCase().replace(/\s+/g, "-");
+ option.textContent = font;
+ fontSelect.appendChild(option);
+ });
+
+ // ---------- SCENE ----------
+ const scene = new THREE.Scene();
+ const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+ camera.position.set(0, 0, 12);
+
+ const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+ renderer.toneMapping = THREE.ACESFilmicToneMapping;
+ renderer.toneMappingExposure = 1.05;
+
+ const controls = new OrbitControls(camera, canvas);
+ controls.enableDamping = true;
+ controls.dampingFactor = 0.08;
+ controls.enablePan = false;
+ controls.minDistance = 6;
+ controls.maxDistance = 20;
+
+ function resize() {
+ const w = stage.clientWidth;
+ const h = stage.clientHeight;
+ renderer.setSize(w, h, false);
+ camera.aspect = w / h;
+ camera.updateProjectionMatrix();
+ }
+ resize();
+ window.addEventListener("resize", resize);
+
+ // ---------- LIGHTS ----------
+ const ambient = new THREE.AmbientLight(0x442255, 0.45);
+ scene.add(ambient);
+
+ const key = new THREE.DirectionalLight(0xffffff, 2.4);
+ key.position.set(-5, 5, 6);
+ scene.add(key);
+
+ const rim = new THREE.PointLight(0xff2e93, 1.8, 20, 1.5);
+ rim.position.set(5, -3, 3);
+ scene.add(rim);
+
+ const back = new THREE.PointLight(0x7a1fb8, 1.2, 15, 1.5);
+ back.position.set(2, 2, -4);
+ scene.add(back);
+
+ // ---------- MATERIAL ----------
+ let mesh = null;
+ let currentFont = null;
+ let currentFontIndex = 0;
+
+ function makeGradientMaterial() {
+ return new THREE.MeshPhysicalMaterial({
+ vertexColors: true,
+ roughness: parseFloat(roughInput.value),
+ metalness: 0.0,
+ clearcoat: 0.6,
+ clearcoatRoughness: 0.3,
+ sheen: 0.5,
+ sheenColor: new THREE.Color(0xff8fbf),
+ sheenRoughness: 0.4,
+ });
+ }
+
+ function applyGradientToGeometry(geo) {
+ geo.computeBoundingBox();
+ const min = geo.boundingBox.min.y;
+ const max = geo.boundingBox.max.y;
+ const range = max - min || 1;
+
+ const positions = geo.attributes.position;
+ const colors = new Float32Array(positions.count * 3);
+
+ const top = new THREE.Color(c1Input.value);
+ const bot = new THREE.Color(c4Input.value);
+ top.convertSRGBToLinear();
+ bot.convertSRGBToLinear();
+
+ const tmp = new THREE.Color();
+ for (let i = 0; i < positions.count; i++) {
+ const y = positions.getY(i);
+ const t = (y - min) / range;
+ tmp.copy(bot).lerp(top, t);
+ colors[i * 3] = tmp.r;
+ colors[i * 3 + 1] = tmp.g;
+ colors[i * 3 + 2] = tmp.b;
+ }
+ geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+ }
+
+ function buildText() {
+ if (!currentFont) return;
+
+ if (mesh) {
+ scene.remove(mesh);
+ mesh.geometry.dispose();
+ mesh.material.dispose();
+ }
+
+ const text = textInput.value || " ";
+ const bevel = parseFloat(bevelInput.value);
+
+ const geo = new TextGeometry(text, {
+ font: currentFont,
+ size: 3,
+ height: 1.2,
+ curveSegments: 12,
+ bevelEnabled: true,
+ bevelThickness: bevel * 0.6,
+ bevelSize: bevel * 0.45,
+ bevelOffset: 0,
+ bevelSegments: 10,
+ });
+
+ geo.computeBoundingBox();
+ const cx = -(geo.boundingBox.max.x + geo.boundingBox.min.x) / 2;
+ const cy = -(geo.boundingBox.max.y + geo.boundingBox.min.y) / 2;
+ const cz = -(geo.boundingBox.max.z + geo.boundingBox.min.z) / 2;
+ geo.translate(cx, cy, cz);
+
+ applyGradientToGeometry(geo);
+
+ const mat = makeGradientMaterial();
+ mesh = new THREE.Mesh(geo, mat);
+ scene.add(mesh);
+
+ const width = geo.boundingBox.max.x - geo.boundingBox.min.x;
+ const targetDist = Math.max(8, width * 1.4);
+ camera.position.z = targetDist;
+ controls.update();
+ }
+
+ function updateGradientOnly() {
+ if (!mesh) return;
+ applyGradientToGeometry(mesh.geometry);
+ mesh.geometry.attributes.color.needsUpdate = true;
+ }
+
+ function updateMaterialOnly() {
+ if (!mesh) return;
+ mesh.material.roughness = parseFloat(roughInput.value);
+ mesh.material.needsUpdate = true;
+ }
+
+ const fontLoader = new FontLoader();
+ const fontCache = {};
+
+ function loadGoogleFont(fontName) {
+ loading.classList.remove("hidden");
+ loading.textContent = `Loading ${fontName}…`;
+
+ // Convert to query format: "Playfair Display" -> "Playfair+Display"
+ const query = fontName.replace(/\s+/g, "+");
+ 
+ // Use Google Fonts API to get the font file URL
+ // This fetches the font metadata and constructs a CDN URL for Three.js
+ const fontSlug = fontName.toLowerCase().replace(/\s+/g, "-");
+ 
+ // Try multiple font sources in order (Google Fonts CDN via jsDelivr, then fallback)
+ const urls = [
+ // jsDelivr CDN with Google Fonts
+ `https://cdn.jsdelivr.net/npm/google-fonts-gstatic@1.2.0/dist/${fontSlug}/${fontSlug}-regular.json`,
+ // Fallback to googleapis if available
+ `https://fonts.googleapis.com/css2?family=${query}`,
+ ];
+
+ let loaded = false;
+ const tryLoadFont = (urlIndex) => {
+ if (urlIndex >= urls.length) {
+ // All URLs failed, use fallback font
+ console.warn(`Font "${fontName}" failed to load, using fallback`);
+ loading.textContent = `Failed: using fallback`;
+ setTimeout(() => loading.classList.add("hidden"), 1000);
+ return;
+ }
+
+ const url = urls[urlIndex];
+ fontLoader.load(
+ url,
+ (font) => {
+ if (!loaded) {
+ loaded = true;
+ currentFont = font;
+ fontCache[fontName] = font;
+ buildText();
+ loading.classList.add("hidden");
+ }
+ },
+ undefined,
+ (err) => {
+ console.warn(`Font load attempt ${urlIndex + 1}/${urls.length} failed for "${fontName}":`, err.message);
+ tryLoadFont(urlIndex + 1);
+ },
+ );
+ };
+
+ if (fontCache[fontName]) {
+ currentFont = fontCache[fontName];
+ buildText();
+ loading.classList.add("hidden");
+ } else {
+ tryLoadFont(0);
+ }
+ }
+
+ function updateLightAngle(deg) {
+ const rad = (deg * Math.PI) / 180;
+ const radius = 7;
+ key.position.set(Math.cos(rad) * radius, Math.sin(rad) * radius, 6);
+ }
+
+ const textInput = document.getElementById("textInput");
+ const c1Input = document.getElementById("c1");
+ const c4Input = document.getElementById("c4");
+ const bevelInput = document.getElementById("bevel");
+ const bevelLabel = document.getElementById("bevelLabel");
+ const roughInput = document.getElementById("rough");
+ const roughLabel = document.getElementById("roughLabel");
+ const lightInput = document.getElementById("lightAngle");
+ const lightLabel = document.getElementById("lightLabel");
+ const autoRotate = document.getElementById("autoRotate");
+
+ let textTimer;
+ textInput.addEventListener("input", () => {
+ clearTimeout(textTimer);
+ textTimer = setTimeout(buildText, 120);
+ });
+
+ fontSelect.addEventListener("change", (e) => {
+ const fontName = e.target.options[e.target.selectedIndex].textContent;
+ currentFontIndex = e.target.selectedIndex;
+ loadGoogleFont(fontName);
+ });
+
+ prevFontBtn.addEventListener("click", () => {
+ currentFontIndex = (currentFontIndex - 1 + googleFonts.length) % googleFonts.length;
+ fontSelect.selectedIndex = currentFontIndex;
+ const fontName = googleFonts[currentFontIndex];
+ loadGoogleFont(fontName);
+ });
+
+ nextFontBtn.addEventListener("click", () => {
+ currentFontIndex = (currentFontIndex + 1) % googleFonts.length;
+ fontSelect.selectedIndex = currentFontIndex;
+ const fontName = googleFonts[currentFontIndex];
+ loadGoogleFont(fontName);
+ });
+
+ c1Input.addEventListener("input", updateGradientOnly);
+ c4Input.addEventListener("input", updateGradientOnly);
+
+ bevelInput.addEventListener("input", () => {
+ bevelLabel.textContent = parseFloat(bevelInput.value).toFixed(2);
+ });
+ bevelInput.addEventListener("change", buildText);
+
+ roughInput.addEventListener("input", () => {
+ roughLabel.textContent = parseFloat(roughInput.value).toFixed(2);
+ updateMaterialOnly();
+ });
+
+ lightInput.addEventListener("input", () => {
+ lightLabel.textContent = `${lightInput.value}°`;
+ updateLightAngle(parseFloat(lightInput.value));
+ });
+
+ function animate() {
+ requestAnimationFrame(animate);
+ if (autoRotate.checked && mesh) mesh.rotation.y += 0.005;
+ controls.update();
+ renderer.render(scene, camera);
+ }
+
+ updateLightAngle(135);
+ loadGoogleFont("Roboto");
+ animate();
+ </script>
+ </body>
+</html>
