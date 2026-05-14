@@ -47,6 +47,10 @@ Roboto, Open Sans, Lato, Montserrat, Raleway, Playfair Display, Poppins, Inter, 
 - Safari 14+
 - Mobile browsers (iOS Safari, Chrome Mobile)
 
+## research 
+
+https://wcandillon.github.io/redraw/
+
 ## Created
 
 May 7, 2026
