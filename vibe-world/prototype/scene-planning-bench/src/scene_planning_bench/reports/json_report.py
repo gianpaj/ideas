@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from pathlib import Path
 from typing import Any
 
@@ -17,6 +18,10 @@ def build_aggregate_report(results: list[RunResult]) -> dict[str, Any]:
             "paraphrase_group_count": 0,
             "adapter_names": [],
             "mean_total_score": 0.0,
+            "total_score_stddev": 0.0,
+            "total_score_stderr": None,
+            "total_score_ci95_low": None,
+            "total_score_ci95_high": None,
             "schema_valid_rate": 0.0,
             "mean_total_time_seconds": None,
             "mean_working_time_seconds": None,
@@ -31,10 +36,7 @@ def build_aggregate_report(results: list[RunResult]) -> dict[str, Any]:
     by_task = {
         task_id: {
             "sample_count": len(task_results),
-            "mean_total_score": round(
-                sum(result.total_score for result in task_results) / len(task_results),
-                6,
-            ),
+            **_score_stats(task_results),
             "mean_total_time_seconds": _mean_optional(
                 [result.total_time_seconds for result in task_results]
             ),
@@ -50,11 +52,7 @@ def build_aggregate_report(results: list[RunResult]) -> dict[str, Any]:
     by_paraphrase_group = {
         group_id: {
             "sample_count": len(group_results),
-            "mean_total_score": round(
-                sum(result.total_score for result in group_results)
-                / len(group_results),
-                6,
-            ),
+            **_score_stats(group_results),
             "mean_total_time_seconds": _mean_optional(
                 [result.total_time_seconds for result in group_results]
             ),
@@ -77,10 +75,7 @@ def build_aggregate_report(results: list[RunResult]) -> dict[str, Any]:
         "task_count": len({result.task_id for result in results}),
         "paraphrase_group_count": len(by_paraphrase_group),
         "adapter_names": sorted({result.adapter_name for result in results}),
-        "mean_total_score": round(
-            sum(result.total_score for result in results) / len(results),
-            6,
-        ),
+        **_score_stats(results),
         "schema_valid_rate": round(
             sum(1 for result in results if result.schema_valid) / len(results),
             6,
@@ -105,6 +100,41 @@ def build_aggregate_report(results: list[RunResult]) -> dict[str, Any]:
         ),
         "by_task": by_task,
         "by_paraphrase_group": by_paraphrase_group,
+    }
+
+
+def _score_stats(results: list[RunResult]) -> dict[str, float | None]:
+    scores = [result.total_score for result in results]
+    count = len(scores)
+    if count == 0:
+        return {
+            "mean_total_score": 0.0,
+            "total_score_stddev": 0.0,
+            "total_score_stderr": None,
+            "total_score_ci95_low": None,
+            "total_score_ci95_high": None,
+        }
+
+    mean_score = sum(scores) / count
+    if count == 1:
+        return {
+            "mean_total_score": round(mean_score, 6),
+            "total_score_stddev": 0.0,
+            "total_score_stderr": None,
+            "total_score_ci95_low": None,
+            "total_score_ci95_high": None,
+        }
+
+    variance = sum((score - mean_score) ** 2 for score in scores) / (count - 1)
+    stddev = math.sqrt(variance)
+    stderr_value = stddev / math.sqrt(count)
+    ci95_half_width = 1.96 * stderr_value
+    return {
+        "mean_total_score": round(mean_score, 6),
+        "total_score_stddev": round(stddev, 6),
+        "total_score_stderr": round(stderr_value, 6),
+        "total_score_ci95_low": round(mean_score - ci95_half_width, 6),
+        "total_score_ci95_high": round(mean_score + ci95_half_width, 6),
     }
 
 
@@ -165,6 +195,7 @@ def write_run_reports(
             "task_id": result.task_id,
             "paraphrase_group": result.paraphrase_group,
             "prompt_index": result.prompt_index,
+            "repeat_index": result.repeat_index,
             "prompt_text": result.prompt_text,
             "adapter_name": result.adapter_name,
             "schema_valid": result.schema_valid,

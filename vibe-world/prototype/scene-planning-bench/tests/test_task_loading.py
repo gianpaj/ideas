@@ -37,3 +37,19 @@ def test_resolve_suite_task_paths_from_roots() -> None:
     task_paths = resolve_suite_task_paths(suite)
     assert len(task_paths) == 3
     assert task_paths[0].startswith("tasks/v1_core/")
+
+
+def test_dev_and_hidden_suites_are_disjoint() -> None:
+    root = project_root()
+    dev_paths = set(
+        resolve_suite_task_paths(load_suite(root / "configs" / "suites" / "v1_dev.yaml"))
+    )
+    hidden_paths = set(
+        resolve_suite_task_paths(
+            load_suite(root / "configs" / "suites" / "v1_hidden.yaml")
+        )
+    )
+
+    assert dev_paths
+    assert hidden_paths
+    assert dev_paths.isdisjoint(hidden_paths)

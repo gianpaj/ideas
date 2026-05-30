@@ -5,7 +5,10 @@ from scene_planning_bench.chart import infer_csv_from_manifest, render_matrix_ta
 
 from scene_planning_bench.adapters.mock_adapter import MockAdapter
 from scene_planning_bench.cli import run_matrix
-from scene_planning_bench.inspect_runner import run_suite_with_inspect_mock
+from scene_planning_bench.inspect_runner import (
+    _extract_log_error_message,
+    run_suite_with_inspect_mock,
+)
 from scene_planning_bench.runner import run_suite_with_adapter
 
 
@@ -25,6 +28,25 @@ def test_runner_smoke(tmp_path: Path) -> None:
     assert aggregate["task_count"] == 3
     assert aggregate["paraphrase_group_count"] == 1
     assert "pine_tree_left_of_cabin" in aggregate["by_paraphrase_group"]
+    assert aggregate["total_score_stddev"] == 0.0
+
+
+def test_runner_repeats_samples(tmp_path: Path) -> None:
+    results, summary_path = run_suite_with_adapter(
+        "configs/suites/v1_dev.yaml",
+        MockAdapter(),
+        tmp_path / "outputs",
+        repeats=2,
+    )
+
+    assert len(results) == 4
+    assert all(result.repeat_index in {0, 1} for result in results)
+    assert all("::repeat_" in result.sample_id for result in results)
+    assert summary_path.exists()
+    aggregate = json.loads((tmp_path / "outputs" / "aggregate.json").read_text())
+    assert aggregate["sample_count"] == 4
+    assert aggregate["task_count"] == 2
+    assert aggregate["total_score_stderr"] == 0.0
 
 
 def test_inspect_runner_smoke(tmp_path: Path) -> None:
@@ -51,6 +73,16 @@ def test_inspect_runner_smoke(tmp_path: Path) -> None:
     assert aggregate["score_per_total_second"] is not None
     assert aggregate["score_per_dollar"] is None
     assert list((tmp_path / "inspect_outputs" / "inspect_logs").glob("*.json"))
+
+
+def test_inspect_log_error_message_prefers_top_level_message() -> None:
+    class ErrorLog:
+        error = {"message": "Your API key was reported as leaked."}
+
+    assert (
+        _extract_log_error_message(ErrorLog())
+        == "Your API key was reported as leaked."
+    )
 
 
 def test_run_matrix_smoke(tmp_path: Path) -> None:

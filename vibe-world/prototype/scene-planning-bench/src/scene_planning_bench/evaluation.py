@@ -7,6 +7,7 @@ from scene_planning_bench.scoring import (
     compute_action_type_score,
     compute_argument_match_score,
     compute_schema_score,
+    compute_spatial_match_score,
 )
 from scene_planning_bench.types import BenchmarkTask, RunResult
 from scene_runtime import PlanningRequest, SceneDefinition, process_planning_request
@@ -36,12 +37,13 @@ def evaluate_output(
     output_tokens: int | None = None,
     total_tokens: int | None = None,
     total_cost_usd: float | None = None,
+    repeat_index: int | None = None,
 ) -> RunResult:
     schema_valid = False
     response_type_match = False
     action_type_score = 0.0
     argument_match_score = 0.0
-    spatial_match_score = 1.0
+    spatial_match_score = 0.0
     parsed_payload = None
     normalized_plan = None
     render_drafts: list[dict[str, Any]] = []
@@ -86,6 +88,7 @@ def evaluate_output(
         )
         action_type_score = compute_action_type_score(task.gold_response, parsed)
         argument_match_score = compute_argument_match_score(task.gold_response, parsed)
+        spatial_match_score = compute_spatial_match_score(task.gold_response, parsed)
         errors.extend(schema_errors)
     except Exception:
         if not schema_errors:
@@ -104,6 +107,7 @@ def evaluate_output(
         task_id=task.task_id,
         paraphrase_group=task.metadata.get("paraphrase_group"),
         prompt_index=prompt_index,
+        repeat_index=repeat_index,
         prompt_text=prompt_text,
         adapter_name=adapter_name,
         schema_valid=schema_valid,

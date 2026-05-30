@@ -40,6 +40,7 @@ from scene_planning_bench.validation import (
 )
 
 app = typer.Typer(no_args_is_help=True, add_completion=False)
+DEFAULT_DEV_SUITE = "configs/suites/v1_dev.yaml"
 
 
 def _provider_setup_hint(model: str) -> str | None:
@@ -67,12 +68,40 @@ def _provider_setup_hint(model: str) -> str | None:
     return None
 
 
+def _provider_api_key_env_var(model: str) -> str | None:
+    if model.startswith("openai/"):
+        return "OPENAI_API_KEY"
+    if model.startswith("anthropic/"):
+        return "ANTHROPIC_API_KEY"
+    if model.startswith("google/"):
+        return "GOOGLE_API_KEY"
+    if model.startswith("inception/"):
+        return "INCEPTION_API_KEY"
+    return None
+
+
+def _echo_provider_key_suffix(model: str) -> None:
+    env_var = _provider_api_key_env_var(model)
+    if env_var is None:
+        return
+    value = os.getenv(env_var, "")
+    suffix = value[-5:] if value else "<missing>"
+    typer.echo(f"{env_var} last5={suffix}")
+
+
 def _resolve_output_dir(suite: str, output_dir: Path | None, label: str) -> Path:
     if output_dir is not None:
         return output_dir
     root = project_root()
     suite_config = load_suite(root / suite)
     return default_run_output_dir(root, suite_config.suite_id, label)
+
+
+def _validate_repeats(repeats: int) -> int:
+    if repeats < 1:
+        typer.echo("repeats must be at least 1", err=True)
+        raise typer.Exit(code=1)
+    return repeats
 
 
 def _resolve_matrix_output_dir(
@@ -98,15 +127,9 @@ def _require_provider_env(model: str) -> None:
     if model.startswith("llamacpp/"):
         return  # no API key needed for local llama-server
 
-    missing_var: str | None = None
-    if model.startswith("openai/") and not os.getenv("OPENAI_API_KEY"):
-        missing_var = "OPENAI_API_KEY"
-    elif model.startswith("anthropic/") and not os.getenv("ANTHROPIC_API_KEY"):
-        missing_var = "ANTHROPIC_API_KEY"
-    elif model.startswith("google/") and not os.getenv("GOOGLE_API_KEY"):
-        missing_var = "GOOGLE_API_KEY"
-    elif model.startswith("inception/") and not os.getenv("INCEPTION_API_KEY"):
-        missing_var = "INCEPTION_API_KEY"
+    missing_var = _provider_api_key_env_var(model)
+    if missing_var is not None and os.getenv(missing_var):
+        missing_var = None
 
     if missing_var is not None:
         typer.echo(f"missing {missing_var} for model runs", err=True)
@@ -148,8 +171,10 @@ def _run_inspect_model_impl(
     suite: str,
     output: Path,
     model_args_file: Path | None = None,
+    repeats: int = 1,
 ) -> tuple[list[RunResult], Path, Path]:
     _require_provider_env(model)
+    repeats = _validate_repeats(repeats)
     model_args = read_data_file(model_args_file) if model_args_file else {}
 
     # Remap OpenAI-compatible providers to openai/ prefix, injecting env vars
@@ -178,13 +203,18 @@ def _run_inspect_model_impl(
 
     try:
         if model == "mockllm/scene-planning-bench" and model_args_file is None:
-            _, results, summary_path = run_suite_with_inspect_mock(suite, output)
+            _, results, summary_path = run_suite_with_inspect_mock(
+                suite,
+                output,
+                repeats=repeats,
+            )
         else:
             _, results, summary_path = run_suite_with_inspect(
                 suite,
                 output,
                 model=model,
                 model_args=model_args,
+                repeats=repeats,
             )
     except Exception as exc:
         typer.echo(f"run failed for model {model}", err=True)
@@ -210,6 +240,7 @@ def _run_inspect_model_impl(
         extra={
             "inspect_log_dir": str(output / "inspect_logs"),
             "model_args_file": str(model_args_file) if model_args_file else None,
+            "repeats": repeats,
         },
     )
     return results, summary_path, manifest_path
@@ -217,7 +248,7 @@ def _run_inspect_model_impl(
 
 @app.command("validate-data")
 def validate_data(
-    suite: str = "configs/suites/v1_core.yaml",
+    suite: str = DEFAULT_DEV_SUITE,
 ) -> None:
     root = project_root()
     suite_path = root / suite
@@ -280,12 +311,19 @@ def validate_data(
 
 @app.command("run-mock")
 def run_mock(
-    suite: str = "configs/suites/v1_core.yaml",
+    suite: str = DEFAULT_DEV_SUITE,
     output_dir: Path | None = None,
+    repeats: int = 1,
 ) -> None:
     _load_default_env()
+    repeats = _validate_repeats(repeats)
     output = _resolve_output_dir(suite, output_dir, "mock")
-    results, summary_path = run_suite_with_adapter(suite, MockAdapter(), output)
+    results, summary_path = run_suite_with_adapter(
+        suite,
+        MockAdapter(),
+        output,
+        repeats=repeats,
+    )
     manifest_path = _write_manifest(
         suite,
         output,
@@ -293,6 +331,7 @@ def run_mock(
         "mock",
         results,
         summary_path,
+        extra={"repeats": repeats},
     )
     typer.echo(f"wrote summary to {summary_path}")
     typer.echo(f"wrote manifest to {manifest_path}")
@@ -300,12 +339,18 @@ def run_mock(
 
 @app.command("run-inspect-mock")
 def run_inspect_mock(
-    suite: str = "configs/suites/v1_core.yaml",
+    suite: str = DEFAULT_DEV_SUITE,
     output_dir: Path | None = None,
+    repeats: int = 1,
 ) -> None:
     _load_default_env()
+    repeats = _validate_repeats(repeats)
     output = _resolve_output_dir(suite, output_dir, "inspect-mock")
-    _, results, summary_path = run_suite_with_inspect_mock(suite, output)
+    _, results, summary_path = run_suite_with_inspect_mock(
+        suite,
+        output,
+        repeats=repeats,
+    )
     manifest_path = _write_manifest(
         suite,
         output,
@@ -313,7 +358,10 @@ def run_inspect_mock(
         "mockllm/scene-planning-bench",
         results,
         summary_path,
-        extra={"inspect_log_dir": str(output / "inspect_logs")},
+        extra={
+            "inspect_log_dir": str(output / "inspect_logs"),
+            "repeats": repeats,
+        },
     )
     typer.echo(f"wrote summary to {summary_path}")
     typer.echo(f"wrote manifest to {manifest_path}")
@@ -322,18 +370,21 @@ def run_inspect_mock(
 @app.command("run-inspect-model")
 def run_inspect_model(
     model: str,
-    suite: str = "configs/suites/v1_core.yaml",
+    suite: str = DEFAULT_DEV_SUITE,
     output_dir: Path | None = None,
     model_args_file: Path | None = None,
     env_file: Path | None = None,
+    repeats: int = 1,
 ) -> None:
     loaded_env = _load_default_env(env_file)
+    _echo_provider_key_suffix(model)
     output = _resolve_output_dir(suite, output_dir, model)
     _, summary_path, manifest_path = _run_inspect_model_impl(
         model=model,
         suite=suite,
         output=output,
         model_args_file=model_args_file,
+        repeats=repeats,
     )
     if loaded_env:
         typer.echo(f"loaded env from {loaded_env}")
@@ -347,8 +398,10 @@ def run_matrix(
     output_dir: Path | None = None,
     env_file: Path | None = None,
     continue_on_error: bool = True,
+    repeats: int = 1,
 ) -> None:
     loaded_env = _load_default_env(env_file)
+    repeats = _validate_repeats(repeats)
     matrix_path = matrix_file.resolve()
     matrix = RunMatrixConfig.model_validate(read_data_file(matrix_path))
     matrix_output = _resolve_matrix_output_dir(
@@ -362,6 +415,7 @@ def run_matrix(
         if not entry.enabled:
             continue
         label = entry.label or entry.model
+        entry_repeats = entry.repeats or repeats
         run_output = matrix_output / "runs" / label.replace("/", "_")
         saved_base_url = os.environ.get("LLAMACPP_BASE_URL")
         if entry.base_url:
@@ -376,6 +430,7 @@ def run_matrix(
                     if entry.model_args_file is not None
                     else None
                 ),
+                repeats=entry_repeats,
             )
             aggregate = read_json(run_output / "aggregate.json")
             rows.append(
@@ -387,6 +442,10 @@ def run_matrix(
                     "summary_path": str(summary_path),
                     "manifest_path": str(manifest_path),
                     "mean_total_score": aggregate.get("mean_total_score"),
+                    "total_score_stddev": aggregate.get("total_score_stddev"),
+                    "total_score_stderr": aggregate.get("total_score_stderr"),
+                    "total_score_ci95_low": aggregate.get("total_score_ci95_low"),
+                    "total_score_ci95_high": aggregate.get("total_score_ci95_high"),
                     "mean_total_time_seconds": aggregate.get("mean_total_time_seconds"),
                     "mean_working_time_seconds": aggregate.get(
                         "mean_working_time_seconds"
@@ -397,6 +456,7 @@ def run_matrix(
                         "score_per_total_second"
                     ),
                     "score_per_dollar": aggregate.get("score_per_dollar"),
+                    "repeats": entry_repeats,
                 }
             )
         except typer.Exit as exc:
@@ -428,6 +488,7 @@ def run_matrix(
             "matrix_file": str(matrix_path),
             "continue_on_error": continue_on_error,
             "model_count": len([entry for entry in matrix.models if entry.enabled]),
+            "default_repeats": repeats,
             "summary_path": str(summary_path),
             "leaderboard_path": str(leaderboard_path),
         },

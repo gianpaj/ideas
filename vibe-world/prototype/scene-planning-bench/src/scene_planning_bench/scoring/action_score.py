@@ -4,8 +4,10 @@ from scene_runtime.models import ScenePlanningResponse
 
 
 def compute_action_type_score(
-    expected: ScenePlanningResponse, actual: ScenePlanningResponse
+    expected: ScenePlanningResponse, actual: ScenePlanningResponse | None
 ) -> float:
+    if actual is None:
+        return 0.0
     if expected.response_type != actual.response_type:
         return 0.0
     if expected.response_type.value != "scene_actions":
@@ -22,8 +24,10 @@ def compute_action_type_score(
 
 
 def compute_argument_match_score(
-    expected: ScenePlanningResponse, actual: ScenePlanningResponse
+    expected: ScenePlanningResponse, actual: ScenePlanningResponse | None
 ) -> float:
+    if actual is None:
+        return 0.0
     if expected.response_type != actual.response_type:
         return 0.0
     if expected.response_type.value != "scene_actions":

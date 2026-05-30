@@ -1,5 +1,5 @@
 matrix_id: local_and_cloud
-suite: configs/suites/v1_core.yaml
+suite: configs/suites/v1_dev.yaml
 models:
   # Local models via llama-server (start server before running)
   - model: llamacpp/Bonsai-8B.gguf

@@ -32,12 +32,22 @@ uv run scene-planning-bench validate-data
 uv run scene-planning-bench run-mock
 uv run scene-planning-bench run-inspect-mock
 uv run scene-planning-bench run-inspect-model openai/gpt-5.4-mini
+uv run scene-planning-bench run-inspect-model openai/gpt-5.4-mini --repeats 3
 uv run scene-planning-bench run-matrix configs/matrices/example_cross_provider.yaml
 uv run scene-planning-bench compare-runs outputs/runs/<run-a>/summary.csv outputs/runs/<run-b>/summary.csv
 uv run pytest
 ```
 
 Provider runs load `.env` automatically if present. Start from [`.env.example`](./.env.example).
+
+Commands default to `configs/suites/v1_dev.yaml`, the public development split for prompt tuning and routine model checks. Run the committed holdout split explicitly when you want a final comparison:
+
+```bash
+uv run scene-planning-bench run-matrix configs/matrices/example_cross_provider.yaml --repeats 3
+uv run scene-planning-bench run-inspect-model openai/gpt-5.4-mini --suite configs/suites/v1_hidden.yaml --repeats 3
+```
+
+`configs/suites/v1_core.yaml` remains the combined compatibility suite.
 
 ## Output layout
 
@@ -48,6 +58,7 @@ Each run writes:
 - `summary.csv`
 - `aggregate.json`
 - `aggregate.json` includes per-task and per-paraphrase-group summaries
+- `aggregate.json` includes score standard deviation, standard error, and 95% confidence interval fields when repeated samples are present
 - `summary.csv` also includes per-sample latency, token usage, optional cost fields, and runtime artifact counts
 - `run_manifest.json`
 - `tasks/*.json` with raw output, parsed response, normalized plan, render drafts, and diagnostics

@@ -17,6 +17,7 @@ def test_write_run_reports_persists_runtime_artifacts(tmp_path: Path) -> None:
         spatial_match_score=1.0,
         total_score=1.0,
         raw_output="{}",
+        repeat_index=1,
         parsed_response={"response_type": "scene_actions"},
         normalized_plan={
             "plan_kind": "object_intent",
@@ -36,4 +37,6 @@ def test_write_run_reports_persists_runtime_artifacts(tmp_path: Path) -> None:
     summary_csv = summary_path.read_text()
     assert "normalized_intent_count" in summary_csv
     assert "render_draft_count" in summary_csv
+    assert "repeat_index" in summary_csv
+    assert "total_score_stderr" in (tmp_path / "aggregate.json").read_text()
     assert "diagnostics" in summary_csv

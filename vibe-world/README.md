@@ -190,3 +190,12 @@ It is not part of the Vibe World source of truth and is ignored from version con
 
 The `prototype/scene-planning-bench/` directory is the first real implementation artifact in this folder.
 It exists to benchmark the scene-planning layer described in the design docs without yet building the full multiplayer game.
+
+
+## HUman notes
+
+- LLM raw output -> parse/validate -> normalized scene plan -> renderer consumes it
+
+### Movement / edits
+
+- when an object is moved nearby do a opacity transition, or ideally a transposition (generate the movements and transports necessary to make the movement)

@@ -24,9 +24,6 @@ def build_prompt_bundle(
             "task_id": task.task_id,
             "category": task.category,
             "difficulty": task.difficulty,
-            "allowed_response_types": [
-                response_type.value for response_type in task.allowed_response_types
-            ],
         },
     )
     return build_runtime_prompt_bundle(request, metadata_label="Task metadata JSON")

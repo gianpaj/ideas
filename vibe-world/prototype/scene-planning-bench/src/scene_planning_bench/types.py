@@ -97,6 +97,7 @@ class MatrixModelConfig(BaseModel):
     model_args_file: str | None = None
     label: str | None = None
     base_url: str | None = None
+    repeats: int | None = Field(default=None, ge=1)
 
 
 class RunMatrixConfig(BaseModel):
@@ -122,6 +123,7 @@ class RunResult(BaseModel):
     task_id: str
     paraphrase_group: str | None = None
     prompt_index: int | None = None
+    repeat_index: int | None = None
     prompt_text: str | None = None
     adapter_name: str
     schema_valid: bool

@@ -48,6 +48,7 @@ def inspect_scene_plan_scorer(response_schema: dict[str, Any], adapter_name: str
             response_schema,
             sample_id=str(state.sample_id),
             prompt_index=state.metadata.get("prompt_index"),
+            repeat_index=state.metadata.get("repeat_index"),
             prompt_text=state.metadata.get("prompt_text"),
             prompt_bundle=state.metadata.get("prompt_bundle"),
         )
@@ -64,7 +65,12 @@ def inspect_scene_plan_scorer(response_schema: dict[str, Any], adapter_name: str
 def _build_dataset(
     suite_relative_path: str,
     response_schema: dict[str, Any],
+    *,
+    repeats: int = 1,
 ) -> tuple[str, list[Sample]]:
+    if repeats < 1:
+        raise ValueError("repeats must be at least 1")
+
     root = project_root()
     suite_path = root / suite_relative_path
     suite = load_suite(suite_path)
@@ -73,76 +79,112 @@ def _build_dataset(
 
     for loaded_task in loaded_tasks:
         for prompt_index, prompt_text in enumerate(loaded_task.task.prompts):
-            sample_id = f"{loaded_task.task.task_id}::prompt_{prompt_index}"
-            prompt_bundle = build_prompt_bundle(
-                suite.defaults.system_prompt,
-                loaded_task.scene,
-                loaded_task.task,
-                response_schema,
-                prompt_text,
-            )
-            samples.append(
-                Sample(
-                    id=sample_id,
-                    input=_prompt_bundle_to_chat_messages(prompt_bundle),
-                    target=json.dumps(
-                        loaded_task.task.gold_response.model_dump(
-                            mode="json",
-                            exclude_none=True,
-                        ),
-                        sort_keys=True,
-                    ),
-                    metadata={
-                        "task": loaded_task.task.model_dump(
-                            mode="json",
-                            exclude_none=True,
-                        ),
-                        "scene": loaded_task.scene.model_dump(
-                            mode="json",
-                            exclude_none=True,
-                        ),
-                        "prompt_index": prompt_index,
-                        "prompt_text": prompt_text,
-                        "prompt_bundle": prompt_bundle,
-                    },
+            for repeat_index in range(repeats):
+                sample_id = _sample_id(
+                    loaded_task.task.task_id,
+                    prompt_index=prompt_index,
+                    repeat_index=repeat_index,
+                    repeats=repeats,
                 )
-            )
+                prompt_bundle = build_prompt_bundle(
+                    suite.defaults.system_prompt,
+                    loaded_task.scene,
+                    loaded_task.task,
+                    response_schema,
+                    prompt_text,
+                )
+                samples.append(
+                    Sample(
+                        id=sample_id,
+                        input=_prompt_bundle_to_chat_messages(prompt_bundle),
+                        target=json.dumps(
+                            loaded_task.task.gold_response.model_dump(
+                                mode="json",
+                                exclude_none=True,
+                            ),
+                            sort_keys=True,
+                        ),
+                        metadata={
+                            "task": loaded_task.task.model_dump(
+                                mode="json",
+                                exclude_none=True,
+                            ),
+                            "scene": loaded_task.scene.model_dump(
+                                mode="json",
+                                exclude_none=True,
+                            ),
+                            "prompt_index": prompt_index,
+                            "repeat_index": repeat_index,
+                            "prompt_text": prompt_text,
+                            "prompt_bundle": prompt_bundle,
+                        },
+                    )
+                )
 
     return suite.suite_id, samples
 
 
-def _mock_outputs_for_suite(suite_relative_path: str) -> list[ModelOutput]:
+def _mock_outputs_for_suite(
+    suite_relative_path: str,
+    *,
+    repeats: int = 1,
+) -> list[ModelOutput]:
     suite_path = project_root() / suite_relative_path
     loaded_tasks = load_tasks_from_suite(suite_path)
     outputs: list[ModelOutput] = []
     for loaded_task in loaded_tasks:
         for _prompt_index, _prompt_text in enumerate(loaded_task.task.prompts):
-            outputs.append(
-                ModelOutput.from_content(
-                    model="mockllm",
-                    content=json.dumps(
-                        loaded_task.task.gold_response.model_dump(
-                            mode="json",
-                            exclude_none=True,
+            for _repeat_index in range(repeats):
+                outputs.append(
+                    ModelOutput.from_content(
+                        model="mockllm",
+                        content=json.dumps(
+                            loaded_task.task.gold_response.model_dump(
+                                mode="json",
+                                exclude_none=True,
+                            ),
+                            sort_keys=True,
                         ),
-                        sort_keys=True,
-                    ),
+                    )
                 )
-            )
     return outputs
 
 
 def _run_results_from_logs(logs: list[EvalLog]) -> list[RunResult]:
     results: list[RunResult] = []
     for log in logs:
+        log_status = getattr(log, "status", None)
+        if log_status == "error":
+            raise RuntimeError(
+                f"inspect run failed: {_extract_log_error_message(log)}"
+            )
         for sample in log.samples or []:
             results.append(_run_result_from_sample(sample, log.location))
     return results
 
 
+def _extract_log_error_message(log: EvalLog) -> str:
+    error = getattr(log, "error", None)
+    if error is None:
+        return "unknown Inspect error"
+    if isinstance(error, dict):
+        return str(error.get("message") or error)
+    message = getattr(error, "message", None)
+    if message:
+        return str(message)
+    return str(error)
+
+
 def _run_result_from_sample(sample: EvalSample, log_location: str) -> RunResult:
     if sample.scores is None or SCORER_NAME not in sample.scores:
-        raise ValueError(f"inspect sample {sample.id} did not contain {SCORER_NAME} score")
+        sample_error = getattr(sample, "error", None)
+        if sample_error:
+            raise RuntimeError(
+                f"inspect sample {sample.id} failed: {sample_error}"
+            )
+        raise ValueError(
+            f"inspect sample {sample.id} did not contain {SCORER_NAME} score"
+        )
     score = sample.scores[SCORER_NAME]
     if score.metadata is None:
         raise ValueError(f"inspect sample {sample.id} missing benchmark score metadata")
@@ -187,12 +229,17 @@ def run_suite_with_inspect(
     *,
     model: str,
     model_args: dict[str, Any] | None = None,
+    repeats: int = 1,
 ) -> tuple[list[EvalLog], list[RunResult], Path]:
     root = project_root()
     suite_path = root / suite_relative_path
     suite = load_suite(suite_path)
     response_schema = load_schema(root / suite.defaults.response_schema_path)
-    suite_id, dataset = _build_dataset(suite_relative_path, response_schema)
+    suite_id, dataset = _build_dataset(
+        suite_relative_path,
+        response_schema,
+        repeats=repeats,
+    )
     task = Task(
         name=f"{suite_id}_inspect",
         dataset=dataset,
@@ -216,10 +263,31 @@ def run_suite_with_inspect(
 def run_suite_with_inspect_mock(
     suite_relative_path: str,
     output_dir: Path,
+    *,
+    repeats: int = 1,
 ) -> tuple[list[EvalLog], list[RunResult], Path]:
     return run_suite_with_inspect(
         suite_relative_path,
         output_dir,
         model="mockllm/scene-planning-bench",
-        model_args={"custom_outputs": _mock_outputs_for_suite(suite_relative_path)},
+        model_args={
+            "custom_outputs": _mock_outputs_for_suite(
+                suite_relative_path,
+                repeats=repeats,
+            )
+        },
+        repeats=repeats,
     )
+
+
+def _sample_id(
+    task_id: str,
+    *,
+    prompt_index: int,
+    repeat_index: int,
+    repeats: int,
+) -> str:
+    base = f"{task_id}::prompt_{prompt_index}"
+    if repeats == 1:
+        return base
+    return f"{base}::repeat_{repeat_index}"
