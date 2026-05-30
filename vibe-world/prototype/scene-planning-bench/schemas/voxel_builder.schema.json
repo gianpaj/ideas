@@ -1,0 +1,292 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VoxelBuilderSpec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "spec_version",
+    "request_id",
+    "intent_id",
+    "operation",
+    "object_category",
+    "size_tier",
+    "grid",
+    "placement",
+    "operations"
+  ],
+  "properties": {
+    "spec_version": { "type": "string", "const": "0.1" },
+    "request_id": { "type": "string" },
+    "intent_id": { "type": "string" },
+    "operation": { "type": "string", "enum": ["create", "refine", "remix"] },
+    "target_object_id": { "type": ["string", "null"] },
+    "base_object_version": { "type": ["integer", "null"] },
+    "object_category": { "type": "string" },
+    "size_tier": { "type": "string" },
+    "style_tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "behaviors": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "grid": { "$ref": "#/$defs/grid" },
+    "placement": { "$ref": "#/$defs/placement" },
+    "materials": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/material" }
+    },
+    "anchors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/anchor" }
+    },
+    "operations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/voxelOp" }
+    },
+    "compile_hints": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/compileHints" }
+      ]
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "vector3": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "blendMode": {
+      "type": "string",
+      "enum": ["union", "subtract", "intersect", "exclude"]
+    },
+    "grid": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unit_meters", "up_axis", "rotation_step_degrees"],
+      "properties": {
+        "unit_meters": { "type": "number", "exclusiveMinimum": 0 },
+        "up_axis": { "type": "string", "const": "y" },
+        "rotation_step_degrees": { "type": "integer", "const": 90 }
+      }
+    },
+    "placement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "offset"],
+      "properties": {
+        "mode": { "type": "string", "enum": ["absolute", "relative"] },
+        "reference_object": { "type": ["string", "null"] },
+        "relation": {
+          "type": ["string", "null"],
+          "enum": [null, "left_of", "right_of", "behind", "in_front_of", "around"]
+        },
+        "offset": { "$ref": "#/$defs/vector3" }
+      }
+    },
+    "material": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["material_id"],
+      "properties": {
+        "material_id": { "type": "string" },
+        "label": { "type": "string" },
+        "render_class": { "type": "string" },
+        "color_hint": { "type": "string" },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "anchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["anchor_id", "position"],
+      "properties": {
+        "anchor_id": { "type": "string" },
+        "position": { "$ref": "#/$defs/vector3" },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "regionSelector": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "by_bounds": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["min", "max"],
+          "properties": {
+            "min": { "$ref": "#/$defs/vector3" },
+            "max": { "$ref": "#/$defs/vector3" }
+          }
+        },
+        "by_tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "by_material_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "compileHints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "preferred_runtime": {
+          "type": "string",
+          "enum": ["primitive_parts", "merged_mesh", "instanced_voxels"]
+        },
+        "preserve_edit_regions": { "type": "boolean" },
+        "preview_camera": { "type": "object" },
+        "collision_detail": {
+          "type": "string",
+          "enum": ["coarse", "medium", "full"]
+        }
+      }
+    },
+    "voxelOp": {
+      "oneOf": [
+        { "$ref": "#/$defs/addBoxOp" },
+        { "$ref": "#/$defs/addSphereOp" },
+        { "$ref": "#/$defs/addLineOp" },
+        { "$ref": "#/$defs/paintRegionOp" },
+        { "$ref": "#/$defs/rotateRegionOp" },
+        { "$ref": "#/$defs/cloneRegionOp" }
+      ]
+    },
+    "addBoxOp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op_id", "kind", "position", "size", "material_id"],
+      "properties": {
+        "op_id": { "type": "string" },
+        "kind": { "const": "add_box" },
+        "mode": { "$ref": "#/$defs/blendMode" },
+        "position": { "$ref": "#/$defs/vector3" },
+        "size": { "$ref": "#/$defs/vector3" },
+        "material_id": { "type": "string" },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "addSphereOp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op_id", "kind", "center", "radius", "material_id"],
+      "properties": {
+        "op_id": { "type": "string" },
+        "kind": { "const": "add_sphere" },
+        "mode": { "$ref": "#/$defs/blendMode" },
+        "center": { "$ref": "#/$defs/vector3" },
+        "radius": { "type": "number", "exclusiveMinimum": 0 },
+        "material_id": { "type": "string" },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "addLineOp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op_id", "kind", "from", "to", "radius", "material_id"],
+      "properties": {
+        "op_id": { "type": "string" },
+        "kind": { "const": "add_line" },
+        "mode": { "$ref": "#/$defs/blendMode" },
+        "from": { "$ref": "#/$defs/vector3" },
+        "to": { "$ref": "#/$defs/vector3" },
+        "radius": { "type": "number", "exclusiveMinimum": 0 },
+        "shape": { "type": "string", "enum": ["rounded", "square"] },
+        "material_id": { "type": "string" },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "paintRegionOp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op_id", "kind", "target", "material_id"],
+      "properties": {
+        "op_id": { "type": "string" },
+        "kind": { "const": "paint_region" },
+        "target": { "$ref": "#/$defs/regionSelector" },
+        "material_id": { "type": "string" }
+      }
+    },
+    "rotateRegionOp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op_id", "kind", "target", "rotate"],
+      "properties": {
+        "op_id": { "type": "string" },
+        "kind": { "const": "rotate_region" },
+        "target": { "$ref": "#/$defs/regionSelector" },
+        "rotate": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["axis", "turns"],
+          "properties": {
+            "axis": { "type": "string", "enum": ["x", "y", "z"] },
+            "turns": { "type": "integer", "enum": [1, 2, 3] },
+            "center": { "$ref": "#/$defs/vector3" }
+          }
+        }
+      }
+    },
+    "cloneRegionOp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op_id", "kind", "target", "copies"],
+      "properties": {
+        "op_id": { "type": "string" },
+        "kind": { "const": "clone_region" },
+        "target": { "$ref": "#/$defs/regionSelector" },
+        "mode": { "$ref": "#/$defs/blendMode" },
+        "copies": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["type", "count", "step"],
+              "properties": {
+                "type": { "const": "linear" },
+                "count": { "type": "integer", "minimum": 1 },
+                "step": { "$ref": "#/$defs/vector3" }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["type", "count", "center", "axis"],
+              "properties": {
+                "type": { "const": "radial" },
+                "count": { "type": "integer", "minimum": 1 },
+                "center": { "$ref": "#/$defs/vector3" },
+                "axis": { "type": "string", "enum": ["x", "y", "z"] }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

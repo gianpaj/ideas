@@ -13,6 +13,18 @@ Use this package to benchmark the scene-planning layer only:
 
 It is not the multiplayer game and it is not the authoritative Vibe World backend.
 
+## Artifact types
+
+Each task declares a `target_artifact` and the benchmark dispatches on it:
+
+- `scene_actions` — `ScenePlanningResponse`, gold stored in `gold_response`
+- `builder` — `BuilderSpec`, gold stored in `gold_builder`
+- `voxel_builder` — `VoxelBuilderSpec`, gold stored in `gold_voxel_builder`
+
+Pydantic models live in `src/scene_runtime/artifacts.py`; schemas in `schemas/builder.schema.json` and `schemas/voxel_builder.schema.json`. `SuiteDefaults` carries `builder_schema_path` and `voxel_builder_schema_path`; `load_artifact_schemas` returns a dict keyed by `ArtifactType`. Scoring modules: `scene_planning_bench.scoring.builder_score` and `scene_planning_bench.scoring.voxel_score`. `aggregate_artifact_score` averages non-schema subscores against the scoring profile's non-schema weight total.
+
+When adding a new artifact type: add a Pydantic model + JSON schema, extend `ArtifactType` / `parse_artifact_json`, wire it through `BenchmarkTask.gold_payload`, `SuiteDefaults`, `load_artifact_schemas`, `evaluate_output`, and `build_artifact_prompt_bundle`, then add a scoring module.
+
 ## Working rules
 
 - keep benchmark-specific code inside `src/scene_planning_bench/`
@@ -27,7 +39,10 @@ It is not the multiplayer game and it is not the authoritative Vibe World backen
 
 ```bash
 uv run scene-planning-bench validate-data
+uv run scene-planning-bench validate-data --suite configs/suites/v1_all_artifacts.yaml
 uv run scene-planning-bench run-mock
+uv run scene-planning-bench run-mock --suite configs/suites/v1_builder.yaml
+uv run scene-planning-bench run-mock --suite configs/suites/v1_voxel_builder.yaml
 uv run scene-planning-bench run-inspect-mock
 uv run pytest
 ```

@@ -1,13 +1,16 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Any
-import os
 
 import typer
 
-from scene_planning_bench.inspect_runner import run_suite_with_inspect, run_suite_with_inspect_mock
 from scene_planning_bench.adapters.mock_adapter import MockAdapter
+from scene_planning_bench.inspect_runner import (
+    run_suite_with_inspect,
+    run_suite_with_inspect_mock,
+)
 from scene_planning_bench.registry import (
     load_suite,
     load_tasks_from_suite,
@@ -19,12 +22,12 @@ from scene_planning_bench.reports.matrix_report import (
     write_matrix_manifest,
     write_matrix_reports,
 )
-from scene_planning_bench.runner import run_suite_with_adapter
 from scene_planning_bench.run_layout import (
     build_run_manifest,
     default_matrix_output_dir,
     default_run_output_dir,
 )
+from scene_planning_bench.runner import run_suite_with_adapter
 from scene_planning_bench.types import RunMatrixConfig, RunResult
 from scene_planning_bench.utils import (
     load_env,
@@ -38,6 +41,7 @@ from scene_planning_bench.validation import (
     validate_with_schema,
     validate_with_schema_path,
 )
+from scene_runtime import ArtifactType
 
 app = typer.Typer(no_args_is_help=True, add_completion=False)
 DEFAULT_DEV_SUITE = "configs/suites/v1_dev.yaml"
@@ -45,21 +49,13 @@ DEFAULT_DEV_SUITE = "configs/suites/v1_dev.yaml"
 
 def _provider_setup_hint(model: str) -> str | None:
     if model.startswith("openai/"):
-        return (
-            "OpenAI runs require the `openai` package and `OPENAI_API_KEY` in the environment."
-        )
+        return "OpenAI runs require the `openai` package and `OPENAI_API_KEY` in the environment."
     if model.startswith("anthropic/"):
-        return (
-            "Anthropic runs require the `anthropic` package and `ANTHROPIC_API_KEY` in the environment."
-        )
+        return "Anthropic runs require the `anthropic` package and `ANTHROPIC_API_KEY` in the environment."
     if model.startswith("google/"):
-        return (
-            "Google runs require the `google-genai` package and `GOOGLE_API_KEY` in the environment."
-        )
+        return "Google runs require the `google-genai` package and `GOOGLE_API_KEY` in the environment."
     if model.startswith("inception/"):
-        return (
-            "Inception Labs runs require the `openai` package and `INCEPTION_API_KEY` in the environment."
-        )
+        return "Inception Labs runs require the `openai` package and `INCEPTION_API_KEY` in the environment."
     if model.startswith("llamacpp/"):
         return (
             "llama.cpp runs require a llama-server running locally. "
@@ -256,7 +252,17 @@ def validate_data(
     suite_schema_path = root / "schemas" / "suite.schema.json"
     task_schema_path = root / suite_config.defaults.task_schema_path
     scene_schema_path = root / suite_config.defaults.scene_schema_path
-    response_schema = load_schema(root / suite_config.defaults.response_schema_path)
+    artifact_schemas = {
+        ArtifactType.SCENE_ACTIONS: load_schema(
+            root / suite_config.defaults.response_schema_path
+        ),
+        ArtifactType.BUILDER: load_schema(
+            root / suite_config.defaults.builder_schema_path
+        ),
+        ArtifactType.VOXEL_BUILDER: load_schema(
+            root / suite_config.defaults.voxel_builder_schema_path
+        ),
+    }
     tasks = load_tasks_from_suite(root / suite)
     invalid = 0
 
@@ -294,12 +300,15 @@ def validate_data(
             validated_scene_ids.add(loaded_task.task.scene_id)
 
         schema_errors = validate_with_schema(
-            loaded_task.task.gold_response.model_dump(mode="json", exclude_none=True),
-            response_schema,
+            loaded_task.task.gold_payload(),
+            artifact_schemas[loaded_task.task.target_artifact],
         )
         if schema_errors:
             invalid += 1
-            typer.echo(f"{loaded_task.task.task_id}: invalid gold response")
+            typer.echo(
+                f"{loaded_task.task.task_id}: invalid gold "
+                f"{loaded_task.task.target_artifact.value}"
+            )
             for error in schema_errors:
                 typer.echo(f"  - {error}")
 
@@ -452,9 +461,7 @@ def run_matrix(
                     ),
                     "mean_total_tokens": aggregate.get("mean_total_tokens"),
                     "total_cost_usd": aggregate.get("total_cost_usd"),
-                    "score_per_total_second": aggregate.get(
-                        "score_per_total_second"
-                    ),
+                    "score_per_total_second": aggregate.get("score_per_total_second"),
                     "score_per_dollar": aggregate.get("score_per_dollar"),
                     "repeats": entry_repeats,
                 }

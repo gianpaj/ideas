@@ -23,5 +23,5 @@ def test_build_prompt_bundle_includes_scene_and_schema() -> None:
     assert prompt_bundle[0]["role"] == "system"
     assert "Scene context JSON" in prompt_bundle[1]["content"]
     assert "Response schema JSON Schema" in prompt_bundle[1]["content"]
-    assert "allowed_response_types" not in prompt_bundle[1]["content"]
+    assert "allowed_response_types" in prompt_bundle[1]["content"]
     assert prompt_bundle[2]["content"] == task.prompts[0]

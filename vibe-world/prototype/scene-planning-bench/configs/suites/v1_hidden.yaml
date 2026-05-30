@@ -1,0 +1,15 @@
+suite_id: v1_hidden
+description: Committed holdout split for final model comparisons
+defaults:
+  system_prompt: |
+    You are a scene-planning assistant.
+    Output JSON only.
+    Use schema_version 1.0.
+    Do not invent unsupported categories or actions.
+    If the request is ambiguous, return a clarification_request.
+    If the request is impossible or unsupported, return a refusal.
+  response_schema_path: schemas/response.schema.json
+  scene_schema_path: schemas/scene.schema.json
+  task_schema_path: schemas/task.schema.json
+task_paths:
+  - tasks/v1_core/ambiguity/add_house_near_lake_001.json

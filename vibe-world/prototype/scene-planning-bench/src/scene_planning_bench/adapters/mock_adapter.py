@@ -10,6 +10,4 @@ class MockAdapter(Adapter):
     name = "mock"
 
     def generate(self, task: LoadedTask) -> str:
-        return json.dumps(
-            task.task.gold_response.model_dump(mode="json", exclude_none=True)
-        )
+        return json.dumps(task.task.gold_payload())

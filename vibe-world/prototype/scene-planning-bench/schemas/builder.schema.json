@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BuilderSpec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "builder_version",
+    "request_id",
+    "intent_id",
+    "operation",
+    "object_category",
+    "size_tier",
+    "parts",
+    "placement",
+    "complexity"
+  ],
+  "properties": {
+    "builder_version": { "type": "string", "const": "0.1" },
+    "request_id": { "type": "string" },
+    "intent_id": { "type": "string" },
+    "operation": { "type": "string", "enum": ["create", "refine", "remix"] },
+    "target_object_id": { "type": ["string", "null"] },
+    "base_object_version": { "type": ["integer", "null"] },
+    "object_category": { "type": "string" },
+    "size_tier": { "type": "string" },
+    "parts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/part" }
+    },
+    "instances": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/instance" }
+    },
+    "attachments": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "materials": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "behaviors": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "placement": { "$ref": "#/$defs/placement" },
+    "complexity": { "$ref": "#/$defs/complexity" },
+    "diagnostics": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "vector3": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "part": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["part_id", "primitive", "material", "dimensions"],
+      "properties": {
+        "part_id": { "type": "string" },
+        "primitive": { "type": "string" },
+        "material": { "type": "string" },
+        "dimensions": { "$ref": "#/$defs/vector3" },
+        "modifiers": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "local_position": { "$ref": "#/$defs/vector3" },
+        "local_rotation": { "$ref": "#/$defs/vector3" },
+        "local_scale": { "$ref": "#/$defs/vector3" }
+      }
+    },
+    "instance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["instance_id", "anchor_mode", "offset"],
+      "properties": {
+        "instance_id": { "type": "string" },
+        "anchor_mode": { "type": "string", "enum": ["absolute", "relative"] },
+        "reference_object": { "type": ["string", "null"] },
+        "relation": {
+          "type": ["string", "null"],
+          "enum": [null, "left_of", "right_of", "behind", "in_front_of", "around"]
+        },
+        "offset": { "$ref": "#/$defs/vector3" }
+      }
+    },
+    "placement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": { "type": "string", "enum": ["absolute", "relative"] },
+        "reference_object": { "type": ["string", "null"] },
+        "relation": {
+          "type": ["string", "null"],
+          "enum": [null, "left_of", "right_of", "behind", "in_front_of", "around"]
+        },
+        "offset_meters": { "type": ["number", "null"] }
+      }
+    },
+    "complexity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["part_count", "instance_count", "behavior_count"],
+      "properties": {
+        "part_count": { "type": "integer", "minimum": 0 },
+        "instance_count": { "type": "integer", "minimum": 0 },
+        "behavior_count": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

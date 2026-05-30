@@ -12,6 +12,8 @@
       "properties": {
         "system_prompt": { "type": "string" },
         "response_schema_path": { "type": "string" },
+        "builder_schema_path": { "type": "string" },
+        "voxel_builder_schema_path": { "type": "string" },
         "scene_schema_path": { "type": "string" },
         "task_schema_path": { "type": "string" }
       }

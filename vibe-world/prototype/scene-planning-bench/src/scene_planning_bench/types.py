@@ -5,6 +5,7 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from scene_runtime.artifacts import ArtifactType, BuilderSpec, VoxelBuilderSpec
 from scene_runtime.models import (
     Action,
     ActionType,
@@ -51,10 +52,50 @@ class BenchmarkTask(BaseModel):
     difficulty: str
     scene_id: str
     prompts: list[str]
-    allowed_response_types: list[ResponseType]
-    gold_response: ScenePlanningResponse
+    target_artifact: ArtifactType = ArtifactType.SCENE_ACTIONS
+    allowed_response_types: list[ResponseType] = Field(default_factory=list)
+    gold_response: ScenePlanningResponse | None = None
+    gold_builder: BuilderSpec | None = None
+    gold_voxel_builder: VoxelBuilderSpec | None = None
     scoring_profile: ScoringProfile
     metadata: dict[str, Any] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def validate_gold_payload(self) -> "BenchmarkTask":
+        if self.target_artifact is ArtifactType.SCENE_ACTIONS:
+            if self.gold_response is None:
+                raise ValueError(
+                    "scene_actions tasks must include gold_response"
+                )
+            if not self.allowed_response_types:
+                raise ValueError(
+                    "scene_actions tasks must declare allowed_response_types"
+                )
+        elif self.target_artifact is ArtifactType.BUILDER:
+            if self.gold_builder is None:
+                raise ValueError("builder tasks must include gold_builder")
+        elif self.target_artifact is ArtifactType.VOXEL_BUILDER:
+            if self.gold_voxel_builder is None:
+                raise ValueError(
+                    "voxel_builder tasks must include gold_voxel_builder"
+                )
+        return self
+
+    def gold_payload(self) -> dict[str, Any]:
+        if self.target_artifact is ArtifactType.SCENE_ACTIONS:
+            assert self.gold_response is not None
+            return self.gold_response.model_dump(mode="json", exclude_none=True)
+        if self.target_artifact is ArtifactType.BUILDER:
+            assert self.gold_builder is not None
+            return self.gold_builder.model_dump(
+                mode="json", exclude_none=True, by_alias=True
+            )
+        if self.target_artifact is ArtifactType.VOXEL_BUILDER:
+            assert self.gold_voxel_builder is not None
+            return self.gold_voxel_builder.model_dump(
+                mode="json", exclude_none=True, by_alias=True
+            )
+        raise ValueError(f"unsupported target_artifact: {self.target_artifact}")
 
 
 class SuiteDefaults(BaseModel):
@@ -69,6 +110,8 @@ class SuiteDefaults(BaseModel):
         "If the request is impossible or unsupported, return a refusal."
     )
     response_schema_path: str = "schemas/response.schema.json"
+    builder_schema_path: str = "schemas/builder.schema.json"
+    voxel_builder_schema_path: str = "schemas/voxel_builder.schema.json"
     scene_schema_path: str = "schemas/scene.schema.json"
     task_schema_path: str = "schemas/task.schema.json"
 
@@ -126,11 +169,13 @@ class RunResult(BaseModel):
     repeat_index: int | None = None
     prompt_text: str | None = None
     adapter_name: str
+    target_artifact: ArtifactType = ArtifactType.SCENE_ACTIONS
     schema_valid: bool
     response_type_match: bool
     action_type_score: float
     argument_match_score: float
     spatial_match_score: float
+    artifact_subscores: dict[str, float] = Field(default_factory=dict)
     total_score: float
     total_time_seconds: float | None = None
     working_time_seconds: float | None = None
@@ -144,6 +189,7 @@ class RunResult(BaseModel):
     score_per_dollar: float | None = None
     raw_output: str
     parsed_response: dict[str, Any] | None = None
+    parsed_artifact: dict[str, Any] | None = None
     normalized_plan: dict[str, Any] | None = None
     render_drafts: list[dict[str, Any]] = Field(default_factory=list)
     prompt_bundle: list[dict[str, Any]] | None = None

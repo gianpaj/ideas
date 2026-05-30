@@ -1,0 +1,18 @@
+suite_id: v1_voxel_builder
+description: Voxel-builder (low-level op list) benchmark slice
+defaults:
+  system_prompt: |
+    You are a voxel-sculpting assistant.
+    Output JSON only matching the provided VoxelBuilderSpec schema.
+    Use spec_version 0.1.
+    Compose objects from discrete ops (add_box, add_sphere, add_line, paint_region, rotate_region, clone_region) in local grid coordinates.
+    Declare materials up front with material_id and tags; reference them from each op by material_id.
+    Populate placement to describe where the finished object is anchored in the scene.
+  response_schema_path: schemas/response.schema.json
+  builder_schema_path: schemas/builder.schema.json
+  voxel_builder_schema_path: schemas/voxel_builder.schema.json
+  scene_schema_path: schemas/scene.schema.json
+  task_schema_path: schemas/task.schema.json
+task_roots:
+  - tasks/v1_voxel_builder/single_turn
+  - tasks/v1_voxel_builder/constraints

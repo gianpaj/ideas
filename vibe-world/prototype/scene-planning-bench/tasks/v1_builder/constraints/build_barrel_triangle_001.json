@@ -1,0 +1,80 @@
+{
+  "task_id": "build_barrel_triangle_001",
+  "category": "constraints",
+  "difficulty": "medium",
+  "scene_id": "forest_cabin_001",
+  "prompts": [
+    "Place three small red barrels in a triangle around the campfire."
+  ],
+  "target_artifact": "builder",
+  "gold_builder": {
+    "builder_version": "0.1",
+    "request_id": "build_barrel_triangle_001::prompt_0",
+    "intent_id": "build_barrel_triangle_001::prompt_0::intent_0",
+    "operation": "create",
+    "target_object_id": null,
+    "base_object_version": null,
+    "object_category": "barrel",
+    "size_tier": "small",
+    "parts": [
+      {
+        "part_id": "main",
+        "primitive": "column",
+        "material": "red",
+        "dimensions": [1, 1.25, 1],
+        "modifiers": []
+      }
+    ],
+    "instances": [
+      {
+        "instance_id": "instance_0",
+        "anchor_mode": "relative",
+        "reference_object": "campfire_1",
+        "relation": "around",
+        "offset": [2.5, 0, 0]
+      },
+      {
+        "instance_id": "instance_1",
+        "anchor_mode": "relative",
+        "reference_object": "campfire_1",
+        "relation": "around",
+        "offset": [-1.25, 0, 2.165]
+      },
+      {
+        "instance_id": "instance_2",
+        "anchor_mode": "relative",
+        "reference_object": "campfire_1",
+        "relation": "around",
+        "offset": [-1.25, 0, -2.165]
+      }
+    ],
+    "attachments": [],
+    "materials": ["red"],
+    "behaviors": [],
+    "placement": {
+      "mode": "relative",
+      "reference_object": "campfire_1",
+      "relation": "around",
+      "offset_meters": 2.5
+    },
+    "complexity": {
+      "part_count": 1,
+      "instance_count": 3,
+      "behavior_count": 0
+    },
+    "diagnostics": []
+  },
+  "scoring_profile": {
+    "profile_id": "default_v1",
+    "weights": {
+      "schema_validity": 0.25,
+      "action_type": 0.25,
+      "argument_match": 0.30,
+      "spatial_match": 0.20
+    },
+    "hard_fail_on_schema_invalid": true
+  },
+  "metadata": {
+    "paraphrase_group": "barrel_triangle_builder"
+  }
+}

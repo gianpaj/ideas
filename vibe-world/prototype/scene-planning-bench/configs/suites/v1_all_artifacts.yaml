@@ -1,0 +1,23 @@
+suite_id: v1_all_artifacts
+description: Combined benchmark over scene_actions, builder, and voxel_builder artifacts
+defaults:
+  system_prompt: |
+    You are a scene-planning assistant.
+    Output JSON only.
+    Each task declares a target_artifact and provides the schema to follow.
+    Do not invent unsupported categories, actions, ops, or primitives.
+    If the request is ambiguous (scene_actions only), return a clarification_request.
+    If the request is impossible or unsupported (scene_actions only), return a refusal.
+  response_schema_path: schemas/response.schema.json
+  builder_schema_path: schemas/builder.schema.json
+  voxel_builder_schema_path: schemas/voxel_builder.schema.json
+  scene_schema_path: schemas/scene.schema.json
+  task_schema_path: schemas/task.schema.json
+task_roots:
+  - tasks/v1_core/single_turn
+  - tasks/v1_core/constraints
+  - tasks/v1_core/ambiguity
+  - tasks/v1_builder/single_turn
+  - tasks/v1_builder/constraints
+  - tasks/v1_voxel_builder/single_turn
+  - tasks/v1_voxel_builder/constraints

@@ -1,0 +1,73 @@
+{
+  "task_id": "build_pine_tree_001",
+  "category": "single_turn",
+  "difficulty": "easy",
+  "scene_id": "forest_cabin_001",
+  "prompts": [
+    "Build a low-poly pine tree next to the cabin."
+  ],
+  "target_artifact": "builder",
+  "gold_builder": {
+    "builder_version": "0.1",
+    "request_id": "build_pine_tree_001::prompt_0",
+    "intent_id": "build_pine_tree_001::prompt_0::intent_0",
+    "operation": "create",
+    "target_object_id": null,
+    "base_object_version": null,
+    "object_category": "tree",
+    "size_tier": "medium",
+    "parts": [
+      {
+        "part_id": "main",
+        "primitive": "column",
+        "material": "wood",
+        "dimensions": [1, 2, 1],
+        "modifiers": ["pine"]
+      },
+      {
+        "part_id": "canopy",
+        "primitive": "blob",
+        "material": "moss_stone",
+        "dimensions": [2, 2, 2],
+        "modifiers": ["pine"]
+      }
+    ],
+    "instances": [
+      {
+        "instance_id": "instance_0",
+        "anchor_mode": "relative",
+        "reference_object": "cabin_1",
+        "relation": "left_of",
+        "offset": [3, 0, 0]
+      }
+    ],
+    "attachments": [],
+    "materials": ["moss_stone", "wood"],
+    "behaviors": [],
+    "placement": {
+      "mode": "relative",
+      "reference_object": "cabin_1",
+      "relation": "left_of",
+      "offset_meters": 3
+    },
+    "complexity": {
+      "part_count": 2,
+      "instance_count": 1,
+      "behavior_count": 0
+    },
+    "diagnostics": []
+  },
+  "scoring_profile": {
+    "profile_id": "default_v1",
+    "weights": {
+      "schema_validity": 0.25,
+      "action_type": 0.25,
+      "argument_match": 0.30,
+      "spatial_match": 0.20
+    },
+    "hard_fail_on_schema_invalid": true
+  },
+  "metadata": {
+    "paraphrase_group": "pine_tree_builder"
+  }
+}

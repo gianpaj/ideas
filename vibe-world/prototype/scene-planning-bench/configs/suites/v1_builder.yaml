@@ -1,0 +1,17 @@
+suite_id: v1_builder
+description: Builder-spec (mid-level IR) benchmark slice
+defaults:
+  system_prompt: |
+    You are a scene-building assistant.
+    Output JSON only matching the provided BuilderSpec schema.
+    Use builder_version 0.1.
+    Compose objects from parts (primitive + material + dimensions) and instances that reference scene objects by id.
+    Populate the top-level placement and complexity summaries consistently with the instances.
+  response_schema_path: schemas/response.schema.json
+  builder_schema_path: schemas/builder.schema.json
+  voxel_builder_schema_path: schemas/voxel_builder.schema.json
+  scene_schema_path: schemas/scene.schema.json
+  task_schema_path: schemas/task.schema.json
+task_roots:
+  - tasks/v1_builder/single_turn
+  - tasks/v1_builder/constraints

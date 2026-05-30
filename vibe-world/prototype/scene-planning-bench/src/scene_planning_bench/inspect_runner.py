@@ -12,11 +12,16 @@ from inspect_ai.scorer import Score, Target, mean, scorer, stderr
 
 from scene_planning_bench.evaluation import evaluate_output
 from scene_planning_bench.prompts import build_prompt_bundle
-from scene_planning_bench.registry import load_suite, load_tasks_from_suite, project_root
+from scene_planning_bench.registry import (
+    load_suite,
+    load_tasks_from_suite,
+    project_root,
+)
 from scene_planning_bench.reports.json_report import write_run_reports
+from scene_planning_bench.runner import load_artifact_schemas, resolve_task_schema
 from scene_planning_bench.types import BenchmarkTask, RunResult
 from scene_planning_bench.validation import load_schema
-from scene_runtime import SceneDefinition
+from scene_runtime import ArtifactType, SceneDefinition
 
 SCORER_NAME = "scene_plan_benchmark"
 
@@ -36,10 +41,15 @@ def _prompt_bundle_to_chat_messages(
 
 
 @scorer(metrics=[mean(), stderr()], name=SCORER_NAME)
-def inspect_scene_plan_scorer(response_schema: dict[str, Any], adapter_name: str):
+def inspect_scene_plan_scorer(
+    response_schema: dict[str, Any],
+    artifact_schemas: dict[str, dict[str, Any]],
+    adapter_name: str,
+):
     async def score(state, target: Target) -> Score:
         task = BenchmarkTask.model_validate(state.metadata["task"])
         scene = SceneDefinition.model_validate(state.metadata["scene"])
+        artifact_schema = artifact_schemas[task.target_artifact.value]
         result = evaluate_output(
             task,
             scene,
@@ -51,6 +61,7 @@ def inspect_scene_plan_scorer(response_schema: dict[str, Any], adapter_name: str
             repeat_index=state.metadata.get("repeat_index"),
             prompt_text=state.metadata.get("prompt_text"),
             prompt_bundle=state.metadata.get("prompt_bundle"),
+            artifact_schema=artifact_schema,
         )
         return Score(
             value=result.total_score,
@@ -64,7 +75,7 @@ def inspect_scene_plan_scorer(response_schema: dict[str, Any], adapter_name: str
 
 def _build_dataset(
     suite_relative_path: str,
-    response_schema: dict[str, Any],
+    artifact_schemas: dict[ArtifactType, dict[str, Any]],
     *,
     repeats: int = 1,
 ) -> tuple[str, list[Sample]]:
@@ -78,10 +89,12 @@ def _build_dataset(
     samples: list[Sample] = []
 
     for loaded_task in loaded_tasks:
-        for prompt_index, prompt_text in enumerate(loaded_task.task.prompts):
+        task = loaded_task.task
+        task_schema = resolve_task_schema(task, artifact_schemas)
+        for prompt_index, prompt_text in enumerate(task.prompts):
             for repeat_index in range(repeats):
                 sample_id = _sample_id(
-                    loaded_task.task.task_id,
+                    task.task_id,
                     prompt_index=prompt_index,
                     repeat_index=repeat_index,
                     repeats=repeats,
@@ -89,23 +102,17 @@ def _build_dataset(
                 prompt_bundle = build_prompt_bundle(
                     suite.defaults.system_prompt,
                     loaded_task.scene,
-                    loaded_task.task,
-                    response_schema,
+                    task,
+                    task_schema,
                     prompt_text,
                 )
                 samples.append(
                     Sample(
                         id=sample_id,
                         input=_prompt_bundle_to_chat_messages(prompt_bundle),
-                        target=json.dumps(
-                            loaded_task.task.gold_response.model_dump(
-                                mode="json",
-                                exclude_none=True,
-                            ),
-                            sort_keys=True,
-                        ),
+                        target=json.dumps(task.gold_payload(), sort_keys=True),
                         metadata={
-                            "task": loaded_task.task.model_dump(
+                            "task": task.model_dump(
                                 mode="json",
                                 exclude_none=True,
                             ),
@@ -133,19 +140,11 @@ def _mock_outputs_for_suite(
     loaded_tasks = load_tasks_from_suite(suite_path)
     outputs: list[ModelOutput] = []
     for loaded_task in loaded_tasks:
+        payload = json.dumps(loaded_task.task.gold_payload(), sort_keys=True)
         for _prompt_index, _prompt_text in enumerate(loaded_task.task.prompts):
             for _repeat_index in range(repeats):
                 outputs.append(
-                    ModelOutput.from_content(
-                        model="mockllm",
-                        content=json.dumps(
-                            loaded_task.task.gold_response.model_dump(
-                                mode="json",
-                                exclude_none=True,
-                            ),
-                            sort_keys=True,
-                        ),
-                    )
+                    ModelOutput.from_content(model="mockllm", content=payload)
                 )
     return outputs
 
@@ -235,15 +234,24 @@ def run_suite_with_inspect(
     suite_path = root / suite_relative_path
     suite = load_suite(suite_path)
     response_schema = load_schema(root / suite.defaults.response_schema_path)
+    artifact_schemas = load_artifact_schemas(root, suite.defaults)
     suite_id, dataset = _build_dataset(
         suite_relative_path,
-        response_schema,
+        artifact_schemas,
         repeats=repeats,
     )
+    scorer_artifact_schemas = {
+        artifact_type.value: schema
+        for artifact_type, schema in artifact_schemas.items()
+    }
     task = Task(
         name=f"{suite_id}_inspect",
         dataset=dataset,
-        scorer=inspect_scene_plan_scorer(response_schema, adapter_name=model),
+        scorer=inspect_scene_plan_scorer(
+            response_schema,
+            scorer_artifact_schemas,
+            adapter_name=model,
+        ),
     )
     inspect_log_dir = output_dir / "inspect_logs"
     logs = inspect_eval(

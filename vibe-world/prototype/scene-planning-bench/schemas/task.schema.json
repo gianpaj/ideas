@@ -8,8 +8,6 @@
     "difficulty",
     "scene_id",
     "prompts",
-    "allowed_response_types",
-    "gold_response",
     "scoring_profile"
   ],
   "properties": {
@@ -22,6 +20,11 @@
       "items": { "type": "string" },
       "minItems": 1
     },
+    "target_artifact": {
+      "type": "string",
+      "enum": ["scene_actions", "builder", "voxel_builder"],
+      "default": "scene_actions"
+    },
     "allowed_response_types": {
       "type": "array",
       "items": {
@@ -32,11 +35,47 @@
     "gold_response": {
       "$ref": "response.schema.json"
     },
+    "gold_builder": {
+      "$ref": "builder.schema.json"
+    },
+    "gold_voxel_builder": {
+      "$ref": "voxel_builder.schema.json"
+    },
     "scoring_profile": {
       "$ref": "scoring-profile.schema.json"
     },
     "metadata": {
       "type": "object"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "anyOf": [
+          {
+            "properties": { "target_artifact": { "const": "scene_actions" } },
+            "required": ["target_artifact"]
+          },
+          { "not": { "required": ["target_artifact"] } }
+        ]
+      },
+      "then": {
+        "required": ["gold_response", "allowed_response_types"]
+      }
+    },
+    {
+      "if": {
+        "properties": { "target_artifact": { "const": "builder" } },
+        "required": ["target_artifact"]
+      },
+      "then": { "required": ["gold_builder"] }
+    },
+    {
+      "if": {
+        "properties": { "target_artifact": { "const": "voxel_builder" } },
+        "required": ["target_artifact"]
+      },
+      "then": { "required": ["gold_voxel_builder"] }
+    }
+  ]
 }
