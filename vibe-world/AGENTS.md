@@ -9,7 +9,7 @@ There is now one implementation artifact:
 
 - `prototype/scene-planning-bench/` for evaluating plain LLM scene-planning output
 
-That prototype now has its own local [`prototype/scene-planning-bench/AGENTS.md`](prototype/scene-planning-bench/AGENTS.md) with subproject-specific guidance.
+That prototype now has its own local [`prototype/scene-planning-bench/AGENTS.md`](prototype/scene-planning-bench/AGENTS.md) with subproject-specific guidance, including the benchmark split workflow. Use the dev split for prompt tuning and the hidden split for holdout checks.
 
 The current V1 decisions are:
 

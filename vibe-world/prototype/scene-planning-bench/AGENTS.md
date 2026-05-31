@@ -9,9 +9,19 @@ Use this package to benchmark the scene-planning layer only:
 - natural-language scene edit request in
 - strict JSON scene plan out
 - deterministic validation and scoring
+- spatial, action, argument, and schema scoring
 - Inspect-backed execution logs for reproducibility
+- repeated model runs with aggregate uncertainty metrics
 
 It is not the multiplayer game and it is not the authoritative Vibe World backend.
+
+## Benchmark splits
+
+Default commands use `configs/suites/v1_dev.yaml`, the public development split for prompt tuning and routine model checks.
+
+Use `configs/suites/v1_hidden.yaml` explicitly for committed holdout checks. Do not tune prompts directly against the hidden split.
+
+`configs/suites/v1_core.yaml` remains the combined compatibility suite.
 
 ## Artifact types
 
@@ -44,6 +54,9 @@ uv run scene-planning-bench run-mock
 uv run scene-planning-bench run-mock --suite configs/suites/v1_builder.yaml
 uv run scene-planning-bench run-mock --suite configs/suites/v1_voxel_builder.yaml
 uv run scene-planning-bench run-inspect-mock
+uv run scene-planning-bench run-inspect-model google/gemini-2.5-flash
+uv run scene-planning-bench run-inspect-model google/gemini-2.5-flash --repeats 3
+uv run scene-planning-bench run-inspect-model google/gemini-2.5-flash --suite configs/suites/v1_hidden.yaml --repeats 3
 uv run pytest
 ```
 
@@ -51,4 +64,4 @@ uv run pytest
 
 - benchmark consumption of normalized plans in saved run artifacts
 - stronger normalization for more action types and richer product-facing IR
-- richer scoring modules for ambiguity/state/spatial correctness
+- richer scoring modules for ambiguity and state correctness
