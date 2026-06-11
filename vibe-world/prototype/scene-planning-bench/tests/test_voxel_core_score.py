@@ -111,6 +111,37 @@ def test_non_hex_color_hint_penalized() -> None:
     assert score.subscores["color_hint_valid"] < 1.0
 
 
+def test_disconnected_parts_penalized() -> None:
+    # Float one box far above the rest (the prod table 👎: tabletop above legs).
+    core = copy.deepcopy(GOOD_CORE)
+    core["operations"][3]["position"][1] += 10
+    score = compute_voxel_core_score(core, profile="object")
+    assert score.subscores["parts_connected"] == 0.0
+    # Still grounded (the lowest op is unchanged) — these are independent checks.
+    assert score.subscores["grounded"] == 1.0
+
+
+def test_diagonal_line_penalized() -> None:
+    # A line moving on >1 axis falls back to a bounds box in the compiler (the
+    # prod campfire 👎 log3).
+    core = copy.deepcopy(GOOD_CORE)
+    core["operations"].append(
+        {"op_id": "diag", "kind": "add_line", "from": [0, 1, 0], "to": [1, 2, 1],
+         "radius": 0.2, "material_id": "wood"}
+    )
+    score = compute_voxel_core_score(core, profile="object")
+    assert score.subscores["lines_axis_aligned"] == 0.0
+
+
+def test_duplicate_material_penalized() -> None:
+    # Same material_id declared twice → later color_hint silently overrides (the
+    # prod campfire 👎: lava_light declared 4×).
+    core = copy.deepcopy(GOOD_CORE)
+    core["materials"].append({"material_id": "wood", "color_hint": "#000000"})
+    score = compute_voxel_core_score(core, profile="object")
+    assert score.subscores["materials_unique"] == 0.0
+
+
 def test_reject_profile_accepts_rejection() -> None:
     score = compute_voxel_core_score({"rejection": "gibberish"}, profile="reject")
     assert score.schema_validity == 1.0
@@ -130,7 +161,7 @@ def test_object_profile_unexpected_rejection_hard_fails() -> None:
 def test_voxel_core_suite_loads() -> None:
     root = project_root()
     tasks = load_tasks_from_suite(root / "configs" / "suites" / "v1_voxel_core.yaml")
-    assert len(tasks) == 4
+    assert len(tasks) == 6
     assert all(
         loaded.task.target_artifact is ArtifactType.VOXEL_CORE for loaded in tasks
     )
@@ -142,7 +173,7 @@ def test_voxel_core_suite_runner_smoke(tmp_path) -> None:
         MockAdapter(),
         tmp_path / "voxel_core_outputs",
     )
-    assert len(results) == 4
+    assert len(results) == 6
     assert all(result.schema_valid for result in results)
     assert all(result.total_score == 1.0 for result in results)
     assert summary_path.exists()

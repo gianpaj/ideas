@@ -1,0 +1,45 @@
+{
+  "task_id": "voxel_core_campfire_001",
+  "category": "feedback",
+  "difficulty": "medium",
+  "scene_id": "forest_cabin_001",
+  "target_artifact": "voxel_core",
+  "prompts": [
+    "make a camp fire"
+  ],
+  "gold_voxel_core": {
+    "object_category": "campfire",
+    "size_tier": "small",
+    "style_tags": ["rustic", "warm"],
+    "behaviors": ["light_source"],
+    "materials": [
+      { "material_id": "wood", "color_hint": "#7a4a24" },
+      { "material_id": "lava_light", "color_hint": "#ff7a18" }
+    ],
+    "operations": [
+      { "op_id": "log_x", "kind": "add_line", "from": [-1, 0.4, 0], "to": [1, 0.4, 0], "radius": 0.3, "shape": "rounded", "material_id": "wood", "tags": ["log"] },
+      { "op_id": "log_z", "kind": "add_line", "from": [0, 0.4, -1], "to": [0, 0.4, 1], "radius": 0.3, "shape": "rounded", "material_id": "wood", "tags": ["log"] },
+      { "op_id": "log_top", "kind": "add_line", "from": [-0.8, 0.75, 0], "to": [0.8, 0.75, 0], "radius": 0.25, "shape": "rounded", "material_id": "wood", "tags": ["log"] },
+      { "op_id": "flame_base", "kind": "add_sphere", "center": [0, 1.3, 0], "radius": 0.6, "material_id": "lava_light", "tags": ["flame"] },
+      { "op_id": "flame_mid", "kind": "add_sphere", "center": [0, 1.9, 0], "radius": 0.4, "material_id": "lava_light", "tags": ["flame"] },
+      { "op_id": "flame_tip", "kind": "add_sphere", "center": [0, 2.4, 0], "radius": 0.25, "material_id": "lava_light", "tags": ["flame"] }
+    ],
+    "quantity": 1
+  },
+  "scoring_profile": {
+    "profile_id": "voxel_core_v1",
+    "weights": {
+      "schema_validity": 0.25,
+      "action_type": 0.25,
+      "argument_match": 0.30,
+      "spatial_match": 0.20
+    },
+    "hard_fail_on_schema_invalid": true
+  },
+  "metadata": {
+    "voxel_profile": "object",
+    "paraphrase_group": "campfire_voxel_core",
+    "source": "prod_feedback_down",
+    "prod_defect": "declared lava_light 4x (flame colors collapsed to one) + a diagonal add_line that fell back to a bounds box"
+  }
+}

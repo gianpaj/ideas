@@ -18,10 +18,11 @@
     ],
     "operations": [
       { "op_id": "trunk", "kind": "add_line", "from": [0, 0, 0], "to": [0, 3.4, 0], "radius": 0.22, "shape": "rounded", "material_id": "wood", "tags": ["trunk"] },
-      { "op_id": "frond_a", "kind": "add_line", "from": [0, 3.4, 0], "to": [1.4, 3.0, 0], "radius": 0.12, "shape": "rounded", "material_id": "moss_stone", "tags": ["frond"] },
-      { "op_id": "frond_b", "kind": "add_line", "from": [0, 3.4, 0], "to": [-1.4, 3.0, 0], "radius": 0.12, "shape": "rounded", "material_id": "moss_stone", "tags": ["frond"] },
-      { "op_id": "frond_c", "kind": "add_line", "from": [0, 3.4, 0], "to": [0, 3.2, 1.4], "radius": 0.12, "shape": "rounded", "material_id": "moss_stone", "tags": ["frond"] },
-      { "op_id": "frond_d", "kind": "add_line", "from": [0, 3.4, 0], "to": [0, 3.2, -1.4], "radius": 0.12, "shape": "rounded", "material_id": "moss_stone", "tags": ["frond"] }
+      { "op_id": "crown_center", "kind": "add_sphere", "center": [0, 3.6, 0], "radius": 0.5, "material_id": "moss_stone", "tags": ["frond"] },
+      { "op_id": "crown_east", "kind": "add_sphere", "center": [1.0, 3.4, 0], "radius": 0.45, "material_id": "moss_stone", "tags": ["frond"] },
+      { "op_id": "crown_west", "kind": "add_sphere", "center": [-1.0, 3.4, 0], "radius": 0.45, "material_id": "moss_stone", "tags": ["frond"] },
+      { "op_id": "crown_north", "kind": "add_sphere", "center": [0, 3.4, 1.0], "radius": 0.45, "material_id": "moss_stone", "tags": ["frond"] },
+      { "op_id": "crown_south", "kind": "add_sphere", "center": [0, 3.4, -1.0], "radius": 0.45, "material_id": "moss_stone", "tags": ["frond"] }
     ],
     "quantity": 2
   },

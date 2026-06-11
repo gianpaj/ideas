@@ -38,7 +38,14 @@ Each task declares a `target_artifact` and the benchmark dispatches on it:
   selects `object` (default) or `reject` behavior. The suite's `system_prompt` is
   the shipped `voxelBuilderSystemPrompt` (PROMPT_VERSION) verbatim, and the prompt
   bundle is production-faithful (system + `Player prompt: …`, no scene/schema
-  injection — see `scene_planning_bench/prompts.py`).
+  injection — see `scene_planning_bench/prompts.py`). Beyond schema compliance the
+  rubric encodes quality defects mined from real prod 👎 feedback
+  (`tasks/v1_voxel_core/feedback/`): `parts_connected` (no floating/disconnected
+  parts), `lines_axis_aligned` (diagonal `add_line` falls back to a bounds box in
+  the compiler), and `materials_unique` (a material_id declared twice collapses its
+  colors). To add a task from new bad feedback: query `object_feedback` where
+  `rating = 'down'`, drop the prompt + a corrected gold core under that folder, and
+  add a check if it exposes a new defect class.
 
 Pydantic models live in `src/scene_runtime/artifacts.py`; schemas in `schemas/builder.schema.json`, `schemas/voxel_builder.schema.json`, and `schemas/voxel_core.schema.json`. `SuiteDefaults` carries `builder_schema_path`, `voxel_builder_schema_path`, and `voxel_core_schema_path`; `load_artifact_schemas` returns a dict keyed by `ArtifactType`. Scoring modules: `scene_planning_bench.scoring.builder_score`, `scene_planning_bench.scoring.voxel_score`, and `scene_planning_bench.scoring.voxel_core_score` (rubric; its `assemble_envelope` mirrors the server's `assembleVoxelSpec` for the "compiles" hard-fail gate). `aggregate_artifact_score` averages non-schema subscores against the scoring profile's non-schema weight total.
 

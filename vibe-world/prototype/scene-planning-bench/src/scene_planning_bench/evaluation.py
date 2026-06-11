@@ -372,9 +372,15 @@ _ACTION_KEYS = (
     "op_ids_unique",
     "op_count_in_range",
     "ops_well_formed",
+    "lines_axis_aligned",
 )
-_ARGUMENT_KEYS = ("materials_declared", "palette_compliance", "color_hint_valid")
-_SPATIAL_KEYS = ("grounded",)
+_ARGUMENT_KEYS = (
+    "materials_declared",
+    "palette_compliance",
+    "color_hint_valid",
+    "materials_unique",
+)
+_SPATIAL_KEYS = ("grounded", "parts_connected")
 
 
 def _mean_of(subscores: dict[str, float], keys: tuple[str, ...]) -> float:

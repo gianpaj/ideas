@@ -55,6 +55,11 @@ OP_COUNT_MAX = 14
 # more than this tolerance above the floor stays hovering — that is the failure.
 GROUND_TOLERANCE = 0.5
 
+# Two ops count as joined if their bounding boxes overlap or sit within this gap
+# on every axis. Used to detect floating/disconnected parts (a prod 👎 cause:
+# a tabletop hovering above its legs). Half a grid unit (0.25 m) is generous.
+CONNECT_TOLERANCE = 0.25
+
 _HEX_COLOR = re.compile(r"^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 
 
@@ -181,18 +186,102 @@ def _rubric_subscores(core: dict[str, Any]) -> dict[str, float]:
         1.0 if _op_extra_keys(op) == frozenset() else 0.0 for op in ops
     )
 
+    # Declaring one material_id twice with different color_hints (a prod 👎 cause:
+    # a campfire that declared lava_light 4× for 4 flame colors) collapses to a
+    # single color, because the renderer keys color by material_id.
+    declared_list = [m.get("material_id") for m in materials]
+    materials_unique = (
+        1.0 if len(declared_list) == len(set(declared_list)) else 0.0
+    )
+
     grounded = _grounded_score(ops)
+    parts_connected = _parts_connected_score(ops)
+    lines_axis_aligned = _lines_axis_aligned_score(ops)
 
     return {
         "op_kinds_allowed": round(op_kinds_allowed, 6),
         "op_ids_unique": op_ids_unique,
         "op_count_in_range": op_count_in_range,
         "ops_well_formed": round(ops_well_formed, 6),
+        "lines_axis_aligned": round(lines_axis_aligned, 6),
         "materials_declared": materials_declared,
         "palette_compliance": round(palette_compliance, 6),
         "color_hint_valid": round(color_hint_valid, 6),
+        "materials_unique": materials_unique,
         "grounded": grounded,
+        "parts_connected": parts_connected,
     }
+
+
+def _lines_axis_aligned_score(ops: list[dict[str, Any]]) -> float:
+    # add_line ops that move on more than one axis are diagonal; the compiler
+    # cannot render them and falls back to a bounds box (a prod 👎 cause), so the
+    # intended line/log renders as a block.
+    lines = [op for op in ops if op.get("kind") == "add_line"]
+    if not lines:
+        return 1.0
+
+    def aligned(op: dict[str, Any]) -> bool:
+        try:
+            a, b = op["from"], op["to"]
+            moved = sum(1 for i in range(3) if abs(float(a[i]) - float(b[i])) > 1e-6)
+            return moved <= 1
+        except (KeyError, TypeError, IndexError, ValueError):
+            return False
+
+    return _mean(1.0 if aligned(op) else 0.0 for op in lines)
+
+
+def _parts_connected_score(ops: list[dict[str, Any]]) -> float:
+    boxes = [aabb for aabb in (_op_aabb(op) for op in ops) if aabb is not None]
+    n = len(boxes)
+    if n <= 1:
+        return 1.0
+
+    parent = list(range(n))
+
+    def find(x: int) -> int:
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if _aabb_near(boxes[i], boxes[j], CONNECT_TOLERANCE):
+                parent[find(i)] = find(j)
+
+    return 1.0 if len({find(i) for i in range(n)}) == 1 else 0.0
+
+
+def _op_aabb(op: dict[str, Any]) -> list[tuple[float, float]] | None:
+    kind = op.get("kind")
+    try:
+        if kind == "add_box":
+            p, s = op["position"], op["size"]
+            return [(float(p[i]) - float(s[i]) / 2, float(p[i]) + float(s[i]) / 2) for i in range(3)]
+        if kind == "add_sphere":
+            c, r = op["center"], float(op["radius"])
+            return [(float(c[i]) - r, float(c[i]) + r) for i in range(3)]
+        if kind == "add_line":
+            a, b, r = op["from"], op["to"], float(op["radius"])
+            return [
+                (min(float(a[i]), float(b[i])) - r, max(float(a[i]), float(b[i])) + r)
+                for i in range(3)
+            ]
+    except (KeyError, TypeError, IndexError, ValueError):
+        return None
+    return None
+
+
+def _aabb_near(
+    a: list[tuple[float, float]], b: list[tuple[float, float]], tol: float
+) -> bool:
+    for (a0, a1), (b0, b1) in zip(a, b):
+        gap = max(b0 - a1, a0 - b1, 0.0)
+        if gap > tol:
+            return False
+    return True
 
 
 def _op_extra_keys(op: dict[str, Any]) -> frozenset[str]:

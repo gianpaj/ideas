@@ -58,3 +58,4 @@ task_roots:
   - tasks/v1_voxel_core/single_turn
   - tasks/v1_voxel_core/constraints
   - tasks/v1_voxel_core/reject
+  - tasks/v1_voxel_core/feedback

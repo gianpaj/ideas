@@ -1,0 +1,43 @@
+{
+  "task_id": "voxel_core_wooden_table_001",
+  "category": "feedback",
+  "difficulty": "medium",
+  "scene_id": "forest_cabin_001",
+  "target_artifact": "voxel_core",
+  "prompts": [
+    "add a wooden square tabel"
+  ],
+  "gold_voxel_core": {
+    "object_category": "table",
+    "size_tier": "small",
+    "style_tags": ["wooden", "square"],
+    "behaviors": [],
+    "materials": [
+      { "material_id": "wood", "color_hint": "#6b4a2b" }
+    ],
+    "operations": [
+      { "op_id": "tabletop", "kind": "add_box", "position": [0, 2, 0], "size": [3, 0.3, 3], "material_id": "wood", "tags": ["top"] },
+      { "op_id": "leg_front_left", "kind": "add_box", "position": [-1.2, 0.925, -1.2], "size": [0.4, 1.85, 0.4], "material_id": "wood", "tags": ["leg"] },
+      { "op_id": "leg_front_right", "kind": "add_box", "position": [1.2, 0.925, -1.2], "size": [0.4, 1.85, 0.4], "material_id": "wood", "tags": ["leg"] },
+      { "op_id": "leg_back_left", "kind": "add_box", "position": [-1.2, 0.925, 1.2], "size": [0.4, 1.85, 0.4], "material_id": "wood", "tags": ["leg"] },
+      { "op_id": "leg_back_right", "kind": "add_box", "position": [1.2, 0.925, 1.2], "size": [0.4, 1.85, 0.4], "material_id": "wood", "tags": ["leg"] }
+    ],
+    "quantity": 1
+  },
+  "scoring_profile": {
+    "profile_id": "voxel_core_v1",
+    "weights": {
+      "schema_validity": 0.25,
+      "action_type": 0.25,
+      "argument_match": 0.30,
+      "spatial_match": 0.20
+    },
+    "hard_fail_on_schema_invalid": true
+  },
+  "metadata": {
+    "voxel_profile": "object",
+    "paraphrase_group": "wooden_table_voxel_core",
+    "source": "prod_feedback_down",
+    "prod_defect": "tabletop floated ~0.75 above the legs (disconnected parts)"
+  }
+}
