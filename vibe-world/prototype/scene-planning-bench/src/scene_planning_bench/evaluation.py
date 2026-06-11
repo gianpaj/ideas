@@ -367,7 +367,12 @@ def _evaluate_artifact(
 
 # Group the object-profile rubric subscores onto the uniform report fields so
 # voxel_core rows read like every other artifact in summary.csv / aggregate.json.
-_ACTION_KEYS = ("op_kinds_allowed", "op_ids_unique", "op_count_in_range")
+_ACTION_KEYS = (
+    "op_kinds_allowed",
+    "op_ids_unique",
+    "op_count_in_range",
+    "ops_well_formed",
+)
 _ARGUMENT_KEYS = ("materials_declared", "palette_compliance", "color_hint_valid")
 _SPATIAL_KEYS = ("grounded",)
 

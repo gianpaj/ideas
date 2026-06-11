@@ -228,7 +228,10 @@ VoxelOp = Annotated[
 
 
 class VoxelCoreMaterial(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    # Production validates with plain zod objects (no .strict()), which strip
+    # unknown keys rather than erroring — so ignore extras here too, instead of
+    # hard-failing on something the game silently tolerates.
+    model_config = ConfigDict(extra="ignore")
 
     material_id: str = Field(min_length=1, max_length=40)
     color_hint: str | None = None
@@ -243,9 +246,12 @@ class VoxelCoreSpec(BaseModel):
     envelope (grid/placement/anchors/ids) around it. Operations stay permissive
     (raw dicts, like production's `z.array(z.unknown())`); the constraint scorer
     inspects them and the assembled envelope is validated separately.
+
+    `extra="ignore"` mirrors production zod, which strips unknown top-level keys
+    instead of erroring — the bench should not hard-fail on extras the game drops.
     """
 
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="ignore")
 
     object_category: str = Field(min_length=1, max_length=60)
     size_tier: str = Field(min_length=1, max_length=20)

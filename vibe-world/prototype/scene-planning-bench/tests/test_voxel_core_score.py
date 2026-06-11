@@ -85,11 +85,23 @@ def test_sunk_object_is_grounded_because_server_autogrounds() -> None:
     assert score.subscores["grounded"] == 1.0
 
 
-def test_malformed_op_fails_compile_hard() -> None:
+def test_missing_required_op_field_fails_compile_hard() -> None:
     core = copy.deepcopy(GOOD_CORE)
     del core["operations"][0]["size"]  # add_box without size cannot compile
     score = compute_voxel_core_score(core, profile="object")
     assert score.schema_validity == 0.0
+
+
+def test_stray_op_key_compiles_but_soft_penalized() -> None:
+    # color_hint belongs on the material; on an op it is silently stripped by
+    # production (so it compiles) but the requested color is lost (soft penalty).
+    core = copy.deepcopy(GOOD_CORE)
+    core["operations"][0]["color_hint"] = "#ff0000"
+    score = compute_voxel_core_score(core, profile="object")
+    assert score.schema_validity == 1.0  # not a hard fail
+    assert score.subscores["ops_well_formed"] < 1.0  # but penalized
+    # one stray op out of four => 3/4 clean
+    assert score.subscores["ops_well_formed"] == 0.75
 
 
 def test_non_hex_color_hint_penalized() -> None:

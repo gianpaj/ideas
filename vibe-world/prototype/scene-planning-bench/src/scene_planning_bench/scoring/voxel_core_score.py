@@ -33,6 +33,17 @@ ALLOWED_MATERIALS = frozenset(
 
 ALLOWED_OP_KINDS = frozenset({"add_box", "add_sphere", "add_line"})
 
+# Keys each op kind is allowed to carry. Production zod strips anything else
+# (so the op still compiles), but a stray key means the model authored an
+# attribute that silently vanishes — most often a `color_hint` placed on an op
+# instead of its material, so the player's requested color never renders.
+_COMMON_OP_KEYS = frozenset({"op_id", "kind", "mode", "material_id", "tags"})
+_OP_KEYS_BY_KIND: dict[str, frozenset[str]] = {
+    "add_box": _COMMON_OP_KEYS | {"position", "size"},
+    "add_sphere": _COMMON_OP_KEYS | {"center", "radius"},
+    "add_line": _COMMON_OP_KEYS | {"from", "to", "radius", "shape"},
+}
+
 # The prompt says "Aim for 4-14 operations." for a single object.
 OP_COUNT_MIN = 4
 OP_COUNT_MAX = 14
@@ -166,17 +177,33 @@ def _rubric_subscores(core: dict[str, Any]) -> dict[str, float]:
         else _mean(1.0 if _HEX_COLOR.match(str(h)) else 0.0 for h in hints)
     )
 
+    ops_well_formed = _mean(
+        1.0 if _op_extra_keys(op) == frozenset() else 0.0 for op in ops
+    )
+
     grounded = _grounded_score(ops)
 
     return {
         "op_kinds_allowed": round(op_kinds_allowed, 6),
         "op_ids_unique": op_ids_unique,
         "op_count_in_range": op_count_in_range,
+        "ops_well_formed": round(ops_well_formed, 6),
         "materials_declared": materials_declared,
         "palette_compliance": round(palette_compliance, 6),
         "color_hint_valid": round(color_hint_valid, 6),
         "grounded": grounded,
     }
+
+
+def _op_extra_keys(op: dict[str, Any]) -> frozenset[str]:
+    """Keys on an op that its kind does not define (production silently strips
+    them, so the authored attribute — e.g. a misplaced color_hint — is lost)."""
+
+    allowed = _OP_KEYS_BY_KIND.get(op.get("kind"))
+    if allowed is None:
+        # Unknown kind is already penalized by op_kinds_allowed; don't double-count.
+        return frozenset()
+    return frozenset(op.keys()) - allowed
 
 
 def _grounded_score(ops: list[dict[str, Any]]) -> float:
@@ -198,6 +225,17 @@ def _op_min_y(op: dict[str, Any]) -> float:
         return min(float(op["from"][1]), float(op["to"][1])) - float(op["radius"])
     # Unknown op kind contributes no floor constraint.
     return 0.0
+
+
+def _strip_op(op: dict[str, Any]) -> dict[str, Any]:
+    """Drop keys an op kind doesn't define, mirroring production zod's strip on
+    `parseVoxelBuilderSpec` so the compile gate doesn't hard-fail on stray keys.
+    The soft penalty for those keys lives in `ops_well_formed`."""
+
+    allowed = _OP_KEYS_BY_KIND.get(op.get("kind"))
+    if allowed is None:
+        return op
+    return {key: value for key, value in op.items() if key in allowed}
 
 
 def assemble_envelope(core: dict[str, Any], source_prompt: str = "bench") -> dict[str, Any]:
@@ -242,7 +280,7 @@ def assemble_envelope(core: dict[str, Any], source_prompt: str = "bench") -> dic
             {"anchor_id": "base", "position": [0, 0, 0], "tags": ["placement"]},
             {"anchor_id": "focus", "position": [0, 2.4, 0], "tags": ["camera"]},
         ],
-        "operations": core.get("operations", []),
+        "operations": [_strip_op(op) for op in core.get("operations", [])],
         "compile_hints": {
             "preferred_runtime": "primitive_parts",
             "preserve_edit_regions": True,
