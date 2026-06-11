@@ -23,6 +23,7 @@ Each task declares a `target_artifact` describing which JSON contract the model 
 - `scene_actions` — the high-level `ScenePlanningResponse` (actions, clarifications, refusals). Schema: `schemas/response.schema.json`. Gold lives in `gold_response`.
 - `builder` — the mid-level `BuilderSpec` (parts + instances + placement IR). Schema: `schemas/builder.schema.json`. Gold lives in `gold_builder`.
 - `voxel_builder` — the low-level `VoxelBuilderSpec` (discrete ops: `add_box`, `add_sphere`, `add_line`, `paint_region`, `rotate_region`, `clone_region`). Schema: `schemas/voxel_builder.schema.json`. Gold lives in `gold_voxel_builder`.
+- `voxel_core` — the production "creative core" the game's object-generation call authors (mirrors `voxelCoreSchema` in `@3dvibegame/ai-planning`). Schema: `schemas/voxel_core.schema.json`. **Constraint-scored** (not gold-reference) so wins port back to the shipped prompt; `gold_voxel_core` is only the mock fixture. See `configs/suites/v1_voxel_core.yaml` — its `system_prompt` is the shipped voxel-builder prompt verbatim.
 
 Scoring reuses the four-component profile (schema validity, action/operation type, argument match, spatial match) across all three artifacts. For builder/voxel tasks, subscores (e.g. `part_primitive_match`, `op_kind_match`, `material_set_match`) are surfaced via `artifact_subscores` on each `RunResult` and mapped onto the headline `action_type_score`, `argument_match_score`, and `spatial_match_score` fields so reports stay uniform.
 
@@ -35,7 +36,53 @@ The project now contains two Python packages under `src/`:
 
 Implementation notes for future agents live in [`AGENTS.md`](AGENTS.md).
 
+## Quick start
+
+This benchmark is its own Python project under `prototype/scene-planning-bench`.
+`uv run` only exposes the `scene-planning-bench` CLI when you run it from that
+folder, or when you point `uv` at that folder explicitly.
+
+If you run from `vibe-world/`, `uv` does not see a `pyproject.toml` for this
+package. If you run from `prototype/scene-builder-bench/`, you are in the wrong
+sibling project, which exposes `scene-builder-bench`, not
+`scene-planning-bench`.
+
+### Option A: run from the package root
+
+```bash
+cd prototype/scene-planning-bench
+uv run scene-planning-bench validate-data
+uv run scene-planning-bench run-mock
+uv run scene-planning-bench run-inspect-mock
+uv run scene-planning-bench run-matrix configs/matrices/example_cross_provider.yaml
+```
+
+### Option B: run from `vibe-world/`
+
+```bash
+uv run --directory prototype/scene-planning-bench scene-planning-bench validate-data
+uv run --directory prototype/scene-planning-bench scene-planning-bench run-mock
+uv run --directory prototype/scene-planning-bench scene-planning-bench run-inspect-mock
+uv run --directory prototype/scene-planning-bench scene-planning-bench run-matrix configs/matrices/example_cross_provider.yaml
+```
+
+### Fast smoke test
+
+```bash
+cd prototype/scene-planning-bench
+uv run scene-planning-bench validate-data
+uv run scene-planning-bench run-mock
+```
+
+### Provider runs
+
+Matrix and provider-backed Inspect runs need the right API keys in `.env` (or in
+your shell environment). Provider runs load `.env` automatically if present.
+Start from `.env.example`.
+
 ## Commands
+
+From `prototype/scene-planning-bench`:
 
 ```bash
 uv run scene-planning-bench validate-data
@@ -43,6 +90,8 @@ uv run scene-planning-bench validate-data --suite configs/suites/v1_all_artifact
 uv run scene-planning-bench run-mock
 uv run scene-planning-bench run-mock --suite configs/suites/v1_builder.yaml
 uv run scene-planning-bench run-mock --suite configs/suites/v1_voxel_builder.yaml
+uv run scene-planning-bench run-mock --suite configs/suites/v1_voxel_core.yaml
+uv run scene-planning-bench run-inspect-model google/gemini-2.5-flash --suite configs/suites/v1_voxel_core.yaml
 uv run scene-planning-bench run-mock --suite configs/suites/v1_all_artifacts.yaml
 uv run scene-planning-bench run-inspect-mock
 uv run scene-planning-bench run-inspect-model openai/gpt-5.4-mini
@@ -58,6 +107,7 @@ Available suites:
 - `configs/suites/v1_core.yaml` — scene_actions baseline
 - `configs/suites/v1_builder.yaml` — builder-spec tasks
 - `configs/suites/v1_voxel_builder.yaml` — voxel-builder tasks
+- `configs/suites/v1_voxel_core.yaml` — production object-generation prompt (constraint-scored core)
 - `configs/suites/v1_all_artifacts.yaml` — all three artifact types combined
 
 Provider runs load `.env` automatically if present. Start from [`.env.example`](./.env.example).

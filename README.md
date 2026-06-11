@@ -17,3 +17,6 @@ Use this as a staging ground for exploration—when an idea matures, it can move
 - **photos-only-social-network** – A social media mobile app where users can only upload photos, not videos. No reels. Very simple and open source algorithm. No ads. You pay 10 USD per year to access it and help maintain it accessible and online.
   - **Status:** Idea  — implementation plan in `photos-only-app/research.md`
   - **Date ideated:** 2026-02-25
+
+- Tarot card game
+  - animations with react-spring.dev <https://codesandbox.io/p/sandbox/to6uf?file=%2Fsrc%2FApp.tsx>

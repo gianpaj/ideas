@@ -17,6 +17,8 @@ from scene_runtime.artifacts import (
     RotateRegionOp,
     VoxelAnchor,
     VoxelBuilderSpec,
+    VoxelCoreMaterial,
+    VoxelCoreSpec,
     VoxelGrid,
     VoxelMaterial,
     VoxelOp,
@@ -55,7 +57,11 @@ from scene_runtime.models import (
     Uncertainty,
 )
 from scene_runtime.normalize import normalize_response
-from scene_runtime.parsing import parse_artifact_json, parse_response_json
+from scene_runtime.parsing import (
+    decode_artifact_json,
+    parse_artifact_json,
+    parse_response_json,
+)
 from scene_runtime.pipeline import process_planning_request
 from scene_runtime.prompting import (
     ARTIFACT_SYSTEM_PROMPTS,
@@ -117,6 +123,8 @@ __all__ = [
     "Uncertainty",
     "VoxelAnchor",
     "VoxelBuilderSpec",
+    "VoxelCoreMaterial",
+    "VoxelCoreSpec",
     "VoxelGrid",
     "VoxelMaterial",
     "VoxelOp",
@@ -126,6 +134,7 @@ __all__ = [
     "build_prompt_bundle",
     "build_render_drafts",
     "build_schema_registry",
+    "decode_artifact_json",
     "load_schema",
     "normalize_response",
     "parse_artifact_json",

@@ -1,0 +1,42 @@
+{
+  "task_id": "voxel_core_two_palm_trees_001",
+  "category": "constraints",
+  "difficulty": "medium",
+  "scene_id": "forest_cabin_001",
+  "target_artifact": "voxel_core",
+  "prompts": [
+    "Create two palm trees."
+  ],
+  "gold_voxel_core": {
+    "object_category": "palm_tree",
+    "size_tier": "medium",
+    "style_tags": ["tropical"],
+    "behaviors": [],
+    "materials": [
+      { "material_id": "wood", "color_hint": "#8a5f33" },
+      { "material_id": "moss_stone", "color_hint": "#3f8a4a" }
+    ],
+    "operations": [
+      { "op_id": "trunk", "kind": "add_line", "from": [0, 0, 0], "to": [0, 3.4, 0], "radius": 0.22, "shape": "rounded", "material_id": "wood", "tags": ["trunk"] },
+      { "op_id": "frond_a", "kind": "add_line", "from": [0, 3.4, 0], "to": [1.4, 3.0, 0], "radius": 0.12, "shape": "rounded", "material_id": "moss_stone", "tags": ["frond"] },
+      { "op_id": "frond_b", "kind": "add_line", "from": [0, 3.4, 0], "to": [-1.4, 3.0, 0], "radius": 0.12, "shape": "rounded", "material_id": "moss_stone", "tags": ["frond"] },
+      { "op_id": "frond_c", "kind": "add_line", "from": [0, 3.4, 0], "to": [0, 3.2, 1.4], "radius": 0.12, "shape": "rounded", "material_id": "moss_stone", "tags": ["frond"] },
+      { "op_id": "frond_d", "kind": "add_line", "from": [0, 3.4, 0], "to": [0, 3.2, -1.4], "radius": 0.12, "shape": "rounded", "material_id": "moss_stone", "tags": ["frond"] }
+    ],
+    "quantity": 2
+  },
+  "scoring_profile": {
+    "profile_id": "voxel_core_v1",
+    "weights": {
+      "schema_validity": 0.25,
+      "action_type": 0.25,
+      "argument_match": 0.30,
+      "spatial_match": 0.20
+    },
+    "hard_fail_on_schema_invalid": true
+  },
+  "metadata": {
+    "voxel_profile": "object",
+    "paraphrase_group": "two_palm_trees_voxel_core"
+  }
+}

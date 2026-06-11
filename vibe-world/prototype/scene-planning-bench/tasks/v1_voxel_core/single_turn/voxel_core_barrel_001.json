@@ -1,0 +1,41 @@
+{
+  "task_id": "voxel_core_barrel_001",
+  "category": "single_turn",
+  "difficulty": "easy",
+  "scene_id": "forest_cabin_001",
+  "target_artifact": "voxel_core",
+  "prompts": [
+    "Make a wooden barrel with metal hoops."
+  ],
+  "gold_voxel_core": {
+    "object_category": "barrel",
+    "size_tier": "small",
+    "style_tags": ["wooden", "rustic"],
+    "behaviors": [],
+    "materials": [
+      { "material_id": "wood", "color_hint": "#8a5a2b" },
+      { "material_id": "stone", "color_hint": "#9a9a9a" }
+    ],
+    "operations": [
+      { "op_id": "body", "kind": "add_box", "position": [0, 0.9, 0], "size": [1.4, 1.8, 1.4], "material_id": "wood", "tags": ["body"] },
+      { "op_id": "hoop_low", "kind": "add_box", "position": [0, 0.4, 0], "size": [1.5, 0.18, 1.5], "material_id": "stone", "tags": ["hoop"] },
+      { "op_id": "hoop_high", "kind": "add_box", "position": [0, 1.5, 0], "size": [1.5, 0.18, 1.5], "material_id": "stone", "tags": ["hoop"] },
+      { "op_id": "lid", "kind": "add_box", "position": [0, 1.85, 0], "size": [1.2, 0.12, 1.2], "material_id": "wood", "tags": ["lid"] }
+    ],
+    "quantity": 1
+  },
+  "scoring_profile": {
+    "profile_id": "voxel_core_v1",
+    "weights": {
+      "schema_validity": 0.25,
+      "action_type": 0.25,
+      "argument_match": 0.30,
+      "spatial_match": 0.20
+    },
+    "hard_fail_on_schema_invalid": true
+  },
+  "metadata": {
+    "voxel_profile": "object",
+    "paraphrase_group": "barrel_voxel_core"
+  }
+}

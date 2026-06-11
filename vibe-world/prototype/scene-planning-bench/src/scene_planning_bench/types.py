@@ -57,6 +57,10 @@ class BenchmarkTask(BaseModel):
     gold_response: ScenePlanningResponse | None = None
     gold_builder: BuilderSpec | None = None
     gold_voxel_builder: VoxelBuilderSpec | None = None
+    # The voxel_core path scores against rules, not a gold spec — this fixture is
+    # only the canned output the mock adapter emits (and a validated reference).
+    # Kept as a raw dict so a {"rejection": ...} fixture is also expressible.
+    gold_voxel_core: dict[str, Any] | None = None
     scoring_profile: ScoringProfile
     metadata: dict[str, Any] = Field(default_factory=dict)
 
@@ -79,6 +83,11 @@ class BenchmarkTask(BaseModel):
                 raise ValueError(
                     "voxel_builder tasks must include gold_voxel_builder"
                 )
+        elif self.target_artifact is ArtifactType.VOXEL_CORE:
+            if self.gold_voxel_core is None:
+                raise ValueError(
+                    "voxel_core tasks must include gold_voxel_core"
+                )
         return self
 
     def gold_payload(self) -> dict[str, Any]:
@@ -95,6 +104,9 @@ class BenchmarkTask(BaseModel):
             return self.gold_voxel_builder.model_dump(
                 mode="json", exclude_none=True, by_alias=True
             )
+        if self.target_artifact is ArtifactType.VOXEL_CORE:
+            assert self.gold_voxel_core is not None
+            return self.gold_voxel_core
         raise ValueError(f"unsupported target_artifact: {self.target_artifact}")
 
 
@@ -112,6 +124,7 @@ class SuiteDefaults(BaseModel):
     response_schema_path: str = "schemas/response.schema.json"
     builder_schema_path: str = "schemas/builder.schema.json"
     voxel_builder_schema_path: str = "schemas/voxel_builder.schema.json"
+    voxel_core_schema_path: str = "schemas/voxel_core.schema.json"
     scene_schema_path: str = "schemas/scene.schema.json"
     task_schema_path: str = "schemas/task.schema.json"
 

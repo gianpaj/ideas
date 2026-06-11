@@ -39,6 +39,16 @@ def build_prompt_bundle(
         )
         return build_runtime_prompt_bundle(request, metadata_label="Task metadata JSON")
 
+    if task.target_artifact is ArtifactType.VOXEL_CORE:
+        # Mirror the production object-generation call exactly: only the system
+        # prompt (the suite's = the shipped voxel-builder prompt) plus the player
+        # text. No scene context or JSON-schema injection, so optimizing here
+        # tunes the same input distribution the game actually sends to Gemini.
+        return [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": f"Player prompt: {prompt_text}"},
+        ]
+
     return build_artifact_prompt_bundle(
         artifact_type=task.target_artifact,
         scene=scene,

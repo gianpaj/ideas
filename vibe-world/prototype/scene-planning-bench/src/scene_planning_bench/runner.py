@@ -25,6 +25,7 @@ def load_artifact_schemas(
         ArtifactType.VOXEL_BUILDER: load_schema(
             root / defaults.voxel_builder_schema_path
         ),
+        ArtifactType.VOXEL_CORE: load_schema(root / defaults.voxel_core_schema_path),
     }
 
 

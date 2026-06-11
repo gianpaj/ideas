@@ -7,7 +7,12 @@ from typing import Any, TypeVar
 
 from pydantic import BaseModel, ValidationError
 
-from scene_runtime.artifacts import ArtifactType, BuilderSpec, VoxelBuilderSpec
+from scene_runtime.artifacts import (
+    ArtifactType,
+    BuilderSpec,
+    VoxelBuilderSpec,
+    VoxelCoreSpec,
+)
 from scene_runtime.models import ScenePlanningResponse
 
 
@@ -46,13 +51,25 @@ def _parse_model(raw_output: str, model_cls: type[ModelT]) -> ModelT:
         raise ValueError(f"invalid {model_cls.__name__} payload: {exc}") from exc
 
 
+def decode_artifact_json(raw_output: str) -> Any:
+    """Decode raw model output (stripping code fences) to a JSON value.
+
+    Exposed for artifact paths like voxel_core that must inspect the raw object
+    (e.g. detect a `{"rejection": ...}` response) before model validation.
+    """
+
+    return _decode_json(raw_output)
+
+
 def parse_artifact_json(
     raw_output: str, artifact_type: ArtifactType
-) -> ScenePlanningResponse | BuilderSpec | VoxelBuilderSpec:
+) -> ScenePlanningResponse | BuilderSpec | VoxelBuilderSpec | VoxelCoreSpec:
     if artifact_type is ArtifactType.SCENE_ACTIONS:
         return parse_response_json(raw_output)
     if artifact_type is ArtifactType.BUILDER:
         return _parse_model(raw_output, BuilderSpec)
     if artifact_type is ArtifactType.VOXEL_BUILDER:
         return _parse_model(raw_output, VoxelBuilderSpec)
+    if artifact_type is ArtifactType.VOXEL_CORE:
+        return _parse_model(raw_output, VoxelCoreSpec)
     raise ValueError(f"unsupported artifact type: {artifact_type}")

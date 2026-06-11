@@ -30,8 +30,17 @@ Each task declares a `target_artifact` and the benchmark dispatches on it:
 - `scene_actions` — `ScenePlanningResponse`, gold stored in `gold_response`
 - `builder` — `BuilderSpec`, gold stored in `gold_builder`
 - `voxel_builder` — `VoxelBuilderSpec`, gold stored in `gold_voxel_builder`
+- `voxel_core` — `VoxelCoreSpec`, the production "creative core" the game's Gemini
+  call authors (mirrors `voxelCoreSchema` in `@3dvibegame/ai-planning`). Scored by
+  a **constraint rubric**, not gold reference, so wins port back to the shipped
+  object-generation prompt. `gold_voxel_core` is only a canned fixture for the mock
+  adapter (a `{"rejection": ...}` fixture is allowed). `metadata.voxel_profile`
+  selects `object` (default) or `reject` behavior. The suite's `system_prompt` is
+  the shipped `voxelBuilderSystemPrompt` (PROMPT_VERSION) verbatim, and the prompt
+  bundle is production-faithful (system + `Player prompt: …`, no scene/schema
+  injection — see `scene_planning_bench/prompts.py`).
 
-Pydantic models live in `src/scene_runtime/artifacts.py`; schemas in `schemas/builder.schema.json` and `schemas/voxel_builder.schema.json`. `SuiteDefaults` carries `builder_schema_path` and `voxel_builder_schema_path`; `load_artifact_schemas` returns a dict keyed by `ArtifactType`. Scoring modules: `scene_planning_bench.scoring.builder_score` and `scene_planning_bench.scoring.voxel_score`. `aggregate_artifact_score` averages non-schema subscores against the scoring profile's non-schema weight total.
+Pydantic models live in `src/scene_runtime/artifacts.py`; schemas in `schemas/builder.schema.json`, `schemas/voxel_builder.schema.json`, and `schemas/voxel_core.schema.json`. `SuiteDefaults` carries `builder_schema_path`, `voxel_builder_schema_path`, and `voxel_core_schema_path`; `load_artifact_schemas` returns a dict keyed by `ArtifactType`. Scoring modules: `scene_planning_bench.scoring.builder_score`, `scene_planning_bench.scoring.voxel_score`, and `scene_planning_bench.scoring.voxel_core_score` (rubric; its `assemble_envelope` mirrors the server's `assembleVoxelSpec` for the "compiles" hard-fail gate). `aggregate_artifact_score` averages non-schema subscores against the scoring profile's non-schema weight total.
 
 When adding a new artifact type: add a Pydantic model + JSON schema, extend `ArtifactType` / `parse_artifact_json`, wire it through `BenchmarkTask.gold_payload`, `SuiteDefaults`, `load_artifact_schemas`, `evaluate_output`, and `build_artifact_prompt_bundle`, then add a scoring module.
 

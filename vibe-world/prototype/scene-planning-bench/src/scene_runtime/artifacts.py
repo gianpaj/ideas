@@ -12,6 +12,12 @@ class ArtifactType(str, Enum):
     SCENE_ACTIONS = "scene_actions"
     BUILDER = "builder"
     VOXEL_BUILDER = "voxel_builder"
+    # The production "creative core" the game's Gemini call authors (materials +
+    # operations + size/style/behaviors/quantity/scale). The server fills the
+    # deterministic envelope (grid/placement/anchors/ids) around it, so the bench
+    # scores this core, not the full VoxelBuilderSpec. Mirrors `voxelCoreSchema`
+    # in @3dvibegame/ai-planning.
+    VOXEL_CORE = "voxel_core"
 
 
 class BuilderOperation(str, Enum):
@@ -219,6 +225,36 @@ VoxelOp = Annotated[
     Union[AddBoxOp, AddSphereOp, AddLineOp, PaintRegionOp, RotateRegionOp, CloneRegionOp],
     Field(discriminator="kind"),
 ]
+
+
+class VoxelCoreMaterial(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    material_id: str = Field(min_length=1, max_length=40)
+    color_hint: str | None = None
+    tags: list[str] | None = None
+
+
+class VoxelCoreSpec(BaseModel):
+    """Production "creative core" the game's Gemini call authors.
+
+    Mirrors `voxelCoreSchema` in @3dvibegame/ai-planning: the LLM authors only
+    metadata + the operations list; the server assembles the deterministic
+    envelope (grid/placement/anchors/ids) around it. Operations stay permissive
+    (raw dicts, like production's `z.array(z.unknown())`); the constraint scorer
+    inspects them and the assembled envelope is validated separately.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    object_category: str = Field(min_length=1, max_length=60)
+    size_tier: str = Field(min_length=1, max_length=20)
+    style_tags: list[str] = Field(default_factory=list, max_length=12)
+    behaviors: list[str] = Field(default_factory=list, max_length=6)
+    materials: list[VoxelCoreMaterial] = Field(min_length=1, max_length=12)
+    operations: list[dict[str, Any]] = Field(min_length=1, max_length=40)
+    quantity: int = Field(default=1, ge=1, le=4)
+    scale: float | None = Field(default=None, ge=0.25, le=4)
 
 
 class VoxelBuilderSpec(BaseModel):

@@ -22,7 +22,7 @@
     },
     "target_artifact": {
       "type": "string",
-      "enum": ["scene_actions", "builder", "voxel_builder"],
+      "enum": ["scene_actions", "builder", "voxel_builder", "voxel_core"],
       "default": "scene_actions"
     },
     "allowed_response_types": {
@@ -40,6 +40,9 @@
     },
     "gold_voxel_builder": {
       "$ref": "voxel_builder.schema.json"
+    },
+    "gold_voxel_core": {
+      "$ref": "voxel_core.schema.json"
     },
     "scoring_profile": {
       "$ref": "scoring-profile.schema.json"
@@ -76,6 +79,13 @@
         "required": ["target_artifact"]
       },
       "then": { "required": ["gold_voxel_builder"] }
+    },
+    {
+      "if": {
+        "properties": { "target_artifact": { "const": "voxel_core" } },
+        "required": ["target_artifact"]
+      },
+      "then": { "required": ["gold_voxel_core"] }
     }
   ]
 }

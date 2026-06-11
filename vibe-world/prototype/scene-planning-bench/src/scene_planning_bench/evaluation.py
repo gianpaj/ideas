@@ -10,6 +10,7 @@ from scene_planning_bench.scoring import (
     compute_builder_scores,
     compute_schema_score,
     compute_spatial_match_score,
+    compute_voxel_core_score,
     compute_voxel_scores,
 )
 from scene_planning_bench.types import BenchmarkTask, RunResult
@@ -20,6 +21,7 @@ from scene_runtime import (
     SceneDefinition,
     ScenePlanningResponse,
     VoxelBuilderSpec,
+    decode_artifact_json,
     parse_artifact_json,
     process_planning_request,
     validate_with_schema,
@@ -69,6 +71,25 @@ def evaluate_output(
             raw_output,
             adapter_name,
             response_schema,
+            sample_id=sample_id,
+            prompt_index=prompt_index,
+            prompt_text=prompt_text,
+            prompt_bundle=prompt_bundle,
+            inspect_log_location=inspect_log_location,
+            total_time_seconds=total_time_seconds,
+            working_time_seconds=working_time_seconds,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            total_tokens=total_tokens,
+            total_cost_usd=total_cost_usd,
+            repeat_index=repeat_index,
+        )
+
+    if task.target_artifact is ArtifactType.VOXEL_CORE:
+        return _evaluate_voxel_core(
+            task,
+            raw_output,
+            adapter_name,
             sample_id=sample_id,
             prompt_index=prompt_index,
             prompt_text=prompt_text,
@@ -317,6 +338,115 @@ def _evaluate_artifact(
         argument_match_score=argument_match_score,
         spatial_match_score=placement_match_score,
         artifact_subscores=subscores,
+        total_score=total_score,
+        total_time_seconds=total_time_seconds,
+        working_time_seconds=working_time_seconds,
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
+        total_tokens=total_tokens,
+        total_cost_usd=total_cost_usd,
+        score_per_total_second=_safe_ratio(total_score, total_time_seconds),
+        score_per_working_second=_safe_ratio(total_score, working_time_seconds),
+        score_per_1k_tokens=(
+            round(total_score / (total_tokens / 1000), 6)
+            if total_tokens is not None and total_tokens > 0
+            else None
+        ),
+        score_per_dollar=_safe_ratio(total_score, total_cost_usd),
+        raw_output=raw_output,
+        parsed_response=None,
+        parsed_artifact=parsed_payload,
+        normalized_plan=None,
+        render_drafts=[],
+        prompt_bundle=prompt_bundle,
+        inspect_log_location=inspect_log_location,
+        errors=errors,
+        diagnostics=diagnostics,
+    )
+
+
+# Group the object-profile rubric subscores onto the uniform report fields so
+# voxel_core rows read like every other artifact in summary.csv / aggregate.json.
+_ACTION_KEYS = ("op_kinds_allowed", "op_ids_unique", "op_count_in_range")
+_ARGUMENT_KEYS = ("materials_declared", "palette_compliance", "color_hint_valid")
+_SPATIAL_KEYS = ("grounded",)
+
+
+def _mean_of(subscores: dict[str, float], keys: tuple[str, ...]) -> float:
+    present = [subscores[key] for key in keys if key in subscores]
+    if not present:
+        return 0.0
+    return round(sum(present) / len(present), 6)
+
+
+def _evaluate_voxel_core(
+    task: BenchmarkTask,
+    raw_output: str,
+    adapter_name: str,
+    *,
+    sample_id: str,
+    prompt_index: int | None,
+    prompt_text: str | None,
+    prompt_bundle: list[dict[str, Any]] | None,
+    inspect_log_location: str | None,
+    total_time_seconds: float | None,
+    working_time_seconds: float | None,
+    input_tokens: int | None,
+    output_tokens: int | None,
+    total_tokens: int | None,
+    total_cost_usd: float | None,
+    repeat_index: int | None,
+) -> RunResult:
+    profile = str(task.metadata.get("voxel_profile", "object"))
+    errors: list[str] = []
+    diagnostics: list[str] = []
+    parsed_payload: dict[str, Any] | None = None
+
+    try:
+        payload = decode_artifact_json(raw_output)
+    except ValueError as exc:
+        errors.append(str(exc))
+        diagnostics.append(f"parse_error: {exc}")
+        payload = None
+
+    if isinstance(payload, dict):
+        parsed_payload = payload
+
+    score = compute_voxel_core_score(payload, profile=profile)
+    errors.extend(score.errors)
+
+    total_score = aggregate_artifact_score(
+        task.scoring_profile,
+        schema_validity=score.schema_validity,
+        subscores=score.subscores,
+    )
+
+    if profile == "reject":
+        action_type_score = score.subscores.get("rejected_correctly", 0.0)
+        argument_match_score = 0.0
+        spatial_match_score = 0.0
+    else:
+        action_type_score = _mean_of(score.subscores, _ACTION_KEYS)
+        argument_match_score = _mean_of(score.subscores, _ARGUMENT_KEYS)
+        spatial_match_score = _mean_of(score.subscores, _SPATIAL_KEYS)
+
+    schema_valid = score.schema_validity == 1.0
+
+    return RunResult(
+        sample_id=sample_id,
+        task_id=task.task_id,
+        paraphrase_group=task.metadata.get("paraphrase_group"),
+        prompt_index=prompt_index,
+        repeat_index=repeat_index,
+        prompt_text=prompt_text,
+        adapter_name=adapter_name,
+        target_artifact=task.target_artifact,
+        schema_valid=schema_valid,
+        response_type_match=schema_valid,
+        action_type_score=action_type_score,
+        argument_match_score=argument_match_score,
+        spatial_match_score=spatial_match_score,
+        artifact_subscores=score.subscores,
         total_score=total_score,
         total_time_seconds=total_time_seconds,
         working_time_seconds=working_time_seconds,

@@ -1,0 +1,9 @@
+matrix_id: voxel_core_models
+suite: configs/suites/v1_voxel_core.yaml
+models:
+  # Production model first — this is what the game ships.
+  - model: google/gemini-2.5-flash
+    label: gemini-2.5-flash
+  - model: google/gemini-2.5-flash-lite
+    label: gemini-2.5-flash-lite
+  - model: anthropic/claude-haiku-4-5

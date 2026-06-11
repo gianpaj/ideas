@@ -1,0 +1,43 @@
+{
+  "task_id": "voxel_core_pine_tree_001",
+  "category": "single_turn",
+  "difficulty": "easy",
+  "scene_id": "forest_cabin_001",
+  "target_artifact": "voxel_core",
+  "prompts": [
+    "Build a chunky pine tree."
+  ],
+  "gold_voxel_core": {
+    "object_category": "pine_tree",
+    "size_tier": "medium",
+    "style_tags": ["forest", "chunky"],
+    "behaviors": [],
+    "materials": [
+      { "material_id": "wood", "color_hint": "#6b4a2b" },
+      { "material_id": "moss_stone", "color_hint": "#2f6b3a" },
+      { "material_id": "neon", "color_hint": "#7be0c2" }
+    ],
+    "operations": [
+      { "op_id": "trunk", "kind": "add_box", "position": [0, 1, 0], "size": [0.6, 2, 0.6], "material_id": "wood", "tags": ["trunk"] },
+      { "op_id": "canopy_low", "kind": "add_box", "position": [0, 2.4, 0], "size": [2, 1, 2], "material_id": "moss_stone", "tags": ["foliage"] },
+      { "op_id": "canopy_mid", "kind": "add_box", "position": [0, 3.2, 0], "size": [1.4, 0.9, 1.4], "material_id": "moss_stone", "tags": ["foliage"] },
+      { "op_id": "canopy_top", "kind": "add_box", "position": [0, 3.9, 0], "size": [0.8, 0.7, 0.8], "material_id": "moss_stone", "tags": ["foliage"] },
+      { "op_id": "star", "kind": "add_sphere", "center": [0, 4.5, 0], "radius": 0.25, "material_id": "neon", "tags": ["detail"] }
+    ],
+    "quantity": 1
+  },
+  "scoring_profile": {
+    "profile_id": "voxel_core_v1",
+    "weights": {
+      "schema_validity": 0.25,
+      "action_type": 0.25,
+      "argument_match": 0.30,
+      "spatial_match": 0.20
+    },
+    "hard_fail_on_schema_invalid": true
+  },
+  "metadata": {
+    "voxel_profile": "object",
+    "paraphrase_group": "pine_tree_voxel_core"
+  }
+}

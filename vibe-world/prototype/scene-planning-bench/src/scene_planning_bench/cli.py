@@ -262,6 +262,9 @@ def validate_data(
         ArtifactType.VOXEL_BUILDER: load_schema(
             root / suite_config.defaults.voxel_builder_schema_path
         ),
+        ArtifactType.VOXEL_CORE: load_schema(
+            root / suite_config.defaults.voxel_core_schema_path
+        ),
     }
     tasks = load_tasks_from_suite(root / suite)
     invalid = 0

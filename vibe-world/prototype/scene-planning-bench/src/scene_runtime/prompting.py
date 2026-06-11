@@ -33,6 +33,14 @@ ARTIFACT_SYSTEM_PROMPTS: dict[ArtifactType, str] = {
         "Declare grid.unit_meters, up_axis 'y', and rotation_step_degrees 90.\n"
         "Every op_id must be unique and reference a declared material_id."
     ),
+    # Fallback only — voxel_core suites supply the real shipped prompt verbatim.
+    ArtifactType.VOXEL_CORE: (
+        "You are a voxel-builder assistant for Vibe World.\n"
+        "Given a player's prompt, design a single small 3D object as a list of "
+        "voxel operations (add_box, add_sphere, add_line).\n"
+        "Return JSON ONLY with object_category, size_tier, style_tags, behaviors, "
+        "materials, and operations."
+    ),
 }
 
 

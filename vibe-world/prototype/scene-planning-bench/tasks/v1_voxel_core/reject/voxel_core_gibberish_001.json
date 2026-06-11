@@ -1,0 +1,27 @@
+{
+  "task_id": "voxel_core_gibberish_001",
+  "category": "reject",
+  "difficulty": "easy",
+  "scene_id": "forest_cabin_001",
+  "target_artifact": "voxel_core",
+  "prompts": [
+    "asdkjf qwponz xzcv"
+  ],
+  "gold_voxel_core": {
+    "rejection": "Prompt is not interpretable as a 3D object."
+  },
+  "scoring_profile": {
+    "profile_id": "voxel_core_v1",
+    "weights": {
+      "schema_validity": 0.25,
+      "action_type": 0.25,
+      "argument_match": 0.30,
+      "spatial_match": 0.20
+    },
+    "hard_fail_on_schema_invalid": true
+  },
+  "metadata": {
+    "voxel_profile": "reject",
+    "paraphrase_group": "gibberish_voxel_core"
+  }
+}
