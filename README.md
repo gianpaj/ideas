@@ -19,5 +19,5 @@ Use this as a staging ground for exploration—when an idea matures, it can move
   - **Date ideated:** 2026-02-25
 
 - **griefbot** — A compassionate, open-source, voice-first AI companion for remembering a loved one. Welcomed by a counselling helper ("Will"), build a Persona from a few texts/screenshots + a questionnaire, then have a real-time voice conversation in the browser. Built on an Inworld-style persona engine, real-time speech-to-speech APIs, and LiveKit. Honesty-, consent-, and bounded-use-first.
-  - **Status:** Design + MVP plan — see `griefbot/DESIGN.md`, `griefbot/PLAN.md`, `griefbot/ETHICS.md`
+  - **Status:** Approved MVP design (thinnest-validation study) — see `griefbot/specs/2026-06-24-thinnest-validation-design.md`; concept in `griefbot/DESIGN.md`, ethics in `griefbot/ETHICS.md`
   - **Date started:** 2026-06-24

@@ -101,7 +101,8 @@ consistent and the guardrails enforceable.
 |------|---------|
 | [`README.md`](./README.md) | This concept overview |
 | [`DESIGN.md`](./DESIGN.md) | Product design: main goal, onboarding ("Will"), persona creation, tech principles |
-| [`PLAN.md`](./PLAN.md) | MVP implementation plan: stack, milestones, components |
+| [`specs/2026-06-24-thinnest-validation-design.md`](./specs/2026-06-24-thinnest-validation-design.md) | **Approved MVP design** — "thinnest validation" concierge study (current plan of record) |
+| [`PLAN.md`](./PLAN.md) | Parked: full-build implementation plan (future scope B/C) |
 | [`ETHICS.md`](./ETHICS.md) | Safety, consent, and ethical design requirements (binding) |
 | [`notes/`](./notes/) | Raw founder brainstorms |
 
