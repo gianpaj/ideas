@@ -14,6 +14,7 @@ Each idea is a **folder** with:
 
 | Folder | Status | Purpose |
 |--------|--------|---------|
+| `griefbot` | Design | Open-source voice-first AI companion for remembering a loved one (Inworld-style persona + realtime APIs + LiveKit) |
 | `multi-city-property-visualization` | Design | 3D visualization of real estate markets across cities |
 | `photos-only-app` | ? | ? |
 | `robotic-companies` | ? | ? |
