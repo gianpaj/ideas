@@ -20,3 +20,7 @@ Use this as a staging ground for exploration—when an idea matures, it can move
 
 - Tarot card game
   - animations with react-spring.dev <https://codesandbox.io/p/sandbox/to6uf?file=%2Fsrc%2FApp.tsx>
+
+- **react-chat-pet-companion** — Canvas-based React companion for a chat UI, driven by chat lifecycle events and Hatch Pet v2 sprite atlases
+  - **Status:** Design plan
+  - **Date started:** 2026-07-10
