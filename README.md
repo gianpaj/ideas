@@ -24,3 +24,7 @@ Use this as a staging ground for exploration—when an idea matures, it can move
 - **react-chat-pet-companion** — Canvas-based React companion for a chat UI, driven by chat lifecycle events and Hatch Pet v2 sprite atlases
   - **Status:** Design plan
   - **Date started:** 2026-07-10
+
+- **hatch-pet-local-orchestrator** — Local Python workflow for preparing, validating, assembling, and packaging Hatch Pet v2 sprite atlases
+  - **Status:** Design plan
+  - **Date started:** 2026-07-10
