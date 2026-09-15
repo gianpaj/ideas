@@ -1,6 +1,8 @@
 matrix_id: cloud_providers
 suite: configs/suites/v1_builder.yaml
 models:
+  - model: inception/mercury-2.5
+    label: mercury-2.5
   - model: google/gemini-2.5-flash
     label: gemini-2.5-flash
   - model: anthropic/claude-haiku-4-5

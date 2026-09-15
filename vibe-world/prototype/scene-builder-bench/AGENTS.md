@@ -7,7 +7,8 @@ This subproject benchmarks the builder layer only:
 - schema and semantic validation
 - continuity checks for refine/remix
 
-It is not the renderer, not the multiplayer backend, and not an LLM runner.
+It is not the renderer or multiplayer backend. The local adapter is deterministic;
+the optional cloud matrix compares LLM providers against the same suite.
 
 ## Working rules
 

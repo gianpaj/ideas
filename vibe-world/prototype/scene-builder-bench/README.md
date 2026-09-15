@@ -1,6 +1,6 @@
 # Scene Builder Benchmark
 
-Deterministic benchmark scaffold for validating whether a normalized Vibe World scene plan can be converted into a stable `BuilderSpec`.
+Benchmark for comparing deterministic and LLM-backed conversion of normalized Vibe World scene plans into `BuilderSpec` output.
 
 ## Scope
 
@@ -11,11 +11,11 @@ This prototype focuses on:
 - schema validation
 - semantic validation
 - continuity checks for `refine`
-- local-only execution and reproducible outputs
+- local deterministic execution and reproducible outputs
+- an optional cloud-model matrix
 
-It does not yet include:
+It does not include:
 
-- LLM execution
 - reducer simulation
 - rendered output comparisons
 - multiplayer state
@@ -25,7 +25,19 @@ It does not yet include:
 ```bash
 uv run scene-builder-bench validate-data
 uv run scene-builder-bench run-local
+uv run scene-builder-bench run-matrix configs/matrices/cloud_providers.yaml
 uv run pytest
+```
+
+The cloud matrix runs Mercury 2.5 first, followed by Gemini, Claude, and GPT.
+Set the credentials for the providers you want to compare in
+this directory's `.env` file or your shell:
+
+```bash
+INCEPTION_API_KEY=...
+GOOGLE_API_KEY=...
+ANTHROPIC_API_KEY=...
+OPENAI_API_KEY=...
 ```
 
 ## Package layout

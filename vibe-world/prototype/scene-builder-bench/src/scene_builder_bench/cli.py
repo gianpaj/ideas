@@ -25,12 +25,15 @@ from scene_builder_bench.validation.schema_validate import (
 app = typer.Typer(no_args_is_help=True, add_completion=False)
 
 PROVIDER_ENV_KEYS = {
+    "inception": "INCEPTION_API_KEY",
     "openai": "OPENAI_API_KEY",
     "anthropic": "ANTHROPIC_API_KEY",
     "google": "GOOGLE_API_KEY",
 }
 
-PROVIDER_BASE_URLS: dict[str, str] = {}
+PROVIDER_BASE_URLS = {
+    "inception": "https://api.inceptionlabs.ai/v1",
+}
 
 
 def _default_run_output_dir(root: Path, suite_id: str, label: str) -> Path:
