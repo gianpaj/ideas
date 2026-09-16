@@ -1,27 +1,16 @@
-# ideas repo — Organization
+# Repository organization
 
-This repo holds project ideas, design docs, and brainstorms in various stages.
+This repository holds project ideas, design documents, research, and prototypes.
+The root [`README.md`](README.md) is the canonical idea inventory.
 
-## Structure
+## Idea structure
 
-Each idea is a **folder** with:
-- **README.md** — Main design doc or concept (required)
-- **notes/** — Raw brainstorms, iterations, research (optional)
-- **references/** — Links, references, inspiration (optional)
-- **assets/** — Diagrams, screenshots, mockups (optional)
+Each idea gets its own folder with:
 
-## Current Ideas
+- `README.md`: main design document or concept, required
+- `notes/`: raw brainstorms, iterations, and research, optional
+- `references/`: links and source material, optional
+- `assets/`: diagrams, screenshots, and mockups, optional
 
-| Folder | Status | Purpose |
-|--------|--------|---------|
-| `griefbot` | Design | Open-source voice-first AI companion for remembering a loved one (Inworld-style persona + realtime APIs + LiveKit) |
-| `multi-city-property-visualization` | Design | 3D visualization of real estate markets across cities |
-| `photos-only-app` | ? | ? |
-| `robotic-companies` | ? | ? |
-| `tauri-gentle-desktop-app-v1` | ? | ? |
-| `trade-annotations-dashboard` | ? | ? |
-| `twitter-engagement-analysis` | ? | ? |
-
----
-
-**Convention:** Each idea gets its own folder. Descriptions should be added here as ideas mature.
+Add or update the idea's entry in the root `README.md` when its purpose or stage
+changes.
