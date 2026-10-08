@@ -1,5 +1,5 @@
 suite_id: v1_dev
-description: Public development split for prompt tuning and routine model checks
+description: Public development split with explicit cardinality
 defaults:
   system_prompt: |
     You are a scene-planning assistant. Output one raw JSON object only, with no prose and no markdown fences.
@@ -18,6 +18,7 @@ defaults:
     Required action fields for scene_actions:
     - object_spec must include category, asset_id, style, and variant. Use null for unknown optional fields.
     - attributes must include color, material, count, and layout. Use null for unknown optional fields.
+    - For a single-object action, set attributes.count to 1; do not omit it or use null. For spawn_layout, set attributes.count to the requested number of objects.
     - transform.position must include mode, reference_object, relation, offset_meters, and absolute. Use null only when truly not applicable.
     - constraints must include grounded, non_overlapping, and preserve_paths_clear.
     - references must include every referenced scene object id.

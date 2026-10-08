@@ -56,7 +56,7 @@ uv run pytest
 Available suites:
 
 - `configs/suites/v1_core.yaml` — scene_actions baseline
-- `configs/suites/v1_dev_gemini.yaml` — development tasks with explicit cardinality for Gemini prompt tuning
+- `configs/suites/v1_dev.yaml` — public development tasks with explicit cardinality for all models
 - `configs/suites/v1_builder.yaml` — builder-spec tasks
 - `configs/suites/v1_voxel_builder.yaml` — voxel-builder tasks
 - `configs/suites/v1_all_artifacts.yaml` — all three artifact types combined
@@ -72,15 +72,9 @@ uv run scene-planning-bench run-inspect-model openai/gpt-5.4-mini --suite config
 
 `configs/suites/v1_core.yaml` remains the combined compatibility suite.
 
-## Results: cross-provider development suite (2026-10-08)
+## Results: baseline prompt (2026-10-08)
 
-Run from this package directory:
-
-```bash
-uv run scene-planning-bench run-matrix configs/matrices/example_cross_provider.yaml --repeats 3
-```
-
-Suite: `configs/suites/v1_dev.yaml`. Six models each answered two `scene_actions` tasks three times: six samples per model, 36 samples total. All model runs succeeded, and all samples passed schema validation.
+This saved baseline run uses a prompt without the explicit-cardinality rule in the current `configs/suites/v1_dev.yaml`. It covers six models and two `scene_actions` tasks with three repeats: six samples per model, 36 samples total. All model runs succeeded, and all samples passed schema validation. The current matrix includes Gemini 3.5 Flash Lite; this baseline does not.
 
 Artifacts: `outputs/matrices/2026-10-08T17-56-56Z_v1-dev_example-cross-provider/`. Scores and mean latency come from `matrix_leaderboard.csv`; perfect-sample counts and median latency come from each model's `runs/<model-label>/summary.csv`.
 
@@ -109,19 +103,20 @@ Haiku 5.5 scored perfectly across six samples with latency between 2.15 and 2.42
 
 These results measure repeatability on two development tasks, not performance across a broad task set or the builder and voxel-builder artifacts. Perfect scores on six samples do not establish general reliability. Cost fields are empty, so `score_per_dollar_rank` is not meaningful for this run.
 
-## Gemini prompt tuning (2026-10-08)
+## Explicit cardinality (2026-10-08)
 
-[`configs/suites/v1_dev_gemini.yaml`](configs/suites/v1_dev_gemini.yaml) uses the same tasks and schemas as `v1_dev.yaml`, with one additional system-prompt rule:
+[`configs/suites/v1_dev.yaml`](configs/suites/v1_dev.yaml) applies this system-prompt rule to all models:
 
 > For a single-object action, set attributes.count to 1; do not omit it or use null. For spawn_layout, set attributes.count to the requested number of objects.
 
-The original development suite, gold responses, scoring, and hidden split remain unchanged. The rule makes cardinality explicit rather than changing how outputs are scored.
+The rule makes cardinality explicit without changing the task set, schemas, gold responses, scoring, or hidden split. The cross-provider matrix uses this development suite with seven unique model entries.
 
 Run from this package directory:
 
 ```bash
-uv run scene-planning-bench validate-data --suite configs/suites/v1_dev_gemini.yaml
-uv run scene-planning-bench run-inspect-model google/gemini-3.1-flash-lite --suite configs/suites/v1_dev_gemini.yaml --repeats 3
+uv run scene-planning-bench validate-data
+uv run scene-planning-bench run-inspect-model google/gemini-3.1-flash-lite --repeats 3
+uv run scene-planning-bench run-matrix configs/matrices/example_cross_provider.yaml --repeats 3
 ```
 
 Gemini 3.1 Flash Lite scored 100% in both the initial tuned batch and a separate confirmation batch, with no further prompt revisions:
@@ -140,7 +135,23 @@ Artifacts under `outputs/`:
 
 All 12 tuned samples passed schema validation and scored perfectly. Every pine-tree response included `count: 1`; every barrel response included `count: 3` and `layout: "triangle"`. The baseline included the pine-tree count in only one of three repeats.
 
-These are sequential runs on two development tasks, not a controlled latency comparison or evidence of general reliability. Gemini 2.5 Flash and Gemini 3.5 Flash Lite have not been tested with this tuned suite.
+### Cross-provider check
+
+The explicit-cardinality prompt scored 100% for all seven unique models in `outputs/matrices/2026-10-08T18-26-09Z_v1-dev-gemini_example-cross-provider/`. Every saved sample passed schema validation; every pine-tree response included `count: 1`.
+
+| Model                 | Mean score | Perfect samples | Mean latency |
+| --------------------- | ---------: | --------------: | -----------: |
+| Gemini 3.5 Flash Lite |       100% |             2/2 |       1.53 s |
+| Gemini 3.1 Flash Lite |       100% |             2/2 |       1.61 s |
+| Claude Haiku 5.5      |       100% |             2/2 |       1.91 s |
+| Claude Haiku 4.5      |       100% |             2/2 |       3.40 s |
+| Gemini 2.5 Flash      |       100% |             2/2 |       5.00 s |
+| Gemma 4 26B A4B       |       100% |             2/2 |      17.63 s |
+| Gemma 4 31B           |       100% |             2/2 |      23.29 s |
+
+This saved matrix used one repeat per task and contains two Gemini 3.5 entries sharing an output directory. Both summary rows scored 100% with a 1.53-second mean latency; the table lists the model once. The current matrix has unique labels.
+
+The `v1-dev-gemini` artifact names identify the saved runs, not a separate suite required to execute the commands above. These results cover only two development tasks. They are not a controlled latency comparison or evidence of general reliability; cost fields are empty, so dollar rankings are not meaningful.
 
 ## Output layout
 
