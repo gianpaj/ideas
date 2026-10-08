@@ -33,6 +33,31 @@ def test_voxel_core_matrix_compares_mercury_with_game_and_fast_baselines() -> No
     assert all(task.task.target_artifact is ArtifactType.VOXEL_CORE for task in tasks)
 
 
+def test_tuned_cross_provider_matrix_preserves_selected_models_and_effort() -> None:
+    root = project_root()
+    baseline = RunMatrixConfig.model_validate(
+        read_yaml(root / "configs/matrices/voxel_core_models.yaml")
+    )
+    tuned = RunMatrixConfig.model_validate(
+        read_yaml(root / "configs/matrices/voxel_core_tuned_cross_provider.yaml")
+    )
+    assert tuned.suite == "configs/suites/v1_voxel_core_gemini_tuned.yaml"
+    assert [entry.model for entry in tuned.models] == [
+        entry.model
+        for entry in baseline.models
+        if entry.model != "google/gemini-2.5-flash"
+    ]
+    assert all(entry.enabled for entry in tuned.models)
+    assert len({entry.label for entry in tuned.models}) == len(tuned.models)
+    assert [(entry.label, entry.reasoning_effort) for entry in tuned.models] == [
+        ("mercury-2.5", None),
+        ("gemini-3.5-flash-lite", None),
+        ("gemini-3.1-flash-lite", None),
+        ("claude-haiku-5-5-low", "low"),
+        ("gpt-6-luna-none", "none"),
+    ]
+
+
 def test_gemini_tuned_suite_preserves_baseline_tasks_and_schemas() -> None:
     root = project_root()
     baseline_path = root / "configs/suites/v1_voxel_core.yaml"
