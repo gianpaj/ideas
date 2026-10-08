@@ -56,6 +56,7 @@ uv run pytest
 Available suites:
 
 - `configs/suites/v1_core.yaml` — scene_actions baseline
+- `configs/suites/v1_dev_gemini.yaml` — development tasks with explicit cardinality for Gemini prompt tuning
 - `configs/suites/v1_builder.yaml` — builder-spec tasks
 - `configs/suites/v1_voxel_builder.yaml` — voxel-builder tasks
 - `configs/suites/v1_all_artifacts.yaml` — all three artifact types combined
@@ -107,6 +108,39 @@ The scorer checks count in both argument matching and spatial matching. A lower 
 Haiku 5.5 scored perfectly across six samples with latency between 2.15 and 2.42 seconds. Flash Lite had the lowest mean latency. Gemma 26B and Gemma 31B each had a large latency outlier: 66.94 and 133.68 seconds, respectively. Their mean working times were 8.38 and 23.17 seconds; the cause of the gap between total and working time is unverified.
 
 These results measure repeatability on two development tasks, not performance across a broad task set or the builder and voxel-builder artifacts. Perfect scores on six samples do not establish general reliability. Cost fields are empty, so `score_per_dollar_rank` is not meaningful for this run.
+
+## Gemini prompt tuning (2026-10-08)
+
+[`configs/suites/v1_dev_gemini.yaml`](configs/suites/v1_dev_gemini.yaml) uses the same tasks and schemas as `v1_dev.yaml`, with one additional system-prompt rule:
+
+> For a single-object action, set attributes.count to 1; do not omit it or use null. For spawn_layout, set attributes.count to the requested number of objects.
+
+The original development suite, gold responses, scoring, and hidden split remain unchanged. The rule makes cardinality explicit rather than changing how outputs are scored.
+
+Run from this package directory:
+
+```bash
+uv run scene-planning-bench validate-data --suite configs/suites/v1_dev_gemini.yaml
+uv run scene-planning-bench run-inspect-model google/gemini-3.1-flash-lite --suite configs/suites/v1_dev_gemini.yaml --repeats 3
+```
+
+Gemini 3.1 Flash Lite scored 100% in both the initial tuned batch and a separate confirmation batch, with no further prompt revisions:
+
+| Run                                      | Mean score | Perfect samples | Mean latency | Median latency |
+| ---------------------------------------- | ---------: | --------------: | -----------: | -------------: |
+| Original prompt, Gemini-only matrix      |     95.56% |             4/6 |       1.65 s |         1.52 s |
+| Explicit cardinality, initial batch      |       100% |             6/6 |       1.82 s |         1.86 s |
+| Explicit cardinality, confirmation batch |       100% |             6/6 |       1.90 s |         2.00 s |
+
+Artifacts under `outputs/`:
+
+- Baseline: `matrices/2026-10-08T18-11-20Z_v1-dev_example-cross-provider/runs/gemini-3.1-flash-lite/`
+- Initial tuned batch: `runs/2026-10-08T18-13-53Z_v1-dev-gemini_google-gemini-3-1-flash-lite/`
+- Confirmation batch: `runs/2026-10-08T18-14-08Z_v1-dev-gemini_google-gemini-3-1-flash-lite/`
+
+All 12 tuned samples passed schema validation and scored perfectly. Every pine-tree response included `count: 1`; every barrel response included `count: 3` and `layout: "triangle"`. The baseline included the pine-tree count in only one of three repeats.
+
+These are sequential runs on two development tasks, not a controlled latency comparison or evidence of general reliability. Gemini 2.5 Flash and Gemini 3.5 Flash Lite have not been tested with this tuned suite.
 
 ## Output layout
 
