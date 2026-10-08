@@ -19,6 +19,7 @@ dedicated repository.
 | [`trade-annotations-dashboard`](trade-annotations-dashboard/) | Design | Lightyear trade annotations for TradingView charts |
 | [`twitter-engagement-analysis`](twitter-engagement-analysis/) | Prototype | Analysis of the accounts and posts a user engages with most on X |
 | [`vibe-world`](vibe-world/) | Design and prototype | Multiplayer voxel sandbox for creating and remixing worlds with prompts |
+| [`wearable-leash-pod`](wearable-leash-pod/) | Product model | Harness-mounted leash handle pod with closed, cutaway, and released Blender views |
 
 ## Loose notes
 
