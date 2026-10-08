@@ -28,7 +28,7 @@ from scene_planning_bench.run_layout import (
     default_run_output_dir,
 )
 from scene_planning_bench.runner import run_suite_with_adapter
-from scene_planning_bench.types import RunMatrixConfig, RunResult
+from scene_planning_bench.types import ReasoningEffort, RunMatrixConfig, RunResult
 from scene_planning_bench.utils import (
     load_env,
     read_data_file,
@@ -168,6 +168,7 @@ def _run_inspect_model_impl(
     output: Path,
     model_args_file: Path | None = None,
     repeats: int = 1,
+    reasoning_effort: ReasoningEffort | None = None,
 ) -> tuple[list[RunResult], Path, Path]:
     _require_provider_env(model)
     repeats = _validate_repeats(repeats)
@@ -211,6 +212,7 @@ def _run_inspect_model_impl(
                 model=model,
                 model_args=model_args,
                 repeats=repeats,
+                reasoning_effort=reasoning_effort,
             )
     except Exception as exc:
         typer.echo(f"run failed for model {model}", err=True)
@@ -237,6 +239,7 @@ def _run_inspect_model_impl(
             "inspect_log_dir": str(output / "inspect_logs"),
             "model_args_file": str(model_args_file) if model_args_file else None,
             "repeats": repeats,
+            "reasoning_effort": reasoning_effort,
         },
     )
     return results, summary_path, manifest_path
@@ -443,6 +446,7 @@ def run_matrix(
                     else None
                 ),
                 repeats=entry_repeats,
+                reasoning_effort=entry.reasoning_effort,
             )
             aggregate = read_json(run_output / "aggregate.json")
             rows.append(
@@ -467,6 +471,7 @@ def run_matrix(
                     "score_per_total_second": aggregate.get("score_per_total_second"),
                     "score_per_dollar": aggregate.get("score_per_dollar"),
                     "repeats": entry_repeats,
+                    "reasoning_effort": entry.reasoning_effort,
                 }
             )
         except typer.Exit as exc:
@@ -477,6 +482,7 @@ def run_matrix(
                     "status": "failed",
                     "run_dir": str(run_output),
                     "error": f"exit_code={exc.exit_code}",
+                    "reasoning_effort": entry.reasoning_effort,
                 }
             )
             if not continue_on_error:
