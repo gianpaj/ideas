@@ -71,6 +71,43 @@ uv run scene-planning-bench run-inspect-model openai/gpt-5.4-mini --suite config
 
 `configs/suites/v1_core.yaml` remains the combined compatibility suite.
 
+## Results: cross-provider development suite (2026-10-08)
+
+Run from this package directory:
+
+```bash
+uv run scene-planning-bench run-matrix configs/matrices/example_cross_provider.yaml --repeats 3
+```
+
+Suite: `configs/suites/v1_dev.yaml`. Six models each answered two `scene_actions` tasks three times: six samples per model, 36 samples total. All model runs succeeded, and all samples passed schema validation.
+
+Artifacts: `outputs/matrices/2026-10-08T17-56-56Z_v1-dev_example-cross-provider/`. Scores and mean latency come from `matrix_leaderboard.csv`; perfect-sample counts and median latency come from each model's `runs/<model-label>/summary.csv`.
+
+| Model                 | Mean score | Perfect samples | Mean latency | Median latency |
+| --------------------- | ---------: | --------------: | -----------: | -------------: |
+| Claude Haiku 5.5      |       100% |             6/6 |       2.30 s |         2.31 s |
+| Gemma 4 26B A4B       |       100% |             6/6 |      18.32 s |         7.96 s |
+| Gemma 4 31B           |     97.78% |             5/6 |      41.40 s |        22.31 s |
+| Gemini 3.1 Flash Lite |     93.33% |             3/6 |       1.62 s |         1.53 s |
+| Claude Haiku 4.5      |     93.33% |             3/6 |       3.71 s |         3.73 s |
+| Gemini 2.5 Flash      |     93.33% |             3/6 |       4.83 s |         5.48 s |
+
+### Score interpretation
+
+Every model scored 100% on `three_red_barrels_around_campfire_001` in every repeat. The score differences came from `add_pine_tree_left_of_cabin_001`:
+
+- Haiku 5.5 and Gemma 26B included `attributes.count: 1` in all three responses.
+- Haiku 4.5 and both Gemini models omitted `count` in all three responses, scoring 86.67% on the task.
+- Gemma 31B included `count: 1` in two responses and omitted it in one.
+
+The scorer checks count in both argument matching and spatial matching. A lower spatial score therefore does not by itself indicate incorrect placement. Whether an omitted count is equivalent to one object depends on runtime semantics, which this comparison does not establish.
+
+### Latency and limits
+
+Haiku 5.5 scored perfectly across six samples with latency between 2.15 and 2.42 seconds. Flash Lite had the lowest mean latency. Gemma 26B and Gemma 31B each had a large latency outlier: 66.94 and 133.68 seconds, respectively. Their mean working times were 8.38 and 23.17 seconds; the cause of the gap between total and working time is unverified.
+
+These results measure repeatability on two development tasks, not performance across a broad task set or the builder and voxel-builder artifacts. Perfect scores on six samples do not establish general reliability. Cost fields are empty, so `score_per_dollar_rank` is not meaningful for this run.
+
 ## Output layout
 
 Runs now default to timestamped folders under `outputs/runs/`.

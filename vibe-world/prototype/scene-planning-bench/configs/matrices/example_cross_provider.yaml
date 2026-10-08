@@ -3,6 +3,8 @@ suite: configs/suites/v1_dev.yaml
 models:
   - model: anthropic/claude-haiku-4-5
     label: claude-haiku-4-5
+  - model: anthropic/claude-haiku-5-5
+    label: claude-haiku-5-5
   - model: google/gemini-2.5-flash
     label: gemini-2.5-flash
   - model: google/gemini-3.1-flash-lite
