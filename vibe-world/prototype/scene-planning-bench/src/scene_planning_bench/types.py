@@ -139,7 +139,7 @@ class SuiteConfig(BaseModel):
         return self
 
 
-ReasoningEffort = Literal["none", "minimal", "low", "medium", "high", "xhigh"]
+ReasoningEffort = Literal["none", "minimal", "low", "medium", "high", "xhigh", "max"]
 
 
 class MatrixModelConfig(BaseModel):
@@ -155,8 +155,22 @@ class MatrixModelConfig(BaseModel):
 
     @model_validator(mode="after")
     def validate_reasoning_provider(self) -> "MatrixModelConfig":
-        if self.reasoning_effort is not None and not self.model.startswith("openai/"):
-            raise ValueError("reasoning_effort is supported only for openai/ models")
+        if self.reasoning_effort is None:
+            return self
+        if self.model.startswith("openai/"):
+            if self.reasoning_effort == "max":
+                raise ValueError(
+                    "reasoning_effort 'max' is not supported for openai/ models"
+                )
+        elif self.model.startswith("anthropic/"):
+            if self.reasoning_effort in ("none", "minimal"):
+                raise ValueError(
+                    "anthropic/ reasoning_effort must be low, medium, high, xhigh, or max"
+                )
+        else:
+            raise ValueError(
+                "reasoning_effort is supported only for openai/ and anthropic/ models"
+            )
         return self
 
 

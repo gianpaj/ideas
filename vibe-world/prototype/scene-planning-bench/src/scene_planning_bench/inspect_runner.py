@@ -252,19 +252,35 @@ def run_suite_with_inspect(
         ),
     )
     inspect_log_dir = output_dir / "inspect_logs"
+    generation_config: dict[str, Any] = {}
+    model_args = dict(model_args or {})
+    if reasoning_effort is not None:
+        if model.startswith("anthropic/"):
+            from inspect_ai.model._providers.anthropic import (
+                anthropic_extra_body_fields,
+            )
+
+            native_effort = {"output_config": {"effort": reasoning_effort}}
+            generation_config["extra_body"] = native_effort
+            # Older Inspect adapters drop output_config from generation extra_body.
+            # Keep it in the saved config and forward it through the SDK fallback.
+            if "output_config" not in anthropic_extra_body_fields():
+                extra_body = dict(model_args.get("extra_body") or {})
+                output_config = dict(extra_body.get("output_config") or {})
+                output_config["effort"] = reasoning_effort
+                extra_body["output_config"] = output_config
+                model_args["extra_body"] = extra_body
+        else:
+            generation_config["reasoning_effort"] = reasoning_effort
     logs = inspect_eval(
         task,
         model=model,
-        model_args=model_args or {},
+        model_args=model_args,
         display="none",
         log_dir=str(inspect_log_dir),
         log_format="json",
         metadata={"suite_id": suite.suite_id},
-        **(
-            {"reasoning_effort": reasoning_effort}
-            if reasoning_effort is not None
-            else {}
-        ),
+        **generation_config,
     )
     results = _run_results_from_logs(logs)
     summary_path = write_run_reports(output_dir, results)
