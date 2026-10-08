@@ -4,7 +4,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from inspect_ai import Task, eval as inspect_eval
+from inspect_ai import Task
+from inspect_ai import eval as inspect_eval
 from inspect_ai.dataset import Sample
 from inspect_ai.log import EvalLog, EvalSample
 from inspect_ai.model import ChatMessageSystem, ChatMessageUser, ModelOutput, ModelUsage
@@ -19,7 +20,7 @@ from scene_planning_bench.registry import (
 )
 from scene_planning_bench.reports.json_report import write_run_reports
 from scene_planning_bench.runner import load_artifact_schemas, resolve_task_schema
-from scene_planning_bench.types import BenchmarkTask, RunResult
+from scene_planning_bench.types import BenchmarkTask, ReasoningEffort, RunResult
 from scene_planning_bench.validation import load_schema
 from scene_runtime import ArtifactType, SceneDefinition
 
@@ -154,9 +155,7 @@ def _run_results_from_logs(logs: list[EvalLog]) -> list[RunResult]:
     for log in logs:
         log_status = getattr(log, "status", None)
         if log_status == "error":
-            raise RuntimeError(
-                f"inspect run failed: {_extract_log_error_message(log)}"
-            )
+            raise RuntimeError(f"inspect run failed: {_extract_log_error_message(log)}")
         for sample in log.samples or []:
             results.append(_run_result_from_sample(sample, log.location))
     return results
@@ -178,9 +177,7 @@ def _run_result_from_sample(sample: EvalSample, log_location: str) -> RunResult:
     if sample.scores is None or SCORER_NAME not in sample.scores:
         sample_error = getattr(sample, "error", None)
         if sample_error:
-            raise RuntimeError(
-                f"inspect sample {sample.id} failed: {sample_error}"
-            )
+            raise RuntimeError(f"inspect sample {sample.id} failed: {sample_error}")
         raise ValueError(
             f"inspect sample {sample.id} did not contain {SCORER_NAME} score"
         )
@@ -229,6 +226,7 @@ def run_suite_with_inspect(
     model: str,
     model_args: dict[str, Any] | None = None,
     repeats: int = 1,
+    reasoning_effort: ReasoningEffort | None = None,
 ) -> tuple[list[EvalLog], list[RunResult], Path]:
     root = project_root()
     suite_path = root / suite_relative_path
@@ -262,6 +260,11 @@ def run_suite_with_inspect(
         log_dir=str(inspect_log_dir),
         log_format="json",
         metadata={"suite_id": suite.suite_id},
+        **(
+            {"reasoning_effort": reasoning_effort}
+            if reasoning_effort is not None
+            else {}
+        ),
     )
     results = _run_results_from_logs(logs)
     summary_path = write_run_reports(output_dir, results)

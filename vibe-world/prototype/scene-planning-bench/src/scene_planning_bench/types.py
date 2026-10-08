@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -64,9 +64,7 @@ class BenchmarkTask(BaseModel):
     def validate_gold_payload(self) -> "BenchmarkTask":
         if self.target_artifact is ArtifactType.SCENE_ACTIONS:
             if self.gold_response is None:
-                raise ValueError(
-                    "scene_actions tasks must include gold_response"
-                )
+                raise ValueError("scene_actions tasks must include gold_response")
             if not self.allowed_response_types:
                 raise ValueError(
                     "scene_actions tasks must declare allowed_response_types"
@@ -76,9 +74,7 @@ class BenchmarkTask(BaseModel):
                 raise ValueError("builder tasks must include gold_builder")
         elif self.target_artifact is ArtifactType.VOXEL_BUILDER:
             if self.gold_voxel_builder is None:
-                raise ValueError(
-                    "voxel_builder tasks must include gold_voxel_builder"
-                )
+                raise ValueError("voxel_builder tasks must include gold_voxel_builder")
         return self
 
     def gold_payload(self) -> dict[str, Any]:
@@ -132,6 +128,9 @@ class SuiteConfig(BaseModel):
         return self
 
 
+ReasoningEffort = Literal["none", "minimal", "low", "medium", "high", "xhigh"]
+
+
 class MatrixModelConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -141,6 +140,13 @@ class MatrixModelConfig(BaseModel):
     label: str | None = None
     base_url: str | None = None
     repeats: int | None = Field(default=None, ge=1)
+    reasoning_effort: ReasoningEffort | None = None
+
+    @model_validator(mode="after")
+    def validate_reasoning_provider(self) -> "MatrixModelConfig":
+        if self.reasoning_effort is not None and not self.model.startswith("openai/"):
+            raise ValueError("reasoning_effort is supported only for openai/ models")
+        return self
 
 
 class RunMatrixConfig(BaseModel):
@@ -199,14 +205,17 @@ class RunResult(BaseModel):
 
     @model_validator(mode="after")
     def populate_efficiency_metrics(self) -> "RunResult":
-        if self.score_per_total_second is None and self.total_time_seconds not in (None, 0):
+        if self.score_per_total_second is None and self.total_time_seconds not in (
+            None,
+            0,
+        ):
             self.score_per_total_second = round(
                 self.total_score / self.total_time_seconds,
                 6,
             )
-        if (
-            self.score_per_working_second is None
-            and self.working_time_seconds not in (None, 0)
+        if self.score_per_working_second is None and self.working_time_seconds not in (
+            None,
+            0,
         ):
             self.score_per_working_second = round(
                 self.total_score / self.working_time_seconds,

@@ -72,6 +72,32 @@ uv run scene-planning-bench run-inspect-model openai/gpt-5.4-mini --suite config
 
 `configs/suites/v1_core.yaml` remains the combined compatibility suite.
 
+## OpenAI reasoning effort in matrices
+
+OpenAI matrix entries accept an optional `reasoning_effort` generation setting:
+
+```yaml
+models:
+  - model: openai/gpt-6-luna
+    label: gpt-6-luna-low
+    reasoning_effort: low
+  - model: openai/gpt-6-luna
+    label: gpt-6-luna-medium
+    reasoning_effort: medium
+```
+
+Omit the field or set it to null to use the provider default. The benchmark accepts `none`, `minimal`, `low`, `medium`, `high`, and `xhigh`; support varies by model, and the API rejects unsupported choices. This field is restricted to `openai/` entries. Gemini thinking levels and Anthropic thinking controls are not configured through this field.
+
+Use distinct labels for each model/effort combination so artifacts have separate directories. The example cross-provider matrix pins both Luna models to `low`. Run it with:
+
+```bash
+uv run scene-planning-bench run-matrix configs/matrices/example_cross_provider.yaml --repeats 3
+```
+
+The runner passes effort as an Inspect generation setting, not a provider initialization argument. Run manifests, matrix summaries, and leaderboards record the requested `reasoning_effort`; null or blank means provider default, not reasoning disabled. Inspect logs preserve the generation configuration. `run-inspect-model` without a matrix continues to use provider defaults.
+
+The five-model results below use provider defaults, not the `low` setting in the current example matrix. Changing effort can affect latency, token usage, cost, and quality; compare runs before choosing a setting.
+
 ## Results: baseline prompt (2026-10-08)
 
 This saved baseline run uses a prompt without the explicit-cardinality rule in the current `configs/suites/v1_dev.yaml`. It covers six models and two `scene_actions` tasks with three repeats: six samples per model, 36 samples total. All model runs succeeded, and all samples passed schema validation. The current matrix includes Gemini 3.5 Flash Lite; this baseline does not.
