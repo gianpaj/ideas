@@ -88,7 +88,7 @@ models:
 
 Omit the field or set it to null to use the provider default. The benchmark accepts `none`, `minimal`, `low`, `medium`, `high`, and `xhigh`; support varies by model, and the API rejects unsupported choices. This field is restricted to `openai/` entries. Gemini thinking levels and Anthropic thinking controls are not configured through this field.
 
-Use distinct labels for each model/effort combination so artifacts have separate directories. The example cross-provider matrix pins both Luna models to `low`. Run it with:
+Use distinct labels for each model/effort combination so artifacts have separate directories. The example matrix compares GPT-6 Luna at `low`, `minimal`, and `none`, and GPT-5.6 Luna at `low` and `none`. GPT-5.6 Luna rejects `minimal`. Run it with:
 
 ```bash
 uv run scene-planning-bench run-matrix configs/matrices/example_cross_provider.yaml --repeats 3
@@ -96,11 +96,11 @@ uv run scene-planning-bench run-matrix configs/matrices/example_cross_provider.y
 
 The runner passes effort as an Inspect generation setting, not a provider initialization argument. Run manifests, matrix summaries, and leaderboards record the requested `reasoning_effort`; null or blank means provider default, not reasoning disabled. Inspect logs preserve the generation configuration. `run-inspect-model` without a matrix continues to use provider defaults.
 
-The five-model results below use provider defaults, not the `low` setting in the current example matrix. Changing effort can affect latency, token usage, cost, and quality; compare runs before choosing a setting.
+The five-model repeated comparison below uses provider defaults; the OpenAI effort comparison records explicit settings. Changing effort can affect latency, token usage, cost, and quality; compare runs before choosing a setting.
 
 ## Results: baseline prompt (2026-10-08)
 
-This saved baseline run uses a prompt without the explicit-cardinality rule in the current `configs/suites/v1_dev.yaml`. It covers six models and two `scene_actions` tasks with three repeats: six samples per model, 36 samples total. All model runs succeeded, and all samples passed schema validation. The current matrix includes Gemini 3.5 Flash Lite; this baseline does not.
+This saved baseline run uses a prompt without the explicit-cardinality rule in the current `configs/suites/v1_dev.yaml`. It covers six models and two `scene_actions` tasks with three repeats: six samples per model, 36 samples total. All model runs succeeded, and all samples passed schema validation. This baseline does not include Gemini 3.5 Flash Lite.
 
 Artifacts: `outputs/matrices/2026-10-08T17-56-56Z_v1-dev_example-cross-provider/`. Scores and mean latency come from `matrix_leaderboard.csv`; perfect-sample counts and median latency come from each model's `runs/<model-label>/summary.csv`.
 
@@ -217,6 +217,44 @@ These counts come from `inspect_logs/*.json`, not the benchmark summary CSV. Ope
 Gemini 3.5 Flash Lite had the lowest observed mean latency, about 7% below Gemini 3.1 Flash Lite. Their latency ranges overlap, and six samples per model are too few to establish a reliable speed advantage or tail-latency estimate. The OpenAI models showed no scored quality advantage on these two tasks while taking longer under their default reasoning settings.
 
 This suite reaches its scoring ceiling for all five models. More development tasks are needed to distinguish quality; repeated perfect scores on these two prompts do not establish general reliability. Cost fields remain empty, so this comparison cannot establish value per dollar.
+
+## Results: OpenAI effort comparison (2026-10-08)
+
+Artifacts: `outputs/matrices/2026-10-08T18-56-52Z_v1-dev_example-cross-provider/`. Five configurations each answered two development tasks three times. All 30 samples passed schema validation and scored 100%. Each configuration has a unique label and a separate artifact directory.
+
+| Model        | Requested effort | Perfect samples | Mean latency | Median latency | Total reasoning tokens |
+| ------------ | ---------------- | --------------: | -----------: | -------------: | ---------------------: |
+| GPT-6 Luna   | `low`            |             6/6 |       3.66 s |         3.61 s |                    396 |
+| GPT-6 Luna   | `minimal`        |             6/6 |       3.06 s |         2.62 s |                    357 |
+| GPT-6 Luna   | `none`           |             6/6 |       2.92 s |         2.89 s |                    429 |
+| GPT-5.6 Luna | `low`            |             6/6 |       4.11 s |         3.70 s |                     52 |
+| GPT-5.6 Luna | `none`           |             6/6 |       3.18 s |         3.15 s |                      0 |
+
+Scores and mean latency come from `matrix_summary.csv`; medians come from per-configuration summaries. Reasoning totals come from Inspect logs and cover six samples each. The logs confirm every requested effort setting. All five configurations report the same cached-input total: 15,261 tokens.
+
+GPT-5.6 Luna reported zero reasoning tokens in every `none` sample. At `low`, it reported zero in five samples and 52 in one. GPT-6 Luna reported reasoning tokens in every `none` sample, totaling 429. Its requested `none` setting therefore does not establish reasoning-disabled execution; the cause of the nonzero usage is unresolved.
+
+GPT-6 Luna `none` had about 8% lower mean latency than GPT-5.6 Luna `none`, with the same perfect score. GPT-6 `minimal` had the lowest median, but a 5.87-second sample increased its mean above `none`. These are small, sequential samples, not reliable tail-latency estimates.
+
+### Price-based comparison
+
+The following rates were supplied by the user on 2026-10-08 and have not been independently verified:
+
+| Model        | Input / 1M tokens | Output / 1M tokens |
+| ------------ | ----------------: | -----------------: |
+| GPT-6 Luna   |             $0.10 |              $0.50 |
+| GPT-5.6 Luna |             $0.20 |              $1.20 |
+
+At these rates, GPT-6 Luna has 50% lower input pricing and about 58% lower output pricing. Its higher reported output usage does not erase the output-cost advantage in the `none` comparison:
+
+| Configuration       | Output tokens across six samples | Estimated output cost |
+| ------------------- | -------------------------------: | --------------------: |
+| GPT-6 Luna `none`   |                            1,411 |             $0.000706 |
+| GPT-5.6 Luna `none` |                              963 |             $0.001156 |
+
+Output estimates use `output_tokens × output_rate / 1,000,000`. Reasoning tokens are included in output usage and must not be added again. These estimates exclude input cost because most input tokens were cached and cached-input rates were not supplied. They are not total billing estimates and do not populate the benchmark's cost fields or dollar rankings.
+
+For these two tasks and the supplied prices, GPT-6 Luna `none` is the stronger observed candidate than GPT-5.6 Luna `none`: identical scores, lower mean and median latency, and lower estimated output cost. The unresolved GPT-6 reasoning usage and the narrow task coverage limit this conclusion; broader development tasks are needed before choosing a general default.
 
 ## Output layout
 
