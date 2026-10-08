@@ -18,14 +18,14 @@ This prototype focuses on:
 
 ## Artifact types
 
-Each task declares a `target_artifact` describing which JSON contract the model must produce. Three artifacts are supported, mirroring the scene-runtime-demo pipeline:
+Each task declares a `target_artifact` describing which JSON contract the model must produce. Four artifacts are supported:
 
 - `scene_actions` — the high-level `ScenePlanningResponse` (actions, clarifications, refusals). Schema: `schemas/response.schema.json`. Gold lives in `gold_response`.
 - `builder` — the mid-level `BuilderSpec` (parts + instances + placement IR). Schema: `schemas/builder.schema.json`. Gold lives in `gold_builder`.
 - `voxel_builder` — the low-level `VoxelBuilderSpec` (discrete ops: `add_box`, `add_sphere`, `add_line`, `paint_region`, `rotate_region`, `clone_region`). Schema: `schemas/voxel_builder.schema.json`. Gold lives in `gold_voxel_builder`.
 - `voxel_core` — the production "creative core" the game's object-generation call authors (mirrors `voxelCoreSchema` in `@3dvibegame/ai-planning`). Schema: `schemas/voxel_core.schema.json`. **Constraint-scored** (not gold-reference) so wins port back to the shipped prompt; `gold_voxel_core` is only the mock fixture. See `configs/suites/v1_voxel_core.yaml` — its `system_prompt` is the shipped voxel-builder prompt verbatim.
 
-Scoring reuses the four-component profile (schema validity, action/operation type, argument match, spatial match) across all three artifacts. For builder/voxel tasks, subscores (e.g. `part_primitive_match`, `op_kind_match`, `material_set_match`) are surfaced via `artifact_subscores` on each `RunResult` and mapped onto the headline `action_type_score`, `argument_match_score`, and `spatial_match_score` fields so reports stay uniform.
+Scoring reuses the four-component profile (schema validity, action/operation type, argument match, spatial match) across all four artifacts. For builder/voxel tasks, subscores (e.g. `part_primitive_match`, `op_kind_match`, `material_set_match`) are surfaced via `artifact_subscores` on each `RunResult` and mapped onto the headline `action_type_score`, `argument_match_score`, and `spatial_match_score` fields so reports stay uniform.
 
 Inspect is now used for one of the execution paths, while the scoring logic remains deterministic and local to this package.
 
@@ -121,6 +121,38 @@ uv run scene-planning-bench run-inspect-model openai/gpt-5.4-mini --suite config
 ```
 
 `configs/suites/v1_core.yaml` remains the combined compatibility suite.
+
+## Game object-generation comparison
+
+[`configs/matrices/voxel_core_models.yaml`](configs/matrices/voxel_core_models.yaml) compares Mercury 2.5 against the game's Gemini 2.5 Flash baseline, Gemini 3.5 Flash Lite, Gemini 3.1 Flash Lite, Claude Haiku 5.5, and GPT-6 Luna with requested reasoning effort `none`. Mercury runs first. The suite uses the game's v3 object-generation prompt and `Player prompt: …` input format; models author voxel geometry rather than high-level scene actions.
+
+Run from this package directory:
+
+```bash
+uv run scene-planning-bench validate-data --suite configs/suites/v1_voxel_core.yaml
+uv run scene-planning-bench run-matrix configs/matrices/voxel_core_models.yaml --repeats 3
+```
+
+Set `INCEPTION_API_KEY`, `GOOGLE_API_KEY`, `ANTHROPIC_API_KEY`, and `OPENAI_API_KEY` in this package's `.env` or your shell. This run sends task prompts to the providers and incurs API charges. Six tasks with three repeats produce 18 samples per model, 108 total. Results are saved under `outputs/matrices/<timestamp>_v1-voxel-core_voxel-core-models/`.
+
+The comparison candidates come from the scene-action results below, not measured voxel-generation performance. Re-evaluate quality and latency on this suite. Its rubric checks structural constraints, not rendered visual quality, and the Inspect runner does not establish identical generation settings to the game's Gemini client. GPT-6's requested `none` setting does not guarantee zero reasoning tokens; check saved usage.
+
+### Results: voxel-core comparison (2026-10-08)
+
+Artifacts: `outputs/matrices/2026-10-08T19-25-20Z_v1-voxel-core_voxel-core-models/`. All six model runs succeeded. Each model answered six tasks three times; all 108 samples passed schema validation.
+
+| Model                 | Mean score | Perfect samples | Mean latency | Median latency |
+| --------------------- | ---------: | --------------: | -----------: | -------------: |
+| Mercury 2.5           |     98.86% |           16/18 |       5.72 s |         5.87 s |
+| Gemini 3.5 Flash Lite |     97.35% |           11/18 |       2.03 s |         2.12 s |
+| GPT-6 Luna `none`     |     97.20% |           10/18 |       6.98 s |         7.18 s |
+| Gemini 2.5 Flash      |     96.99% |           11/18 |      11.25 s |        10.89 s |
+| Gemini 3.1 Flash Lite |     96.59% |           11/18 |       1.85 s |         2.01 s |
+| Claude Haiku 5.5      |     96.25% |            9/18 |       5.80 s |         6.31 s |
+
+Scores and mean latency come from `matrix_summary.csv`; perfect counts and medians come from each model's `summary.csv`. Latency is total sample time, including the rejection task.
+
+Mercury had the highest observed rubric score and about 49% lower mean latency than the Gemini 2.5 Flash baseline. Gemini 3.1 Flash Lite was fastest by mean latency; Gemini 3.5 Flash Lite traded about 10% higher mean latency for a higher observed score. The score confidence intervals overlap, and six tasks with three repeats do not establish a general quality winner or reliable tail latency. Structural scores are not a visual-quality assessment. Cost fields are empty, so this run cannot establish value per dollar.
 
 ## OpenAI reasoning effort in matrices
 
