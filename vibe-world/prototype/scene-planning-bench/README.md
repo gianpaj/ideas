@@ -154,6 +154,28 @@ Scores and mean latency come from `matrix_summary.csv`; perfect counts and media
 
 Mercury had the highest observed rubric score and about 49% lower mean latency than the Gemini 2.5 Flash baseline. Gemini 3.1 Flash Lite was fastest by mean latency; Gemini 3.5 Flash Lite traded about 10% higher mean latency for a higher observed score. The score confidence intervals overlap, and six tasks with three repeats do not establish a general quality winner or reliable tail latency. Structural scores are not a visual-quality assessment. Cost fields are empty, so this run cannot establish value per dollar.
 
+### Gemini 3.5 Flash Lite tuned prompt (2026-10-08)
+
+[`configs/suites/v1_voxel_core_gemini_tuned.yaml`](configs/suites/v1_voxel_core_gemini_tuned.yaml) is a development prompt candidate, not the shipped game prompt. It shares all six task files, schemas, scoring, and the `Player prompt: …` input format with `v1_voxel_core`; the baseline suite remains unchanged. The prompt specifies center-based box coordinates, connected parts, axis-aligned lines, unique material declarations, and one object's 4–14 operations even when `quantity` requests several copies.
+
+```bash
+uv run scene-planning-bench validate-data --suite configs/suites/v1_voxel_core_gemini_tuned.yaml
+uv run scene-planning-bench run-matrix configs/matrices/voxel_core_gemini_tuned.yaml --repeats 10
+```
+
+This matrix calls only `google/gemini-3.5-flash-lite`, loads `GOOGLE_API_KEY` from the package `.env`, and incurs API charges. Artifact directories below are under `outputs/matrices/`:
+
+| Run                             | Mean score | Perfect samples | Mean latency | Median latency | Artifact directory                                                        |
+| ------------------------------- | ---------: | --------------: | -----------: | -------------: | ------------------------------------------------------------------------- |
+| Game-v3 baseline                |     97.35% |           11/18 |      2.029 s |        2.117 s | `2026-10-08T19-25-20Z_v1-voxel-core_voxel-core-models`                    |
+| Geometry rules candidate        |     99.24% |           16/18 |      2.063 s |        2.046 s | `2026-10-08T19-53-32Z_v1-voxel-core-gemini-tuned_voxel-core-gemini-tuned` |
+| Selected prompt                 |       100% |           18/18 |      2.117 s |        2.084 s | `2026-10-08T19-54-09Z_v1-voxel-core-gemini-tuned_voxel-core-gemini-tuned` |
+| Fresh confirmation, same prompt |       100% |           60/60 |      2.048 s |        2.165 s | `2026-10-08T19-54-30Z_v1-voxel-core-gemini-tuned_voxel-core-gemini-tuned` |
+
+The baseline failed connectivity six times and line alignment once. The first candidate failed operation count once and connectivity once; both involved a multiple-object request. The selected prompt has no observed rubric failures across selection and confirmation. All samples in these runs passed schema validation. Each directory contains the Gemini run's task JSON, prompt bundles, Inspect logs, aggregates, and manifest.
+
+The confirmation is fresh sampling of the same six development tasks, not a holdout evaluation. A perfect constraint score does not establish unseen-prompt reliability, semantic fidelity, or rendered visual quality. No tasks, gold fixtures, scorer, hidden split, or game code were changed. Confirmation averaged 1,807.52 total tokens per sample versus 1,224.50 for the baseline; cost fields are empty, so similar observed latency does not establish equal cost. Saved prompts and usage support reproduction; these runs do not establish production-equivalent generation settings.
+
 ## OpenAI reasoning effort in matrices
 
 OpenAI matrix entries accept an optional `reasoning_effort` generation setting:

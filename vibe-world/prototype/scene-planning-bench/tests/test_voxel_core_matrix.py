@@ -31,3 +31,28 @@ def test_voxel_core_matrix_compares_mercury_with_game_and_fast_baselines() -> No
     tasks = load_tasks_from_suite(root / matrix.suite)
     assert len(tasks) == 6
     assert all(task.task.target_artifact is ArtifactType.VOXEL_CORE for task in tasks)
+
+
+def test_gemini_tuned_suite_preserves_baseline_tasks_and_schemas() -> None:
+    root = project_root()
+    baseline_path = root / "configs/suites/v1_voxel_core.yaml"
+    matrix = RunMatrixConfig.model_validate(
+        read_yaml(root / "configs/matrices/voxel_core_gemini_tuned.yaml")
+    )
+    assert [(entry.model, entry.label) for entry in matrix.models] == [
+        ("google/gemini-3.5-flash-lite", "gemini-3.5-flash-lite")
+    ]
+    assert matrix.models[0].enabled
+    assert matrix.models[0].reasoning_effort is None
+
+    baseline = load_suite(baseline_path)
+    tuned = load_suite(root / matrix.suite)
+    assert tuned.suite_id == "v1_voxel_core_gemini_tuned"
+    assert tuned.task_roots == baseline.task_roots
+    assert tuned.defaults.model_dump(exclude={"system_prompt"}) == (
+        baseline.defaults.model_dump(exclude={"system_prompt"})
+    )
+    assert tuned.defaults.system_prompt != baseline.defaults.system_prompt
+    assert load_tasks_from_suite(root / matrix.suite) == load_tasks_from_suite(
+        baseline_path
+    )
