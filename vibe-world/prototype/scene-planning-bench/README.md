@@ -109,7 +109,7 @@ These results measure repeatability on two development tasks, not performance ac
 
 > For a single-object action, set attributes.count to 1; do not omit it or use null. For spawn_layout, set attributes.count to the requested number of objects.
 
-The rule makes cardinality explicit without changing the task set, schemas, gold responses, scoring, or hidden split. The cross-provider matrix uses this development suite with seven unique model entries.
+The rule makes cardinality explicit without changing the task set, schemas, gold responses, scoring, or hidden split. The cross-provider matrix uses this development suite.
 
 Run from this package directory:
 
@@ -152,6 +152,45 @@ The explicit-cardinality prompt scored 100% for all seven unique models in `outp
 This saved matrix used one repeat per task and contains two Gemini 3.5 entries sharing an output directory. Both summary rows scored 100% with a 1.53-second mean latency; the table lists the model once. The current matrix has unique labels.
 
 The `v1-dev-gemini` artifact names identify the saved runs, not a separate suite required to execute the commands above. These results cover only two development tasks. They are not a controlled latency comparison or evidence of general reliability; cost fields are empty, so dollar rankings are not meaningful.
+
+## Results: five-model repeated comparison (2026-10-08)
+
+Run from this package directory:
+
+```bash
+uv run scene-planning-bench run-matrix configs/matrices/example_cross_provider.yaml --repeats 3
+```
+
+Artifacts: `outputs/matrices/2026-10-08T18-38-26Z_v1-dev_example-cross-provider/`. Five models each answered two development tasks three times: six samples per model, 30 samples total. All runs succeeded, and all 30 samples passed schema validation and scored 100%.
+
+| Model                 | Mean score | Perfect samples | Mean latency | Median latency | Latency range |
+| --------------------- | ---------: | --------------: | -----------: | -------------: | ------------: |
+| Gemini 3.5 Flash Lite |       100% |             6/6 |       1.50 s |         1.48 s |   1.39–1.69 s |
+| Gemini 3.1 Flash Lite |       100% |             6/6 |       1.61 s |         1.66 s |   1.37–1.86 s |
+| Claude Haiku 5.5      |       100% |             6/6 |       2.10 s |         2.38 s |   1.45–2.45 s |
+| GPT-6 Luna            |       100% |             6/6 |       3.55 s |         3.65 s |   2.67–4.03 s |
+| GPT-5.6 Luna          |       100% |             6/6 |       5.66 s |         5.62 s |   5.03–6.42 s |
+
+Scores and mean latency come from `matrix_summary.csv`; medians and ranges come from each model's `summary.csv`. Latency is total sample time, not just working time. GPT-5.6 Luna's mean working time was 3.58 seconds, versus 5.66 seconds total; the cause of that gap is unverified.
+
+### OpenAI reasoning settings
+
+OpenAI's [reasoning guide](https://developers.openai.com/api/docs/guides/reasoning.md#reasoning-mode), checked on 2026-10-08, documents `medium` reasoning effort as the default for GPT-5.6 models and GPT-6 Luna. It also documents `standard` as the default reasoning mode in the Responses API. Reasoning is enabled by default for these models, not disabled merely because no setting is supplied.
+
+Both saved OpenAI Inspect logs have empty `model_generate_config` and `model_args`, with no explicit reasoning override. The run therefore uses provider defaults rather than an explicitly pinned effort. The logs confirm nonzero reasoning usage in every OpenAI sample:
+
+| Model        | Total reasoning tokens across six samples | Per-sample range |
+| ------------ | ----------------------------------------: | ---------------: |
+| GPT-6 Luna   |                                       443 |            56–87 |
+| GPT-5.6 Luna |                                       421 |            59–77 |
+
+These counts come from `inspect_logs/*.json`, not the benchmark summary CSV. OpenAI bills reasoning tokens as output tokens; they are already included in output usage and must not be added twice when estimating cost.
+
+### Interpretation and limits
+
+Gemini 3.5 Flash Lite had the lowest observed mean latency, about 7% below Gemini 3.1 Flash Lite. Their latency ranges overlap, and six samples per model are too few to establish a reliable speed advantage or tail-latency estimate. The OpenAI models showed no scored quality advantage on these two tasks while taking longer under their default reasoning settings.
+
+This suite reaches its scoring ceiling for all five models. More development tasks are needed to distinguish quality; repeated perfect scores on these two prompts do not establish general reliability. Cost fields remain empty, so this comparison cannot establish value per dollar.
 
 ## Output layout
 
