@@ -176,9 +176,47 @@ The baseline failed connectivity six times and line alignment once. The first ca
 
 The confirmation is fresh sampling of the same six development tasks, not a holdout evaluation. A perfect constraint score does not establish unseen-prompt reliability, semantic fidelity, or rendered visual quality. No tasks, gold fixtures, scorer, hidden split, or game code were changed. Confirmation averaged 1,807.52 total tokens per sample versus 1,224.50 for the baseline; cost fields are empty, so similar observed latency does not establish equal cost. Saved prompts and usage support reproduction; these runs do not establish production-equivalent generation settings.
 
-## OpenAI reasoning effort in matrices
+### Tuned prompt: cross-provider check (2026-10-08)
 
-OpenAI matrix entries accept an optional `reasoning_effort` generation setting:
+The selected five-model lineup uses the same tuned prompt through [`configs/matrices/voxel_core_tuned_cross_provider.yaml`](configs/matrices/voxel_core_tuned_cross_provider.yaml). The game-v3 matrix remains unchanged. This matrix includes Gemini 3.5 Flash Lite and excludes Gemini 2.5 Flash; the saved initial check below used the other five models.
+
+```bash
+uv run scene-planning-bench run-matrix configs/matrices/voxel_core_tuned_cross_provider.yaml --repeats 3
+```
+
+Artifacts: `outputs/matrices/2026-10-08T20-02-49Z_v1-voxel-core-gemini-tuned_voxel-core-tuned-cross-provider/`. All five runs succeeded; all 90 samples passed schema validation. Scores and mean latency come from `matrix_summary.csv`; perfect counts and medians come from per-model `summary.csv` files.
+
+| Model                 | Baseline score | Tuned score | Perfect samples | Mean latency | Median latency |
+| --------------------- | -------------: | ----------: | --------------: | -----------: | -------------: |
+| Gemini 3.1 Flash Lite |         96.59% |        100% |           18/18 |       2.14 s |         2.20 s |
+| Mercury 2.5           |         98.86% |        100% |           18/18 |       5.22 s |         5.75 s |
+| Claude Haiku 5.5      |         96.25% |        100% |           18/18 |       6.73 s |         6.52 s |
+| GPT-6 Luna `none`     |         97.20% |        100% |           18/18 |       9.16 s |         8.47 s |
+| Gemini 2.5 Flash      |         96.99% |      95.83% |            7/18 |      18.23 s |        17.29 s |
+
+The geometry guidance transferred to four models with no observed rubric failures. Gemini 2.5 Flash's 11 imperfect samples each failed palette compliance; all other reported structural checks passed. Its score was lower and mean latency higher than in the separate baseline run. This check does not justify switching Gemini 2.5 Flash to the tuned prompt.
+
+Gemini 3.1 Flash Lite was fastest in this batch. Gemini 3.5 Flash Lite's separate 60-sample confirmation averaged 2.05 seconds; those sequential runs are not a controlled head-to-head speed comparison. Perfect scores cover the same six development tasks, not a holdout or rendered visual quality. Costs are not recorded.
+
+### Tuned prompt: five-model repeat check (2026-10-08)
+
+Artifacts: `outputs/matrices/2026-10-08T20-06-26Z_v1-voxel-core-gemini-tuned_voxel-core-tuned-cross-provider/`. All five runs completed, but only 89/90 samples passed schema validation. Each model answered the same six development tasks three times. Scores and mean latency come from `matrix_summary.csv`; perfect counts, schema-valid counts, and medians come from per-model `summary.csv` files.
+
+| Model                 | Mean score | Perfect samples | Schema valid | Mean latency | Median latency |
+| --------------------- | ---------: | --------------: | -----------: | -----------: | -------------: |
+| Gemini 3.5 Flash Lite |     99.62% |           17/18 |        18/18 |       1.85 s |         2.05 s |
+| Gemini 3.1 Flash Lite |     99.62% |           17/18 |        18/18 |       2.31 s |         2.26 s |
+| Mercury 2.5           |     94.44% |           17/18 |        17/18 |       5.98 s |         6.42 s |
+| Claude Haiku 5.5      |       100% |           18/18 |        18/18 |       6.60 s |         6.65 s |
+| GPT-6 Luna `none`     |       100% |           18/18 |        18/18 |       9.24 s |        10.11 s |
+
+Gemini 3.5 Flash Lite failed connectivity on one campfire sample. Gemini 3.1 Flash Lite emitted a diagonal line on one two-palm-tree sample. Mercury returned invalid JSON on one two-palm-tree sample, receiving a zero score; the parser reported extra data. Matrix run success means execution completed, not that every sample validated.
+
+The earlier perfect batches do not establish failure-free execution: this fresh run exposes residual failures with the same tuned prompt. Gemini 3.5 Flash Lite had the lowest observed mean latency; Haiku and GPT were perfect in this small batch. These six development tasks do not establish general reliability, tail latency, or rendered visual quality.
+
+## Reasoning effort in matrices
+
+OpenAI and Anthropic matrix entries accept an optional `reasoning_effort` generation setting:
 
 ```yaml
 models:
@@ -188,9 +226,21 @@ models:
   - model: openai/gpt-6-luna
     label: gpt-6-luna-medium
     reasoning_effort: medium
+  - model: anthropic/claude-haiku-5-5
+    label: haiku-5-5-low
+    reasoning_effort: low
+  - model: anthropic/claude-haiku-5-5
+    label: haiku-5-5-medium
+    reasoning_effort: medium
 ```
 
-Omit the field or set it to null to use the provider default. The benchmark accepts `none`, `minimal`, `low`, `medium`, `high`, and `xhigh`; support varies by model, and the API rejects unsupported choices. This field is restricted to `openai/` entries. Gemini thinking levels and Anthropic thinking controls are not configured through this field.
+Omit the field or set it to null to use the provider default, without an effort override.
+
+- `openai/`: `none`, `minimal`, `low`, `medium`, `high`, `xhigh`.
+- `anthropic/`: `low`, `medium`, `high`, `xhigh`, `max`. `none` and `minimal` are invalid.
+- Other providers are not supported through this field.
+
+API support varies by model; the API rejects unsupported choices. The benchmark does not maintain a model-capability inventory. Anthropic's [Haiku 5.5 overview](https://platform.claude.com/docs/en/models/haiku-5-5/overview.md) documents adaptive thinking with default effort `medium`; its [effort guide](https://platform.claude.com/docs/en/build-with-claude/effort.md) defines the native effort levels. Effort does not disable Anthropic thinking, and this field does not set a thinking toggle or budget. Gemini thinking levels are not configured through it.
 
 Use distinct labels for each model/effort combination so artifacts have separate directories. The example matrix compares GPT-6 Luna at `low`, `minimal`, and `none`, and GPT-5.6 Luna at `low` and `none`. GPT-5.6 Luna rejects `minimal`. Run it with:
 
@@ -198,9 +248,24 @@ Use distinct labels for each model/effort combination so artifacts have separate
 uv run scene-planning-bench run-matrix configs/matrices/example_cross_provider.yaml --repeats 3
 ```
 
-The runner passes effort as an Inspect generation setting, not a provider initialization argument. Run manifests, matrix summaries, and leaderboards record the requested `reasoning_effort`; null or blank means provider default, not reasoning disabled. Inspect logs preserve the generation configuration. `run-inspect-model` without a matrix continues to use provider defaults.
+The runner uses Inspect's `reasoning_effort` generation setting for OpenAI. For Anthropic it uses generation `extra_body={"output_config":{"effort":value}}`, preserving the native value without conversion, including `xhigh` and `max`. Inspect adapters whose native-field allowlist omits `output_config` also receive it through `model_args.extra_body` so the SDK sends the same payload. Inspect logs preserve the requested generation configuration and any fallback model arguments.
+
+Run manifests, matrix summaries, and leaderboards record the requested `reasoning_effort`; null or blank means provider default, not reasoning disabled. `run-inspect-model` without a matrix uses provider defaults.
 
 The five-model repeated comparison below uses provider defaults; the OpenAI effort comparison records explicit settings. Changing effort can affect latency, token usage, cost, and quality; compare runs before choosing a setting.
+
+### Haiku 5.5 default versus low (2026-10-08)
+
+Artifacts: `outputs/matrices/2026-10-08T20-15-48Z_v1-voxel-core-gemini-tuned_voxel-core-tuned-cross-provider/`. Both configurations answered the six tuned voxel-core tasks three times. All 36 samples passed schema validation and scored perfectly.
+
+| Requested effort                       | Perfect samples | Mean latency | Median latency | Latency range | Output tokens across 18 samples |
+| -------------------------------------- | --------------: | -----------: | -------------: | ------------- | ------------------------------: |
+| Provider default (documented `medium`) |           18/18 |       7.13 s |         7.83 s | 1.14–13.08 s  |                          27,228 |
+| `low`                                  |           18/18 |       5.91 s |         6.56 s | 1.04–8.82 s   |                          23,352 |
+
+Scores and mean latency come from `matrix_summary.csv`; perfect counts, medians, and ranges come from per-configuration `summary.csv` files. Inspect logs show empty generation config and model args for default, and `output_config.effort: low` in both generation config and fallback model args for low. The default is not explicitly pinned to medium.
+
+Low effort had about 17% lower mean latency, 16% lower median latency, and 14% fewer output tokens, with no observed rubric-quality loss. Both configurations reported 32,625 input tokens, no cached input, and 15 reasoning tokens. Effort affects the whole response, so the savings here accompany lower output usage, not fewer reported reasoning tokens. These sequential 18-sample batches do not establish a reliable speed advantage, tail latency, unseen-prompt reliability, or visual quality. Cost fields are empty. Low is a promising Haiku setting for this suite, not a general model default.
 
 ## Results: baseline prompt (2026-10-08)
 
