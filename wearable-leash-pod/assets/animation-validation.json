@@ -1,0 +1,23 @@
+{
+  "frames": 120,
+  "fps": 24,
+  "duration_seconds": 5,
+  "resolution": [
+    1280,
+    960
+  ],
+  "trigger": "Axial pull on the orange handle loop",
+  "camera_bounds": [
+    0.0986,
+    0.896,
+    0.0729,
+    0.9671
+  ],
+  "clipped_frames": [],
+  "attachment_stays_fixed": true,
+  "static_scenes": [
+    "01_Closed",
+    "02_Cutaway",
+    "03_Released"
+  ]
+}

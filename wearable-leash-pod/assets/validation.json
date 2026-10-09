@@ -1,0 +1,60 @@
+{
+  "units": "1 Blender unit = 1 mm",
+  "closed_shell_bounds_mm": [
+    70.0,
+    45.0,
+    22.0
+  ],
+  "folded_webbing_length_mm": 146.3,
+  "scenes": {
+    "01_Closed": "CAM_hero",
+    "02_Cutaway": "CAM_cutaway",
+    "03_Released": "CAM_released"
+  },
+  "root_collections": [
+    "Pod",
+    "Latch",
+    "Leash",
+    "Harness",
+    "Lights",
+    "Cameras"
+  ],
+  "objects": 109,
+  "unnamed_objects": [],
+  "camera_frame_bounds": {
+    "01_Closed": {
+      "camera": "CAM_hero",
+      "x": [
+        0.075,
+        0.919
+      ],
+      "y": [
+        0.066,
+        0.859
+      ]
+    },
+    "02_Cutaway": {
+      "camera": "CAM_cutaway",
+      "x": [
+        0.102,
+        0.892
+      ],
+      "y": [
+        0.023,
+        0.808
+      ]
+    },
+    "03_Released": {
+      "camera": "CAM_released",
+      "x": [
+        0.187,
+        0.751
+      ],
+      "y": [
+        0.073,
+        0.949
+      ]
+    }
+  },
+  "animations": 0
+}
