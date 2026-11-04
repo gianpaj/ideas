@@ -2,7 +2,38 @@
 
 An agent-to-agent phone protocol
 
-**Practical MVP path for a demo booking number (Telnyx + LiveKit)**
+## AI receptionist in a box
+
+![AI receptionist device showing the front, connected rear, and labeled ports](assets/ai-receptionist-concept.png)
+
+A hardware concept for restaurants, hotels, and veterinary clinics. It sits
+between the phone line and desk phone, with two RJ11 ports, Ethernet,
+USB-C power, and built-in Wi-Fi.
+
+The goal is to run speech recognition, the language model, and speech generation
+on the device, answering calls and checking availability through connected
+booking software without an AI subscription.
+
+Cloud booking integrations and remote HTTP/MCP handshakes still need a network
+connection. Phone service and third-party software may have their own costs.
+
+Concept render generated with imagegen. [Generation prompt](references/ai-receptionist-prompt.txt).
+
+### Product slide
+
+![AI receptionist product slide with a white background and rainbow accent](assets/ai-receptionist-1996-slide.png)
+
+[Product slide prompt](references/ai-receptionist-1996-slide-prompt.txt).
+
+### Veterinary clinic
+
+![Veterinarian helping a client and dog beside a clean reception desk, with the phone line connected through the AI receptionist to the desk phone](assets/ai-receptionist-vet-slide.png)
+
+[Veterinary clinic slide prompt](references/ai-receptionist-vet-slide-prompt.txt).
+
+## Demo booking number
+
+Practical MVP path with Telnyx and LiveKit.
 
 ### What you actually build
 

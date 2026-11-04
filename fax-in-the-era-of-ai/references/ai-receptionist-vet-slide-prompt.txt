@@ -1,0 +1,32 @@
+Generation tool: built-in image_gen
+Reference images: ai-receptionist-1996-slide.png; ai-receptionist-concept.png
+
+Use case: product-mockup
+Asset type: a finished landscape 16:9 presentation slide.
+Edit target, image 1: the existing 1996-style AI receptionist product slide. Keep its white background, understated 1990s computer-ad art direction, elegant black Garamond-style serif typography, and product identity. Replace the isolated product-only composition with a veterinary-clinic use case.
+Supporting reference, image 2: the device construction and connectors. Preserve the small warm-white rectangular enclosure, rounded corners, graphite base, side vents, single green status light, and two telephone ports. Keep the tiny six-band rainbow rectangle from image 1. Absolutely no Apple logo, bitten apple, leaf, or Apple wordmark.
+
+Primary request: Show WHO benefits and HOW it plugs in. A calm veterinary reception area where staff give clients and dogs their attention while the small AI receptionist box handles phone calls. A clean, uncluttered desk with plants, the existing desk telephone, and the device. People and dogs are relaxed and being helped, with no waiting queue.
+
+Composition: the left 35 percent is generous white space for concise typography. The right 65 percent is one large photorealistic, naturally lit clinic vignette. Keep a white slide background, no colored panels, border, texture, or gradient. Let the bright white clinic walls merge gently with the slide. The scene should feel like a thoughtfully photographed 1996 print ad with realistic contemporary people, not a busy illustrated infographic.
+On the clean white-and-pale-wood reception counter, place the AI box at a believable modem-sized scale next to a simple ivory corded desk phone. Two tasteful green potted plants frame the uncluttered counter. The box is in the near foreground and easy to recognize, with its rainbow rectangle and status light visible. Use a small discreet monitor only if needed to read as reception.
+In the same scene, a friendly veterinarian wearing muted blue scrubs bends down to greet a healthy golden retriever on a leash, while the dog's owner smiles and speaks with the veterinarian. Keep the dog's whole body visible. Farther back, a second client with a small terrier is leaving after being helped, a subtle sign of smooth patient flow, not another person in a queue. Use candid gestures and natural expressions, no one looking at the camera, no exaggerated commercial grins. Bright daylight, warm human atmosphere, clear floors and surfaces, plants, good care. No sick or injured animals, procedures, paperwork piles, or crowded waiting room.
+
+Make the telephone hookup absolutely legible with one spare connection strip beneath the text at lower left, visually separate from the clinic photograph but on the same plain white background:
+- A tiny realistic RJ11 wall outlet, labeled exactly "Phone line".
+- A miniature render of the SAME AI box, labeled exactly "AI receptionist".
+- A tiny realistic ivory desk phone, labeled exactly "Desk phone".
+Connect these three in that left-to-right order with two neat thin gray telephone cables and subtle directional arrows. The wall outlet cable terminates in the device's LINE IN / FXO connection; the second cable runs from the device's PHONE OUT / FXS connection to the base of the desk phone. Do not confuse the coiled handset cord with the cable to the AI box. This simple strip explains the connections without any technical jargon. Show a subtle power lead on the actual counter device, tucked toward the rear. No circuitry, exploded view, or additional hardware diagrams.
+
+Exact slide text:
+Large black Garamond-style headline, left aligned, on two lines:
+"More time"
+"for patients."
+Small black humanist sans-serif copy beneath:
+"AI reception for veterinary clinics."
+"Answers calls. Books appointments."
+Very small gray footer at bottom left:
+"AI receptionist · Product concept"
+The three connection labels specified above are the only additional text. No promises of zero waiting time, statistics, pricing, unverified claims, extra slogans, or brand names.
+
+Palette: pure white, charcoal text, warm off-white device, pale natural wood, natural plant greens, muted blue scrubs. The small device badge is a plain rectangle with six equal horizontal bands stacked top-to-bottom green, yellow, orange, red, purple, blue. Preserve this geometric badge; it is NOT an Apple silhouette. No other logos anywhere. Keep the page simple and airy, with the product, customer benefit, and phone connection obvious at a glance.

@@ -1,0 +1,17 @@
+Generation tool: built-in image_gen
+
+Use case: product-mockup
+Asset type: polished industrial design concept sheet, landscape 3:2 composition.
+Primary request: A photorealistic 3D mockup of an AI receptionist in a box for a restaurant, hotel, or veterinary clinic. It sits between an existing telephone line and a desk phone. Local AI is the intended concept. Show the physical product clearly, including phone line input, phone cable output, power cable, Ethernet cable, and integrated Wi-Fi.
+
+Scene: warm off-white seamless studio background, restrained industrial design presentation, generous spacing, soft grounded shadows.
+Subject: one consistent compact desktop appliance, about the size of a small network modem, low rectangular enclosure approximately 160 mm wide, 115 mm deep, 40 mm tall. These proportions are visual guidance only, do not print dimensions. Soft rounded corners, matte warm-white polymer upper shell, fine graphite base seam, subtle ventilation along the lower sides, small rubber feet. The front is calm and unbranded with only one small soft green horizontal status indicator. No display, speaker grille, microphone, mascot, or decorative controls. Wi-Fi antennas are internal.
+
+Composition: present three views of exactly the same enclosure on one clean concept sheet.
+1. A large elevated front three-quarter hero view in the upper left occupying about half the sheet, showing the top, front status light, side ventilation, thickness and materials.
+2. An elevated rear three-quarter connected view in the upper right, showing four believable cables seated in their rear ports. Two slim pale telephone cables, one slightly thicker gray Ethernet cable, and one charcoal USB-C power cable. Let the four cables sweep neatly outward over the studio surface without hiding the box. Keep cables physically attached and their shadows realistic.
+3. A large straight-on rear detail spanning the lower part of the sheet, with the cables unplugged so all four connector openings are clearly visible and accurately modeled. Rear panel is graphite, recessed into the warm-white enclosure. Exactly four ports, in this left-to-right order: smaller RJ11 telephone input socket labeled "LINE IN"; smaller RJ11 telephone output socket labeled "PHONE OUT"; wider RJ45 Ethernet socket labeled "ETHERNET"; oval USB-C power socket labeled "POWER". Make RJ11 visibly narrower than RJ45, with believable metal contacts and latch notches. Labels printed in small crisp light-gray sans-serif directly above their ports. All three views must agree on geometry, material, port order, and relative port positions.
+
+Typography: a modest charcoal heading at top reads exactly "AI receptionist in a box." Below it, smaller text reads exactly "Product concept". Near the rear detail, outside the enclosure, a tiny caption reads exactly "Wi-Fi built in". Aside from these texts and the four port labels, no other words, badges, numbers, brand names, claims, or annotations.
+Style: physically based 3D product visualization, high-end studio photography, realistic fine surface texture, precise rounded edges, plausible manufacturable proportions, neutral colors, daylight-soft key light, restrained reflections, high sharpness.
+Constraints: this is an enclosure concept, not an engineering blueprint. No claims of free telephone service or guaranteed offline cloud integrations. No exploded electronics, no floating holograms, no extra ports or antenna, no watermark, no busy diagrams. Make the product itself the focus.

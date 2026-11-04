@@ -1,0 +1,26 @@
+Generation tool: built-in image_gen
+Reference image: ai-receptionist-concept.png
+
+Use case: product-mockup
+Asset type: a single landscape 16:9 product presentation slide, suitable for a pitch deck.
+Input image 1: product identity reference. Preserve the compact enclosure silhouette, proportions, rounded corners, warm-white matte shell, graphite base, small green front status light, and subtle side vents. Make a NEW presentation composition, not the reference's three-view technical sheet.
+
+Primary request: Present this AI receptionist appliance with the visual simplicity of a 1996 Apple print advertisement. White background, classic black serif typography, restrained six-color rainbow accent. Absolutely no Apple logo, apple silhouette, bitten fruit, leaf mark, Apple wordmark, or other company logos.
+
+Art direction: authentic mid-1990s computer advertising. Spacious, confident, almost quiet. Pure white #FFFFFF background. One large, beautifully lit photorealistic product render, soft diffused studio light and a delicate contact shadow. Matte platinum/off-white plastic, fine molded texture, clean edges. No aging, sepia, paper texture, gradients, glossy glass, futuristic effects, or modern SaaS design.
+
+Composition: landscape 16:9. A classic editorial layout with a large, elegant black Garamond-like condensed serif headline on the left in exactly three lines:
+"Your receptionist."
+"In a box."
+Keep this as TWO lines, not three; the quoted two lines are the final text. The headline occupies the left third, with generous margins. Place a single large front three-quarter view of the device on the right, slightly below the visual center, showing the front, top, and vented side. Allow abundant white space above and around the product. Ensure the device is entirely visible and never touches the slide edge. No other product views, diagrams, callout arrows, tables, icons, cables, hands, or background objects.
+
+Rainbow accent: integrate one tiny rectangular badge into the front-left of the product. The badge consists only of six equal horizontal color bands stacked top to bottom: green #61BB46, yellow #FDB827, orange #F5821F, red #E03A3E, purple #963D97, blue #009DDC. A plain geometric rectangle, no silhouette or logo. The only saturated colors on the entire slide are this small badge and the subdued green status light. Do not turn the whole device rainbow-colored.
+
+Text beneath the headline, in small understated black humanist sans serif, exactly:
+"Answers calls. Books appointments."
+"Runs locally."
+At the lower left in very small gray type, exactly:
+"AI receptionist · Product concept"
+No other text, no invented brand name, no prices, no technical specifications, no performance or subscription claims.
+
+Preserve the product as a plausible small desktop telephone appliance. The internal concept is local AI with telephone input/output, Ethernet, built-in Wi-Fi, and power, but the front hero view should hide the rear connectors naturally. No display. No actual Apple logo anywhere. Output one finished polished slide image.
