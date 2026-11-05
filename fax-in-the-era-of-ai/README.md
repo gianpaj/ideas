@@ -2,6 +2,12 @@
 
 An agent-to-agent phone protocol
 
+## Reproducible phone-handshake experiment (2026-11-05)
+
+[Listen to the noisy two-agent call and fax-like alternative](prototype/README.md), with real decoded data rather than sound effects. The recommended example uses CP-Handshake's experimental DTMF PROBE/OFFER/BIND framing and a simulated HTTPS rendezvous; a separate 300-baud FSK example explores the modem-like sound. Neither makes a real call or booking.
+
+[Research and math](notes/2026-11-05-phone-handshake-research.md) · [independent review](notes/2026-11-05-handshake-independent-review.md) · [machine-readable evidence](prototype/results/manifest.json)
+
 ## AI receptionist in a box
 
 ![AI receptionist device showing the front, connected rear, and labeled ports](assets/ai-receptionist-concept.png)
