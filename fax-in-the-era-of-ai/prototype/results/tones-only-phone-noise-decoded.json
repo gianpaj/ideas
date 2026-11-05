@@ -1,0 +1,226 @@
+{
+  "sample_rate_hz": 8000,
+  "duration_s": 6.18,
+  "digit_stream": "*#26# *#1048151623426# *#32718280#",
+  "digits": [
+    {
+      "digit": "*",
+      "start_s": 0.205,
+      "end_s": 0.275,
+      "confidence_ratio_min": 0.691
+    },
+    {
+      "digit": "#",
+      "start_s": 0.345,
+      "end_s": 0.415,
+      "confidence_ratio_min": 0.698
+    },
+    {
+      "digit": "2",
+      "start_s": 0.485,
+      "end_s": 0.555,
+      "confidence_ratio_min": 0.702
+    },
+    {
+      "digit": "6",
+      "start_s": 0.625,
+      "end_s": 0.695,
+      "confidence_ratio_min": 0.698
+    },
+    {
+      "digit": "#",
+      "start_s": 0.765,
+      "end_s": 0.835,
+      "confidence_ratio_min": 0.699
+    },
+    {
+      "digit": "*",
+      "start_s": 1.405,
+      "end_s": 1.475,
+      "confidence_ratio_min": 0.69
+    },
+    {
+      "digit": "#",
+      "start_s": 1.545,
+      "end_s": 1.615,
+      "confidence_ratio_min": 0.687
+    },
+    {
+      "digit": "1",
+      "start_s": 1.685,
+      "end_s": 1.755,
+      "confidence_ratio_min": 0.698
+    },
+    {
+      "digit": "0",
+      "start_s": 1.825,
+      "end_s": 1.895,
+      "confidence_ratio_min": 0.704
+    },
+    {
+      "digit": "4",
+      "start_s": 1.965,
+      "end_s": 2.03,
+      "confidence_ratio_min": 0.701
+    },
+    {
+      "digit": "8",
+      "start_s": 2.105,
+      "end_s": 2.175,
+      "confidence_ratio_min": 0.708
+    },
+    {
+      "digit": "1",
+      "start_s": 2.245,
+      "end_s": 2.315,
+      "confidence_ratio_min": 0.685
+    },
+    {
+      "digit": "5",
+      "start_s": 2.385,
+      "end_s": 2.455,
+      "confidence_ratio_min": 0.695
+    },
+    {
+      "digit": "1",
+      "start_s": 2.525,
+      "end_s": 2.595,
+      "confidence_ratio_min": 0.692
+    },
+    {
+      "digit": "6",
+      "start_s": 2.665,
+      "end_s": 2.735,
+      "confidence_ratio_min": 0.697
+    },
+    {
+      "digit": "2",
+      "start_s": 2.805,
+      "end_s": 2.875,
+      "confidence_ratio_min": 0.697
+    },
+    {
+      "digit": "3",
+      "start_s": 2.945,
+      "end_s": 3.015,
+      "confidence_ratio_min": 0.711
+    },
+    {
+      "digit": "4",
+      "start_s": 3.085,
+      "end_s": 3.15,
+      "confidence_ratio_min": 0.685
+    },
+    {
+      "digit": "2",
+      "start_s": 3.225,
+      "end_s": 3.295,
+      "confidence_ratio_min": 0.707
+    },
+    {
+      "digit": "6",
+      "start_s": 3.365,
+      "end_s": 3.435,
+      "confidence_ratio_min": 0.715
+    },
+    {
+      "digit": "#",
+      "start_s": 3.505,
+      "end_s": 3.575,
+      "confidence_ratio_min": 0.709
+    },
+    {
+      "digit": "*",
+      "start_s": 4.145,
+      "end_s": 4.215,
+      "confidence_ratio_min": 0.688
+    },
+    {
+      "digit": "#",
+      "start_s": 4.285,
+      "end_s": 4.355,
+      "confidence_ratio_min": 0.7
+    },
+    {
+      "digit": "3",
+      "start_s": 4.425,
+      "end_s": 4.495,
+      "confidence_ratio_min": 0.702
+    },
+    {
+      "digit": "2",
+      "start_s": 4.565,
+      "end_s": 4.635,
+      "confidence_ratio_min": 0.693
+    },
+    {
+      "digit": "7",
+      "start_s": 4.705,
+      "end_s": 4.77,
+      "confidence_ratio_min": 0.69
+    },
+    {
+      "digit": "1",
+      "start_s": 4.845,
+      "end_s": 4.915,
+      "confidence_ratio_min": 0.714
+    },
+    {
+      "digit": "8",
+      "start_s": 4.985,
+      "end_s": 5.055,
+      "confidence_ratio_min": 0.706
+    },
+    {
+      "digit": "2",
+      "start_s": 5.125,
+      "end_s": 5.195,
+      "confidence_ratio_min": 0.697
+    },
+    {
+      "digit": "8",
+      "start_s": 5.265,
+      "end_s": 5.335,
+      "confidence_ratio_min": 0.697
+    },
+    {
+      "digit": "0",
+      "start_s": 5.405,
+      "end_s": 5.475,
+      "confidence_ratio_min": 0.696
+    },
+    {
+      "digit": "#",
+      "start_s": 5.545,
+      "end_s": 5.615,
+      "confidence_ratio_min": 0.688
+    }
+  ],
+  "frames": [
+    {
+      "kind": "probe",
+      "wire": "*#26#",
+      "start_s": 0.205,
+      "end_s": 0.835,
+      "luhn_valid": true
+    },
+    {
+      "kind": "offer",
+      "registry": "0",
+      "rendezvous_code": "4815162342",
+      "wire": "*#1048151623426#",
+      "start_s": 1.405,
+      "end_s": 3.575,
+      "luhn_valid": true
+    },
+    {
+      "kind": "bind",
+      "bind_code": "271828",
+      "wire": "*#32718280#",
+      "start_s": 4.145,
+      "end_s": 5.615,
+      "luhn_valid": true
+    }
+  ],
+  "timestamp_note": "center-of-analysis-window estimates, not sample-exact onset/offset"
+}

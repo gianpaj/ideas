@@ -1,0 +1,34 @@
+{
+  "source": "https://github.com/viva-lee/agent-handshake/blob/a965c167faa59bc52738b90dee6d57b8a68cd864/src/protocol/dtmf.ts",
+  "node_version": "v24.22.1",
+  "method": "Direct import of the unmodified upstream TypeScript module; encoder and frame parser round trip",
+  "frames": [
+    {
+      "wire": "*#26#",
+      "decoded": [
+        {
+          "type": "probe"
+        }
+      ]
+    },
+    {
+      "wire": "*#1048151623426#",
+      "decoded": [
+        {
+          "type": "offer",
+          "registry": "0",
+          "code": "4815162342"
+        }
+      ]
+    },
+    {
+      "wire": "*#32718280#",
+      "decoded": [
+        {
+          "type": "bind",
+          "bindCode": "271828"
+        }
+      ]
+    }
+  ]
+}

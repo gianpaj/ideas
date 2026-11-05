@@ -1,0 +1,77 @@
+{
+  "research_date": "2026-11-05",
+  "seed": 20261105,
+  "sample_rate_hz": 8000,
+  "upstream_commit": "a965c167faa59bc52738b90dee6d57b8a68cd864",
+  "expected_frames": [
+    "*#26#",
+    "*#1048151623426#",
+    "*#32718280#"
+  ],
+  "tone_ms": 80,
+  "gap_ms": 60,
+  "total_tone_burst_budget_s": 4.48,
+  "channel": {
+    "bandpass_hz": [
+      300,
+      3400
+    ],
+    "filter": "5th-order Butterworth bandpass, causal",
+    "active_signal_snr_db": 20,
+    "echo_delay_ms": 50,
+    "echo_gain": 0.12,
+    "hum_60hz_dbfs_peak": -43,
+    "g711_mu_law_roundtrip": true
+  },
+  "audio": {
+    "call-clean": {
+      "wav": "assets/phone-handshake-2026-11-05/call-clean.wav",
+      "sha256": "88c79c2a0f17831c515dece5f8cd0182da74846bd2ddaa2a1a4e07c39c5c3ab3",
+      "duration_s": 23.75,
+      "decoded_exact_sequence": true
+    },
+    "call-phone-noise": {
+      "wav": "assets/phone-handshake-2026-11-05/call-phone-noise.wav",
+      "sha256": "f5b6cba606a7a72d667cf0b7f105699562be1ea5c64e0cf00d8310e023f1b4cc",
+      "duration_s": 23.75,
+      "decoded_exact_sequence": true,
+      "mp3": {
+        "path": "assets/phone-handshake-2026-11-05/call-phone-noise.mp3",
+        "sha256": "8728106a3958bd597647d6f423d48169b04041d2ae129a3d685ff695f07ac6a5",
+        "decoded_exact_sequence": true
+      }
+    },
+    "tones-only-phone-noise": {
+      "wav": "assets/phone-handshake-2026-11-05/tones-only-phone-noise.wav",
+      "sha256": "38927e64292f46aeb6d683deaafa8bcaf0fe2ccb42a091da759dbcf82bd7849f",
+      "duration_s": 6.18,
+      "decoded_exact_sequence": true,
+      "mp3": {
+        "path": "assets/phone-handshake-2026-11-05/tones-only-phone-noise.mp3",
+        "sha256": "1fecd021a1ac0e88131537567b352669583bc96b2e3c9d894e46b42812990c7e",
+        "decoded_exact_sequence": true
+      }
+    }
+  },
+  "offline_security_checks": {
+    "valid_signature_and_claims": true,
+    "tampered_record_rejected": true,
+    "expired_record_rejected": true,
+    "wrong_dialed_number_rejected": true,
+    "unbound_mutation_rejected": true,
+    "wrong_bind_rejected": true,
+    "wrong_call_rejected": true,
+    "correct_call_bind_accepted": true,
+    "bound_demo_mutation_permitted": true,
+    "replay_bind_rejected": true
+  },
+  "sensitivity_trials": 159,
+  "negative_control_seconds": 365.6,
+  "limitations": [
+    "No real call, no carrier certification, no SIP or RFC4733 event test.",
+    "The HTTPS wait is simulated, cryptographic fixture runs separately offline.",
+    "No production secrets; published deterministic key is insecure by design.",
+    "No full CP mandate verification, booking, receipts, TLS or registry service.",
+    "Synthetic voices and channel; not recorded humans or a measured telephone channel."
+  ]
+}

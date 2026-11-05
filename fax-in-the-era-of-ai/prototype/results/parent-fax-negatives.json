@@ -1,0 +1,30 @@
+{
+  "scope": "Three previously downloaded public fax/modem recordings, additional negative controls; not telephony conformance or population talk-off statistics",
+  "audio_not_republished": true,
+  "cases": [
+    {
+      "file": "fax-answering-tones.ogg",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Faxhellorp.ogg",
+      "source_sha256": "2a3c7cc70876b0bc95f6b09d16963779eed078b1fa68b0369c83ddc8347e1b48",
+      "duration_s": 10.3097,
+      "detected_digits": 0,
+      "accepted_frames": []
+    },
+    {
+      "file": "2016-ansam-2100hz-answer-tone.wav",
+      "source_url": "https://commons.wikimedia.org/wiki/File:ANSam.wav",
+      "source_sha256": "07bebf28c2d924f5bcc7c755c2d18f1c615232bfec34c8fddd7bda8cf57fd547",
+      "duration_s": 5.4,
+      "detected_digits": 0,
+      "accepted_frames": []
+    },
+    {
+      "file": "2005-v92-fax-modem-56k-handshake.wav",
+      "source_url": "https://commons.wikimedia.org/wiki/File:V.92_-_ElCom_HSP_PCI_Fax_modem_56k.wav",
+      "source_sha256": "ff5e031f9ef513c5aba2f9dd4875c736cb71893942387838767e04bc66709813",
+      "duration_s": 21.3448,
+      "detected_digits": 0,
+      "accepted_frames": []
+    }
+  ]
+}
