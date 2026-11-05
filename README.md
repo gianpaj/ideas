@@ -9,6 +9,7 @@ dedicated repository.
 | Idea                                                                      | Stage                | Purpose                                                                           |
 | ------------------------------------------------------------------------- | -------------------- | --------------------------------------------------------------------------------- |
 | [`brrra`](brrra/)                                                         | Design               | Privacy-first Android push notifications delivered through a webhook              |
+| [`driver-voice-companion`](driver-voice-companion/)                     | Idea / validation    | Hands-free, GPS-aware AI voice assistant and companion for professional drivers    |
 | [`fax-in-the-era-of-ai`](fax-in-the-era-of-ai/)                           | Design               | Agent-to-agent phone booking protocol and local AI receptionist device concept         |
 | [`hatch-pet-local-orchestrator`](hatch-pet-local-orchestrator/)           | Design               | Local workflow for preparing, validating, and packaging Hatch Pet sprite atlases  |
 | [`multi-city-property-visualization`](multi-city-property-visualization/) | Design               | 3D comparison of property markets across cities                                   |
