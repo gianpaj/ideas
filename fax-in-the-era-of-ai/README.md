@@ -11,6 +11,15 @@ simulation, bounded retries, CLI commands and isolated Docker reproduction.
 No speech, browser, telephone service or simulated HTTP completion is required.
 This new experimental all-audio profile is not CP/V.21/T.30 compatible.
 
+### Watch the actual exchange
+
+The original 16-second recording, with each message highlighted as its tones
+play: pairing, data transfer, verified reply and close. No speech added.
+
+https://github.com/user-attachments/assets/f3697d93-78ae-4490-98b9-f49c6d5dcf72
+
+[Editable SVG and video rendering source](live/explainer/README.md)
+
 [Design and implementation plan](notes/2026-11-06-live-prototype-plan.md) ·
 [Clock and link review](notes/2026-11-06-clock-and-link-review.md)
 

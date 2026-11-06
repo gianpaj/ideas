@@ -22,6 +22,17 @@ dedicated repository.
 | [`vibe-world`](vibe-world/)                                               | Design and prototype | Multiplayer voxel sandbox for creating and remixing worlds with prompts           |
 | [`wearable-leash-pod`](wearable-leash-pod/)                               | Product model        | Harness-mounted leash handle pod with closed, cutaway, and released Blender views |
 
+## Audio handshake prototype
+
+Two independent Node.js apps pair and exchange authenticated data through tones.
+This 16-second recording highlights each real message as it plays, with no speech
+added.
+
+https://github.com/user-attachments/assets/f3697d93-78ae-4490-98b9-f49c6d5dcf72
+
+[Run the prototype](fax-in-the-era-of-ai/live/README.md) ·
+[Editable SVG and rendering source](fax-in-the-era-of-ai/live/explainer/README.md)
+
 ## Loose notes
 
 - **twitter-engagement-analysis** — Identifies the top 20 accounts a user most interacts with, fetches their highest-engagement tweets, and uses Claude to extract actionable engagement patterns

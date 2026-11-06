@@ -1,6 +1,8 @@
 # Two apps, talking in tones
 
-[Watch the 15.94-second MP4](audio-handshake-explained.mp4) ·
+https://github.com/user-attachments/assets/f3697d93-78ae-4490-98b9-f49c6d5dcf72
+
+[Download the 15.94-second MP4](audio-handshake-explained.mp4) ·
 [editable SVG overview](overview.svg) · [source/timing manifest](manifest.json)
 
 The original **actual live exchange** plays once, at normal speed, with no

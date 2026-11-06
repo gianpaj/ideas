@@ -12,6 +12,12 @@ its simulated HTTP handoff is **not** what this application does.
 
 ## Listen to an actual live exchange
 
+The same real capture with a synchronized SVG explanation of all seven messages:
+
+https://github.com/user-attachments/assets/f3697d93-78ae-4490-98b9-f49c6d5dcf72
+
+[Editable SVG and reproducible video renderer](explainer/README.md).
+
 [15.94-second MP3](evidence/live-exchange-2026-11-06.mp3) ·
 [original stereo PCM WAV](evidence/live-exchange-2026-11-06.wav) ·
 [blindly decoded seven frames](evidence/live-exchange-decoded.json) ·
