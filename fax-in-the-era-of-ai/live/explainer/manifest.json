@@ -1,0 +1,134 @@
+{
+  "purpose": "Explanatory SVG animation synchronized to an actual causal two-endpoint audio capture, not a protocol simulation.",
+  "sourceRevision": "17eb26cd1eb97a2fda24ff90124fa4851b4a77e6",
+  "sourceRevisionNote": "Repository revision containing the retained capture and finalized validation, before adding this explainer.",
+  "protocol": "custom experimental AIP-FSK2; authenticated with a provisioned PSK, not encrypted or fax-compatible",
+  "audio": {
+    "file": "../evidence/live-exchange-2026-11-06.wav",
+    "sha256": "8224e9dd9ab13f3f909d6e66f7c023df49b1614a95db3b71a88dde94cfb4132d",
+    "durationSeconds": 15.943125,
+    "processing": "Untrimmed, unchanged speed, original stereo channel order; AAC encoding and 8 kHz to 48 kHz resampling only. No speech, normalization, added tones or soundtrack."
+  },
+  "timing": {
+    "file": "../evidence/live-exchange-decoded.json",
+    "sha256": "3170fea034cd2b25155089841de60c9c3b9099607355a21f69fc0c2ff33b52b0",
+    "basis": "Blind CRC-confirmed replay from actual live link-delivery recording; MAC verified separately by live endpoint results. No key or expected payload input.",
+    "animationFramesPerSecond": 30,
+    "boundaryQuantization": "Exact metadata boundaries rendered on a 30 fps grid (within one frame). The recording timestamps are link-delivery chronology, not endpoint authentication-event timestamps."
+  },
+  "captureManifest": {
+    "file": "../evidence/live-exchange-manifest.json",
+    "sha256": "7691481d6880bd6c236c62b22e1777f46ff56d81a956ea2ece75b4c05aea1b6a",
+    "conditions": {
+      "sample_rate_hz": 8000,
+      "channels": 2,
+      "link_nominal_snr_db": 24,
+      "echo_gain": 0.1,
+      "echo_delay_ms": 50,
+      "configured_extra_latency_ms": 0,
+      "configured_jitter_ms": 0,
+      "oscillator_ppm": {
+        "initiator": 0,
+        "responder": 0
+      },
+      "speech": false,
+      "media_datagram_copies": 1
+    }
+  },
+  "exportValidation": {
+    "method": "Extract MP4 audio to stereo 8 kHz PCM; blindly decode without timings or expected messages; then compare all decoded packet hashes/channels/types to the original.",
+    "originalPackets": 7,
+    "matchedPackets": 7,
+    "aacTargetBitrate": 192000,
+    "note": "The initial 80 kbit/s export recovered only six packet CRCs and was discarded. The retained export preserves all seven exact packet hashes. This validates this export, not arbitrary codecs or carrier paths."
+  },
+  "frames": [
+    {
+      "type": "HELLO",
+      "channel": "initiator-to-responder",
+      "startSeconds": 0.823,
+      "endSeconds": 2.391
+    },
+    {
+      "type": "CHALLENGE",
+      "channel": "responder-to-initiator",
+      "startSeconds": 2.74375,
+      "endSeconds": 4.82375
+    },
+    {
+      "type": "CONFIRM",
+      "channel": "initiator-to-responder",
+      "startSeconds": 5.16375,
+      "endSeconds": 6.73175
+    },
+    {
+      "type": "READY",
+      "channel": "responder-to-initiator",
+      "startSeconds": 7.10375,
+      "endSeconds": 8.67175
+    },
+    {
+      "type": "DATA",
+      "channel": "initiator-to-responder",
+      "startSeconds": 9.02375,
+      "endSeconds": 10.97575
+    },
+    {
+      "type": "RECEIPT",
+      "channel": "responder-to-initiator",
+      "startSeconds": 11.32375,
+      "endSeconds": 13.78775
+    },
+    {
+      "type": "CLOSE",
+      "channel": "initiator-to-responder",
+      "startSeconds": 14.14375,
+      "endSeconds": 15.71175
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "overview.svg",
+      "sha256": "98951d0351195b31868d2f1fcaca9802239fae5249114257ce2670d6ad2bdff2",
+      "bytes": 8471
+    },
+    {
+      "file": "audio-handshake-explained.mp4",
+      "sha256": "805cf182a306364957462328be0a93101e138ad7ae6e867b44dc664656781cb0",
+      "bytes": 670791
+    }
+  ],
+  "toolchain": {
+    "node": "v24.22.1",
+    "ffmpeg": "ffmpeg version 8.0.1-3ubuntu2 Copyright (c) 2000-2025 the FFmpeg developers",
+    "font": "DejaVu Sans",
+    "renderer": "FFmpeg librsvg decoder"
+  },
+  "ffprobe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "index": 0,
+        "codec_name": "h264",
+        "width": 1280,
+        "height": 720,
+        "pix_fmt": "yuv420p",
+        "r_frame_rate": "30/1",
+        "duration": "15.933333"
+      },
+      {
+        "index": 1,
+        "codec_name": "aac",
+        "sample_rate": "48000",
+        "channels": 2,
+        "r_frame_rate": "0/0",
+        "duration": "15.943125"
+      }
+    ],
+    "format": {
+      "duration": "15.943125",
+      "size": "670791"
+    }
+  }
+}
