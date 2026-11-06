@@ -32,3 +32,21 @@ test('truncated/malformed/noise has bounded memory and cannot invent packet', ()
   assert.equal(decode(signal.subarray(0, PCM_BYTES * 20)).frames.length, 0);
   assert.equal(decode(randomBytes(PCM_BYTES * 100)).frames.length, 0);
 });
+test('a physical erasure is rejected by confidence even when bit guesses match original bytes', () => {
+  const pcm = modulate(Buffer.alloc(80, 0xff));
+  // Erase80ms inside the all-one payload, not the preamble or packet header.
+  // The decoder knows neither this location nor what was originally sent.
+  pcm.fill(0, 4000 * 2, 4640 * 2);
+  const {frames, decoder} = decode(pcm);
+  assert.equal(frames.length, 0);
+  assert.ok(decoder.erasureRejections > 0);
+});
+
+test('actual opposite-tone bit changes are rejected by the CRC', () => {
+  const pcm = modulate(Buffer.alloc(80, 0xff));
+  const opposite = modulate(Buffer.alloc(80, 0));
+  opposite.copy(pcm, 4000 * 2, 4000 * 2, 4640 * 2);
+  const {frames, decoder} = decode(pcm);
+  assert.equal(frames.length, 0);
+  assert.ok(decoder.crcRejections > 0);
+});

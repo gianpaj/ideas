@@ -87,7 +87,7 @@ export async function runEndpoint(options) {
     if (stopped) return;
     if (message.type === 'progress' || message.type === 'stats') {
       dspProcessed = message.chunks;
-      decoderStats = {maxBufferSamples: message.maxBufferSamples, crcRejections: message.crcRejections};
+      decoderStats = {maxBufferSamples: message.maxBufferSamples, crcRejections: message.crcRejections, erasureRejections: message.erasureRejections};
       return;
     }
     if (message.type !== 'frame') return;

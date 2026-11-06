@@ -69,6 +69,7 @@ export class Decoder {
     this.deliveredUntil = -100;
     this.maxBufferSamples = 0;
     this.crcRejections = 0;
+    this.erasureRejections = 0;
     this.basis = [SPACE, MARK].map(f => Array.from({length: 32}, (_, i) => [Math.cos(2 * Math.PI * f * i / RATE), Math.sin(2 * Math.PI * f * i / RATE)]));
   }
 
@@ -151,6 +152,18 @@ export class Decoder {
           const start = this.base + Math.round(phase + (at - 48) * step);
           const end = this.base + Math.round(phase + endBit * step);
           if (end <= this.deliveredUntil + 64 || found.some(f => Math.abs(f.startSample - start) < 64)) continue;
+          // A CRC can accidentally confirm the original bytes when low-energy
+          // erased bits happen to be guessed correctly. Numerical residual
+          // correlator signs are not signal evidence: reject any low-energy
+          // body symbol relative to this candidate's observed peak.
+          let peakPower = 0, minPower = Infinity;
+          for (let b = bodyStart; b < endBit; b++) {
+            const pos = Math.round(phase + b * step);
+            const power = energy[0][pos] + energy[1][pos];
+            peakPower = Math.max(peakPower, power);
+            minPower = Math.min(minPower, power);
+          }
+          if (peakPower < .01 || minPower < Math.max(.01, .04 * peakPower)) { this.erasureRejections++; continue; }
           const raw = Buffer.alloc(length + 4);
           for (let b = 0; b < raw.length; b++) raw[b] = readByte(bodyStart + b * 8);
           if (crc16(raw.subarray(0, -2)) !== raw.readUInt16BE(raw.length - 2)) { this.crcRejections++; continue; }
