@@ -22,6 +22,8 @@ export async function runEndpoint(options) {
   const retryMs = Number(options['retry-ms'] ?? 7000);
   const retryMax = Number(options.retries ?? 4);
   const jitterMs = Number(options['jitter-ms'] ?? 160);
+  const redundancy = Number(options.redundancy ?? 2);
+  if (![1, 2].includes(redundancy)) throw Error('--redundancy must be1or2');
   if (![samplePpm, wallOffsetMs, timeoutMs, retryMs, retryMax, jitterMs].every(Number.isFinite)
       || Math.abs(wallOffsetMs) > 7 * 86400000 || timeoutMs < 1000 || timeoutMs > 300000
       || retryMs < 1000 || retryMs > timeoutMs || retryMax < 0 || retryMax > 10 || jitterMs < 0 || jitterMs > 2000) throw Error('invalid timing limits');
@@ -40,7 +42,7 @@ export async function runEndpoint(options) {
   const silence = Buffer.alloc(PCM_BYTES);
   let resolveDone;
   const done = new Promise(resolve => { resolveDone = resolve; });
-  const transport = new UdpAudio({bind: bindAddress, peer: peerAddress, jitterMs,
+  const transport = new UdpAudio({bind: bindAddress, peer: peerAddress, jitterMs, redundancy,
     onError: error => {
       // ICMP port-unreachable can occur during independently started apps.
       if (error.code === 'ECONNREFUSED') {
@@ -115,7 +117,7 @@ export async function runEndpoint(options) {
   }
   process.on('SIGINT', cancel);
   process.on('SIGTERM', cancel);
-  log('ready', {sampleClockPpm: samplePpm, wallOffsetMs, timeoutMs, retryMs, jitterMs,
+  log('ready', {sampleClockPpm: samplePpm, wallOffsetMs, timeoutMs, retryMs, jitterMs, redundancy,
     transport: 'UDP/8k-mono-s16le/20ms/PCM-only', profile: 'experimental-AIP-FSK2'});
   if (role === 'initiator') queue(machine.start(), 'initial');
 

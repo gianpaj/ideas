@@ -9,9 +9,9 @@ import {runLink} from './link.mjs';
 const command = process.argv[2];
 const optionNames = [
   'role', 'key', 'bind', 'peer', 'data', 'log', 'wall-offset-ms', 'sample-ppm', 'timeout-ms', 'retry-ms', 'retries', 'jitter-ms',
-  'a', 'b', 'a-delay-ms', 'b-delay-ms', 'loss', 'noise-db', 'echo', 'duration-ms', 'mute', 'drop-a-burst', 'drop-b-burst', 'corrupt', 'capture', 'state', 'seed'
+  'a', 'b', 'a-delay-ms', 'b-delay-ms', 'loss', 'noise-db', 'echo', 'duration-ms', 'mute', 'drop-a-burst', 'drop-b-burst', 'corrupt', 'capture', 'state', 'seed', 'redundancy'
 ];
-const numericOptions = new Set(['wall-offset-ms', 'sample-ppm', 'timeout-ms', 'retry-ms', 'retries', 'jitter-ms', 'a-delay-ms', 'b-delay-ms', 'loss', 'noise-db', 'echo', 'duration-ms', 'drop-a-burst', 'drop-b-burst', 'seed']);
+const numericOptions = new Set(['wall-offset-ms', 'sample-ppm', 'timeout-ms', 'retry-ms', 'retries', 'jitter-ms', 'a-delay-ms', 'b-delay-ms', 'loss', 'noise-db', 'echo', 'duration-ms', 'drop-a-burst', 'drop-b-burst', 'seed', 'redundancy']);
 try {
   // parseArgs intentionally treats '-200' as an ambiguous option. Numeric-only
   // normalization supports ordinary '--sample-ppm -200' safely; do not rewrite

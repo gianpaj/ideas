@@ -28,7 +28,9 @@ export function address(text) {
 }
 
 export class UdpAudio {
-  constructor({bind, peer, jitterMs = 100, onPcm, onError}) {
+  constructor({bind, peer, jitterMs = 100, redundancy = 2, onPcm, onError}) {
+    if (![1, 2].includes(redundancy)) throw Error('media redundancy must be1or2');
+    this.redundancy = redundancy;
     this.bind = bind;
     this.peer = peer;
     this.jitterMs = jitterMs;
@@ -36,11 +38,12 @@ export class UdpAudio {
     this.onError = onError;
     this.socket = dgram.createSocket('udp4');
     this.queue = new Map();
+    this.seen = new Set();
     this.seq = randomBytes(4).readUInt32BE();
     this.sample = randomBytes(4).readUInt32BE();
     this.next = null;
     this.playAt = null;
-    this.stats = {sent: 0, received: 0, lost: 0, late: 0, invalid: 0, maxQueued: 0, socketErrors: 0};
+    this.stats = {redundancy, sent: 0, sentDatagrams: 0, received: 0, receivedDatagrams: 0, duplicates: 0, lateDuplicates: 0, lost: 0, late: 0, invalid: 0, maxQueued: 0, maxSeen: 0, socketErrors: 0};
     this.closed = false;
   }
   async open() {
@@ -48,6 +51,12 @@ export class UdpAudio {
     this.socket.on('message', packet => {
       const message = decodeDatagram(packet);
       if (!message) { this.stats.invalid++; return; }
+      this.stats.receivedDatagrams++;
+      if (this.seen.has(message.seq)) {
+        this.stats.duplicates++;
+        if (this.next !== null && distance(message.seq, this.next) < 0) this.stats.lateDuplicates++;
+        return;
+      }
       if (this.next === null) {
         this.next = message.seq;
         this.playAt = performance.now() + this.jitterMs;
@@ -59,6 +68,9 @@ export class UdpAudio {
       }
       if (ahead > 127 || this.queue.size >= 128) { this.stats.invalid++; return; }
       this.queue.set(message.seq, Buffer.from(message.pcm));
+      this.seen.add(message.seq);
+      if (this.seen.size > 256) this.seen.delete(this.seen.values().next().value);
+      this.stats.maxSeen = Math.max(this.stats.maxSeen, this.seen.size);
       this.stats.received++;
       this.stats.maxQueued = Math.max(this.stats.maxQueued, this.queue.size);
     });
@@ -75,7 +87,11 @@ export class UdpAudio {
   }
   send(pcm) {
     if (this.closed || pcm.length !== PCM_BYTES) return;
-    this.socket.send(encodeDatagram(pcm, this.seq++, this.sample));
+    const packet = encodeDatagram(pcm, this.seq++, this.sample);
+    for (let copy = 0; copy < this.redundancy; copy++) {
+      this.socket.send(packet);
+      this.stats.sentDatagrams++;
+    }
     this.seq >>>= 0;
     this.sample = (this.sample + CHUNK) >>> 0;
     this.stats.sent++;
@@ -94,6 +110,7 @@ export class UdpAudio {
     if (this.closed) return;
     this.closed = true;
     this.queue.clear();
+    this.seen.clear();
     try { this.socket.close(); } catch (error) {
       if (error.code !== 'ERR_SOCKET_DGRAM_NOT_RUNNING') throw error;
     }

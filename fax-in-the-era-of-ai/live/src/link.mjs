@@ -21,6 +21,34 @@ function randomStream(seed) {
   let state = (seed >>> 0) || 0x9e3779b9;
   return () => { state ^= state << 13; state ^= state >>> 17; state ^= state << 5; return (state >>> 0) / 4294967296; };
 }
+/** Exactly-once physical processing for duplicate media packets. Sender input
+ * reaches this local relay in sequence; delay/jitter/loss are applied AFTER
+ * this cache. Stale evicted copies cannot advance the filter/echo clock again.
+ */
+export class UniqueMedia {
+  constructor(process, capacity = 256) {
+    if (!Number.isInteger(capacity) || capacity < 1 || capacity > 1024) throw Error('invalid media-cache capacity');
+    this.process = process;
+    this.capacity = capacity;
+    this.entries = new Map();
+    this.highest = null;
+    this.maxEntries = 0;
+  }
+  accept(message) {
+    const previous = this.entries.get(message.seq);
+    if (previous) {
+      if (previous.sample !== message.sample || !previous.source.equals(message.pcm)) return {invalid: true};
+      return {entry: previous, duplicate: true};
+    }
+    if (this.highest !== null && ((message.seq - this.highest) | 0) <= 0) return {invalid: true};
+    const entry = {sample: message.sample, source: Buffer.from(message.pcm), pcm: this.process(message.pcm), recorded: false};
+    this.entries.set(message.seq, entry);
+    this.highest = message.seq;
+    if (this.entries.size > this.capacity) this.entries.delete(this.entries.keys().next().value);
+    this.maxEntries = Math.max(this.maxEntries, this.entries.size);
+    return {entry, duplicate: false};
+  }
+}
 class Impairment {
   constructor({noiseDb, echo, random}) {
     this.random = random;
@@ -75,7 +103,23 @@ export async function runLink(options) {
   const log = logger({role: 'link', file: options.log});
   const channels = {a: new Impairment({noiseDb, echo, random: randomStream(seed ^ 0x1234)}), b: new Impairment({noiseDb, echo, random: randomStream(seed ^ 0x4567)})};
   const state = {a: {burst: 0, active: false, silence: 0}, b: {burst: 0, active: false, silence: 0}};
-  const stats = {a: {received: 0, dropped: 0, delivered: 0, bursts: 0}, b: {received: 0, dropped: 0, delivered: 0, bursts: 0}, invalid: 0, pendingMax: 0, captureOverlaps: 0};
+  const directionStats = () => ({received: 0, physicalProcessed: 0, duplicateDatagrams: 0, dropped: 0, delivered: 0, deliveredUnique: 0, bursts: 0, cacheMax: 0});
+  const stats = {a: directionStats(), b: directionStats(), invalid: 0, pendingMax: 0, captureOverlaps: 0};
+  const media = Object.fromEntries(['a', 'b'].map(side => [side, new UniqueMedia(pcm => {
+    const s = state[side];
+    let power = 0;
+    for (let i = 0; i < PCM_BYTES; i += 2) power += pcm.readInt16LE(i) ** 2;
+    const active = Math.sqrt(power / CHUNK) > 1000;
+    if (active) {
+      if (!s.active) { s.burst++; stats[side].bursts++; log('burst', {direction: side, ordinal: s.burst}); }
+      s.active = true; s.silence = 0;
+    } else if (++s.silence >= 5) s.active = false;
+    const burstMuted = s.active && drop[side] === s.burst;
+    // Stateful coloring/noise/50ms echo advance ONCE per unique physical20ms
+    // sample block, even if all datagram copies are subsequently discarded.
+    const muted = mute === 'both' || mute === side || burstMuted || corrupt === side || corrupt === 'both';
+    return channels[side].apply(muted ? Buffer.alloc(PCM_BYTES) : pcm);
+  })]));
   const socket = dgram.createSocket('udp4');
   const timers = new Set();
   // Bound recording to the configured maximum lifetime. Time is only LOCAL link
@@ -110,7 +154,7 @@ export async function runLink(options) {
     process.off('SIGINT', stop); process.off('SIGTERM', stop);
     socket.close();
     if (capture) writeFileSync(options.capture, wav(capture.subarray(0, captureEnd * 2)), {mode: 0o600});
-    log('result', {stats, captureSamplesPerChannel: captureEnd, note: 'capture is actual link-delivery PCM, left a-to-b/right b-to-a; jitter can overlap delivery fragments; not a playout-corrected receiver recording'});
+    log('result', {stats, captureSamplesPerChannel: captureEnd, note: 'capture is first-delivered unique PCM only (media copies deduplicated), left a-to-b/right b-to-a; jitter can overlap delivery fragments; not a playout-corrected receiver recording'});
     resolveDone(0);
   }
   socket.on('message', (packet, info) => {
@@ -119,23 +163,15 @@ export async function runLink(options) {
     const message = decodeDatagram(packet);
     if (!side || !message) { stats.invalid++; return; }
     const peer = endpoints[side === 'a' ? 'b' : 'a'];
-    const s = state[side];
-    let power = 0;
-    for (let i = 0; i < PCM_BYTES; i += 2) power += message.pcm.readInt16LE(i) ** 2;
-    const active = Math.sqrt(power / CHUNK) > 1000;
-    if (active) {
-      if (!s.active) { s.burst++; stats[side].bursts++; log('burst', {direction: side, ordinal: s.burst}); }
-      s.active = true; s.silence = 0;
-    } else if (++s.silence >= 5) s.active = false;
     stats[side].received++;
-    const burstMuted = s.active && drop[side] === s.burst;
+    const unique = media[side].accept(message);
+    if (unique.invalid) { stats.invalid++; return; }
+    if (unique.duplicate) stats[side].duplicateDatagrams++;
+    else stats[side].physicalProcessed++;
+    stats[side].cacheMax = media[side].maxEntries;
     if (randoms[side]() < loss) { stats[side].dropped++; return; }
-    let pcm = channels[side].apply(mute === 'both' || mute === side || burstMuted ? Buffer.alloc(PCM_BYTES) : message.pcm);
-    if (corrupt === side || corrupt === 'both') {
-      // Always replace ALL returning modulation with fresh noise, not a packet-
-      // type oracle. This must prevent receiver protocol completion.
-      pcm = channels[side].apply(Buffer.alloc(PCM_BYTES));
-    }
+    const {entry} = unique;
+    const pcm = entry.pcm;
     if (timers.size >= 1024) { stats[side].dropped++; return; }
     const delay = Math.max(0, latency[side] + (randoms[side]() * 2 - 1) * jitter);
     const timer = setTimeout(() => {
@@ -144,7 +180,11 @@ export async function runLink(options) {
       const raw = encodeDatagram(pcm, message.seq, message.sample);
       socket.send(raw, peer.port, peer.host);
       stats[side].delivered++;
-      record(pcm, side);
+      if (!entry.recorded) {
+        entry.recorded = true;
+        stats[side].deliveredUnique++;
+        record(pcm, side);
+      }
     }, delay);
     timers.add(timer);
     stats.pendingMax = Math.max(stats.pendingMax, timers.size);
