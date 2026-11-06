@@ -209,11 +209,73 @@ DATA frame returns the exact cached response without another operation. Bad
 phase, wrong session, tampering, wrong key and stale-session replays do not open
 that operation. Authenticated HELLO/CONFIRM retries reuse their cached responses.
 
+In the retained recording, the application data is exactly `real user 42`
+(12 UTF-8 bytes). The receipt contains those same bytes preceded by the first
+16 bytes of their SHA-256 digest; the initiator verifies both and the MAC.
+The recording does **not** exchange a booking or switch to HTTPS. A phone-to-
+HTTPS handoff would be a further protocol extension, not existing behavior.
+
 ## Physical framing and mathematical limits
 
 The new **experimental AIP-FSK2** profile is not CP, V.21 or T.30 compatible.
 It uses continuous-phase binary FSK, mark 1250 Hz, space 2250 Hz, 250 bit/s,
 8 kHz mono s16le PCM. No artificial decorative dial-up sounds are added.
+
+### Message bytes: compact binary, not JSON or Base64
+
+The protocol message is serialized directly as:
+
+```text
+message type        1 byte
+sequence number     2 bytes, big-endian
+session ID         16 bytes, also caller nonce A
+application data    N bytes
+authentication tag 16 bytes, truncated HMAC-SHA256
+```
+
+This is `35 + N` bytes. HELLO carries no application data, so its message is
+35 bytes; CHALLENGE adds a 16-byte nonce, making 51 bytes. The recorded DATA
+message is 47 bytes, while RECEIPT is 63 bytes because it also carries a
+16-byte digest. These counts exclude physical framing below. Text application
+data uses UTF-8; the header, nonces and tags are binary bytes, not hexadecimal
+strings on the wire. See [the actual serializer](src/protocol.mjs).
+
+### Bits become sound
+
+Each byte is transmitted **most-significant bit first**. At nominal clocks:
+
+- Bit `0` selects **2250 Hz** (space).
+- Bit `1` selects **1250 Hz** (mark).
+- One bit occupies **4 ms**, or 32 samples at 8 kHz: **250 bit/s**.
+
+For example, `r` becomes UTF-8 byte `0x72`, then bits `01110010`. Conceptually:
+
+```text
+for bit in bits:
+    frequency = 1250 if bit == 1 else 2250
+    emit_sine(frequency, duration=4ms, keep_phase=True)
+```
+
+The waveform preserves phase as its frequency changes instead of restarting
+the sine wave for each bit. The actual generator applies edge ramps, oscillator
+error and chunk/release padding; the pseudocode shows nominal bit mapping only.
+
+### Physical frame and receiver
+
+Around the message bytes, the modulator sends:
+
+```text
+48 alternating preamble bits | 32-bit sync
+version: 1 byte | message length: 1 byte
+message bytes | CRC16: 2 bytes
+```
+
+The receiver compares correlated energy at the two tone frequencies, searches
+symbol timing and clock hypotheses, and reconstructs bits and bytes. It then
+checks preamble/sync, version, length, signal confidence and CRC16 before the
+protocol layer verifies the keyed MAC and changes session state. CRC catches
+channel corruption; it is not authentication. No speech recognition or LLM is
+involved. See [the modulator and streaming receiver](src/signal.mjs).
 
 - 48 alternating preamble bits + 32-bit sync `ddaa96e7`.
 - Version byte `02`, one-byte length (1…192), binary data, CRC16 big-endian.
@@ -241,11 +303,30 @@ ppm, but opposed extremes can exceed the bank’s ±3000 ppm relative-period spa
 accepted simulator settings are not a promise of successful recovery. See the
 [clock/link review](../notes/2026-11-06-clock-and-link-review.md).
 
+### Compression and airtime
+
+**Protocol message bytes are not compressed.** Random nonces and cryptographic
+tags have essentially no lossless-compression opportunity, and general-purpose
+compression headers would usually add overhead to these tiny packets. Compact
+binary fields already avoid JSON/Base64 overhead. The application bytes are
+also sent unchanged; there is no gzip, dictionary codec or modem FEC here.
+
 Physical packet duration before padding is `(112 + 8*payloadBytes)/250` seconds.
-A minimal 35-byte authenticated HELLO thus needs about 1.568 s, plus release/
-chunk padding and guards. This is intentionally conservative, not a claim of
+Here `payloadBytes` is the entire authenticated protocol message, not just its
+application data. The 112 framing bits are 48 preamble + 32 sync + 8 version +
+8 length + 16 CRC. A minimal 35-byte authenticated HELLO therefore needs
+`(112 + 35*8)/250 = 1.568 s`, plus release/chunk padding and guards. This is
+intentionally conservative, not a claim of
 optimal modem speed or secure-latency lower bound. Authentication overhead,
 noise robustness and actual bit rate are exposed rather than disguised.
+
+**Media compression is a separate layer.** The modem produces uncompressed
+8 kHz, 16-bit PCM: 128 kbit/s per mono stream before network overhead or duplicate
+datagrams, even though its modulation conveys only 250 bit/s. The listening
+MP3 and explanatory video's AAC compress that waveform for delivery/playback;
+they do not compress the protocol's message bytes. The original WAV remains the
+PCM evidence. Media-datagram duplication is transport loss protection, not
+compression or an extra signaling channel.
 
 ## Code, tests and evidence
 

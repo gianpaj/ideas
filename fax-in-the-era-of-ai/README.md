@@ -23,6 +23,17 @@ https://github.com/user-attachments/assets/f3697d93-78ae-4490-98b9-f49c6d5dcf72
 [Design and implementation plan](notes/2026-11-06-live-prototype-plan.md) ·
 [Clock and link review](notes/2026-11-06-clock-and-link-review.md)
 
+### How the handshake is encoded
+
+The live profile serializes compact binary fields, then sends each bit as a
+continuous-phase FSK tone: `0` = 2250 Hz, `1` = 1250 Hz, 4 ms per bit. The
+message bytes are **not compressed**. Preamble/sync bits establish framing,
+CRC16 detects channel errors, and a keyed tag authenticates the recovered
+message. MP3/AAC compression applies only to shared playback files, not to the
+protocol's message bytes.
+
+[Read the binary layout, receiver explanation and airtime calculation](live/README.md#physical-framing-and-mathematical-limits).
+
 ## Reproducible phone-handshake experiment (2026-11-05)
 
 [Listen to the noisy two-agent call and fax-like alternative](prototype/README.md), with real decoded data rather than sound effects. The recommended example uses CP-Handshake's experimental DTMF PROBE/OFFER/BIND framing and a simulated HTTPS rendezvous; a separate 300-baud FSK example explores the modem-like sound. Neither makes a real call or booking.

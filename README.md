@@ -33,6 +33,11 @@ https://github.com/user-attachments/assets/f3697d93-78ae-4490-98b9-f49c6d5dcf72
 [Run the prototype](fax-in-the-era-of-ai/live/README.md) ·
 [Editable SVG and rendering source](fax-in-the-era-of-ai/live/explainer/README.md)
 
+The handshake sends compact, **uncompressed binary messages** using two tones:
+`0` is 2250 Hz and `1` is 1250 Hz, at 250 bits/second. The
+[encoding and framing explanation](fax-in-the-era-of-ai/live/README.md#physical-framing-and-mathematical-limits)
+covers message fields, synchronization, error checks, authentication and airtime.
+
 ## Loose notes
 
 - **twitter-engagement-analysis** — Identifies the top 20 accounts a user most interacts with, fetches their highest-engagement tweets, and uses Claude to extract actionable engagement patterns
