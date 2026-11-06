@@ -85,7 +85,9 @@ file; no PCM goes through console output.
 For an unimpaired test, point the responder's `--peer` at `127.0.0.1:31001` and
 the initiator's at `127.0.0.1:31002`; omit the link. Across two machines, configure
 reachable private IPv4 addresses and ports. UDP transport carries only PCM plus
-sequence/sample counters, not protocol messages. It is not an exposed production
+sequence/sample counters, not protocol messages. By default each media datagram
+is sent twice with the **same sequence, sample counter and PCM**; the receiver
+plays only the first timely copy. `--redundancy 1` disables this UDP protection. It is not an exposed production
 network service. The preprovisioned PSK authenticates **audio frames**, not the
 underlying UDP source or network confidentiality.
 
@@ -98,6 +100,9 @@ The endpoint flags are independent:
 - `--sample-ppm 200`: a **faster** local audio oscillator, applied to both DAC
   synthesis and ADC resampling. Use `-200` on the other endpoint. Carrier and
   baud really change; the DSP receiver is not given the peer's ppm value.
+- `--redundancy 2`: default two identical UDP copies per 20 ms PCM block. Use
+  `1` for unprotected media. This doubles media traffic, not audio duration;
+  duplicates cannot advance the sample clock or execute another data action.
 - `--jitter-ms 200`: bounded initial/local playout buffer. Missing PCM becomes
   silence, late packets are discarded, and counters report these separately.
 - `--retry-ms 7000 --retries 4 --timeout-ms 90000`: per-phase retry interval,
@@ -119,8 +124,10 @@ one-way delay on these asymmetric paths.
 
 Additional faults (only the relay sees them):
 
-- `--loss 0.01`: randomly discard 1% of PCM packets. There is no FEC: loss inside
-  a burst can invalidate its CRC and require ARQ; this is not a guaranteed pass.
+- `--loss 0.01`: randomly discard 1% of UDP media **datagrams/copies**. Default
+  two-copy transport can recover when either copy arrives on time. There is no
+  modem FEC: loss of both copies inside a burst can invalidate its CRC and need
+  ARQ. Correlated loss or deep fades are not cured by immediate duplication.
 - `--drop-b-burst 1`: mute the first **audio-active burst** from responder,
   without decoding its type. In the usual exchange this loses CHALLENGE.
 - `--drop-b-burst 2`: lose READY; initiator must not succeed without a later
@@ -133,6 +140,14 @@ Additional faults (only the relay sees them):
 
 `--seed` controls independent per-direction noncryptographic impairment streams.
 It never controls keys/nonces, which always use OS cryptographic randomness.
+The link applies stateful filtering, echo and noise **once per unique source
+PCM block**, caching 256 entries so redundant network copies contain identical
+impaired audio and do not speed up the channel clock. Independent loss/jitter
+then affects each copy. A stale evicted copy or conflicting sequence reuse is
+rejected. The relay expects in-order source arrival before its own impairment
+queue; arbitrary reordering before the relay is not modeled. The receiver still
+handles reordered network delivery through its bounded playout buffer.
+
 Packet scheduling between processes is not deterministic; identical seeds do
 not promise byte-identical captures under arbitrary OS scheduling.
 
@@ -208,7 +223,8 @@ It uses continuous-phase binary FSK, mark 1250 Hz, space 2250 Hz, 250 bit/s,
   floating-point correlator signs are not accepted as evidence of a real bit.
   `crcRejections`/`erasureRejections` count timing candidates, not lost packets.
 - Bounded worker queue (128 chunks), TX frame queue (4), receive jitter queue
-  (128 packets), relay pending delays (1024), local lifetime (at most 300 s).
+  (128 packets), recent receive dedup set (256), per-direction relay physical
+  cache (256 entries), relay pending delays (1024), local lifetime (at most 300 s).
   Overflow is reported/fails rather than growing forever.
 
 At +200/−200 ppm hardware clocks, relative frequency error is approximately
@@ -235,7 +251,8 @@ noise robustness and actual bit rate are exposed rather than disguised.
 - `tests/`: waveform, independent ADC drift, crypto/phase/replay and bound tests.
 - `validation/`: independent parent-owned process/clock verification.
 
-A link capture is stereo actual **delivery-time PCM**: left a→b, right b→a.
+A link capture is stereo actual **first-delivered unique PCM**: left a→b, right
+b→a. Duplicate network copies are not mixed a second time into the recording.
 With jitter, arrivals can overlap/gap; it is not falsely labelled reconstructed
 receiver playout. The decoder receives each endpoint's local jitter-corrected
 stream. WAVs contain short-lived nonces and public authenticated frames, never
@@ -243,7 +260,8 @@ the private key. Captured audio is research evidence, not a secret credential.
 JSON evidence/logs omit nonces, keys, raw packets and user data.
 
 [Implementation plan](../notes/2026-11-06-live-prototype-plan.md) ·
-[Erasure-confidence development finding and correction](../notes/2026-11-06-signal-hardening.md).
+[Erasure-confidence development finding and correction](../notes/2026-11-06-signal-hardening.md) ·
+[Real 1% loss failure and bounded media-redundancy correction](../notes/2026-11-06-media-loss-and-redundancy.md).
 No real acoustic hardware, telephone carrier, browser or hostile network has
 been qualified. One run is not a reliability percentage. Retain failures and
 reproduction settings when analyzing the matrix.

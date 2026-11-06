@@ -15,7 +15,8 @@
       "initiator": 0,
       "responder": 0
     },
-    "speech": false
+    "speech": false,
+    "media_datagram_copies": 1
   },
   "privacy": "No key or raw protocol bytes in metadata; audio carries ephemeral session nonces and authenticated public packets, not the private key.",
   "artifacts": [
