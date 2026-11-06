@@ -1,0 +1,16 @@
+{"event":"ready","role":"responder","wallTime":"2026-11-06T07:58:26.682Z","elapsedMs":2.423,"sampleClockPpm":0,"wallOffsetMs":0,"timeoutMs":90000,"retryMs":7000,"jitterMs":160,"transport":"UDP/8k-mono-s16le/20ms/PCM-only","profile":"experimental-AIP-FSK2"}
+{"event":"audio-frame","role":"responder","wallTime":"2026-11-06T07:58:29.023Z","elapsedMs":2342.87,"type":"HELLO","payloadBytes":35,"clockHypothesisPeriodPpm":0,"startSample":1760,"endSample":14304}
+{"event":"transition","role":"responder","wallTime":"2026-11-06T07:58:29.024Z","elapsedMs":2343.785,"received":"HELLO","state":"WAIT_CONFIRM","paired":false,"sessionFingerprint":"cf5733da6b9a571d"}
+{"event":"tx-start","role":"responder","wallTime":"2026-11-06T07:58:29.124Z","elapsedMs":2443.711,"type":"CHALLENGE","pcmSamples":17120,"reason":"received-audio"}
+{"event":"tx-end","role":"responder","wallTime":"2026-11-06T07:58:31.241Z","elapsedMs":4560.633,"type":"CHALLENGE"}
+{"event":"audio-frame","role":"responder","wallTime":"2026-11-06T07:58:33.345Z","elapsedMs":6664.665,"type":"CONFIRM","payloadBytes":35,"clockHypothesisPeriodPpm":0,"startSample":36480,"endSample":49024}
+{"event":"transition","role":"responder","wallTime":"2026-11-06T07:58:33.345Z","elapsedMs":6664.905,"received":"CONFIRM","state":"WAIT_DATA","paired":true,"sessionFingerprint":"cf5733da6b9a571d"}
+{"event":"tx-start","role":"responder","wallTime":"2026-11-06T07:58:33.481Z","elapsedMs":6800.791,"type":"READY","pcmSamples":13120,"reason":"received-audio"}
+{"event":"tx-end","role":"responder","wallTime":"2026-11-06T07:58:35.102Z","elapsedMs":8421.421,"type":"READY"}
+{"event":"audio-frame","role":"responder","wallTime":"2026-11-06T07:58:37.662Z","elapsedMs":10981.715,"type":"DATA","payloadBytes":47,"clockHypothesisPeriodPpm":0,"startSample":67360,"endSample":82976}
+{"event":"transition","role":"responder","wallTime":"2026-11-06T07:58:37.662Z","elapsedMs":10981.979,"received":"DATA","state":"WAIT_CLOSE","paired":true,"sessionFingerprint":"cf5733da6b9a571d"}
+{"event":"tx-start","role":"responder","wallTime":"2026-11-06T07:58:37.703Z","elapsedMs":11022.815,"type":"RECEIPT","pcmSamples":20320,"reason":"received-audio"}
+{"event":"tx-end","role":"responder","wallTime":"2026-11-06T07:58:40.221Z","elapsedMs":13540.669,"type":"RECEIPT"}
+{"event":"audio-frame","role":"responder","wallTime":"2026-11-06T07:58:42.302Z","elapsedMs":15621.936,"type":"CLOSE","payloadBytes":35,"clockHypothesisPeriodPpm":0,"startSample":108320,"endSample":120864}
+{"event":"transition","role":"responder","wallTime":"2026-11-06T07:58:42.302Z","elapsedMs":15622.165,"received":"CLOSE","state":"DONE","paired":true,"sessionFingerprint":"cf5733da6b9a571d"}
+{"event":"result","role":"responder","wallTime":"2026-11-06T07:58:42.305Z","elapsedMs":15624.871,"success":true,"reason":"authenticated-data-and-close","state":"DONE","paired":true,"receiptVerified":false,"sessionFingerprint":"cf5733da6b9a571d","operationCount":1,"rejections":0,"retries":0,"transport":{"sent":782,"received":759,"lost":0,"late":0,"invalid":0,"maxQueued":10},"decoder":{"maxBufferSamples":37408,"crcRejections":171}}

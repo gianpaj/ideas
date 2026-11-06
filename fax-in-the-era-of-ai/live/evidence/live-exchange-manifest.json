@@ -1,0 +1,104 @@
+{
+  "recorded_utc": "2026-11-06T07:58:26Z",
+  "kind": "actual separate-process causal PCM exchange, not a prerecorded script",
+  "profile": "experimental AIP-FSK2",
+  "source_note": "Recorded during initial live smoke before final CLI/error-cleanup fixes; modulation and authenticated protocol are unchanged. Final validation matrix covers the finalized source.",
+  "conditions": {
+    "sample_rate_hz": 8000,
+    "channels": 2,
+    "link_nominal_snr_db": 24,
+    "echo_gain": 0.1,
+    "echo_delay_ms": 50,
+    "configured_extra_latency_ms": 0,
+    "configured_jitter_ms": 0,
+    "oscillator_ppm": {
+      "initiator": 0,
+      "responder": 0
+    },
+    "speech": false
+  },
+  "privacy": "No key or raw protocol bytes in metadata; audio carries ephemeral session nonces and authenticated public packets, not the private key.",
+  "artifacts": [
+    {
+      "file": "live-exchange-2026-11-06.wav",
+      "sha256": "8224e9dd9ab13f3f909d6e66f7c023df49b1614a95db3b71a88dde94cfb4132d",
+      "bytes": 510224
+    },
+    {
+      "file": "live-exchange-2026-11-06.mp3",
+      "sha256": "5b9a181df3b2c9c09e3c83809bf6ff8cd03c582e92c77a7e8b7dd69962833b42",
+      "bytes": 129932
+    },
+    {
+      "file": "live-exchange-decoded.json",
+      "sha256": "3170fea034cd2b25155089841de60c9c3b9099607355a21f69fc0c2ff33b52b0",
+      "bytes": 2352
+    },
+    {
+      "file": "initiator-live-events.jsonl",
+      "sha256": "1ac582b970c38ad7a3d669db2d4d173efe762d6471f164d0ee99733d7a7d5a2c",
+      "bytes": 3238
+    },
+    {
+      "file": "responder-live-events.jsonl",
+      "sha256": "60d8736cfa2d4bdc611c2574633978c6ecc59a3f31232f750a79d61649818690",
+      "bytes": 3108
+    }
+  ],
+  "endpoint_results": {
+    "initiator": {
+      "event": "result",
+      "role": "initiator",
+      "wallTime": "2026-11-06T07:58:42.145Z",
+      "elapsedMs": 15164.3,
+      "success": true,
+      "reason": "authenticated-receipt-verified",
+      "state": "CLOSING",
+      "paired": true,
+      "receiptVerified": true,
+      "sessionFingerprint": "cf5733da6b9a571d",
+      "operationCount": 0,
+      "rejections": 0,
+      "retries": 0,
+      "transport": {
+        "sent": 759,
+        "received": 757,
+        "lost": 0,
+        "late": 0,
+        "invalid": 0,
+        "maxQueued": 10
+      },
+      "decoder": {
+        "maxBufferSamples": 41600,
+        "crcRejections": 114
+      }
+    },
+    "responder": {
+      "event": "result",
+      "role": "responder",
+      "wallTime": "2026-11-06T07:58:42.305Z",
+      "elapsedMs": 15624.871,
+      "success": true,
+      "reason": "authenticated-data-and-close",
+      "state": "DONE",
+      "paired": true,
+      "receiptVerified": false,
+      "sessionFingerprint": "cf5733da6b9a571d",
+      "operationCount": 1,
+      "rejections": 0,
+      "retries": 0,
+      "transport": {
+        "sent": 782,
+        "received": 759,
+        "lost": 0,
+        "late": 0,
+        "invalid": 0,
+        "maxQueued": 10
+      },
+      "decoder": {
+        "maxBufferSamples": 37408,
+        "crcRejections": 171
+      }
+    }
+  }
+}

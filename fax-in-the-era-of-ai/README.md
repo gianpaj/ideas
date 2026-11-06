@@ -2,6 +2,18 @@
 
 An agent-to-agent phone protocol
 
+## Live audio-I/O prototype (2026-11-06)
+
+[Run two independent Node.js endpoints](live/README.md): tones-only FSK carries
+fresh mutual authentication, peer confirmation and a real user-selected data
+round trip. Includes a PCM-only delay/jitter/noise link, independent ADC/DAC clock
+simulation, bounded retries, CLI commands and isolated Docker reproduction.
+No speech, browser, telephone service or simulated HTTP completion is required.
+This new experimental all-audio profile is not CP/V.21/T.30 compatible.
+
+[Design and implementation plan](notes/2026-11-06-live-prototype-plan.md) ·
+[Clock and link review](notes/2026-11-06-clock-and-link-review.md)
+
 ## Reproducible phone-handshake experiment (2026-11-05)
 
 [Listen to the noisy two-agent call and fax-like alternative](prototype/README.md), with real decoded data rather than sound effects. The recommended example uses CP-Handshake's experimental DTMF PROBE/OFFER/BIND framing and a simulated HTTPS rendezvous; a separate 300-baud FSK example explores the modem-like sound. Neither makes a real call or booking.

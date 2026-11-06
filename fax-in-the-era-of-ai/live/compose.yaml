@@ -1,0 +1,27 @@
+# Provision first: node src/cli.mjs init --state .state
+# No published ports, host clock changes, elevated capabilities or cloud service.
+x-common: &common
+  build: .
+  init: true
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+  volumes:
+    - ./.state:/state:ro
+  networks: [audio]
+
+services:
+  link:
+    <<: *common
+    command: [link, --bind, "0.0.0.0:31000", --a, "initiator:31001", --b, "responder:31002", --a-delay-ms, "300", --b-delay-ms, "650", --jitter-ms, "60", --noise-db, "24", --duration-ms, "90000"]
+  responder:
+    <<: *common
+    command: [endpoint, --role, responder, --key, /state/pair.key, --bind, "0.0.0.0:31002", --peer, "link:31000", --sample-ppm, "-200", --wall-offset-ms, "-7200000", --jitter-ms, "200", --timeout-ms, "75000"]
+  initiator:
+    <<: *common
+    command: [endpoint, --role, initiator, --key, /state/pair.key, --bind, "0.0.0.0:31001", --peer, "link:31000", --sample-ppm, "200", --wall-offset-ms, "3600000", --jitter-ms, "200", --timeout-ms, "75000", --data, "hello from two independent endpoint containers"]
+
+networks:
+  audio:
+    internal: true

@@ -9,7 +9,7 @@ dedicated repository.
 | Idea                                                                      | Stage                | Purpose                                                                           |
 | ------------------------------------------------------------------------- | -------------------- | --------------------------------------------------------------------------------- |
 | [`brrra`](brrra/)                                                         | Design               | Privacy-first Android push notifications delivered through a webhook              |
-| [`fax-in-the-era-of-ai`](fax-in-the-era-of-ai/)                           | Research / prototype | Agent phone-handshake audio, DTMF/FSK comparisons, and local AI receptionist concept    |
+| [`fax-in-the-era-of-ai`](fax-in-the-era-of-ai/)                           | Live prototype       | Independent tones-only audio endpoints, clock/delay tests, DTMF/FSK research and receptionist concept    |
 | [`hatch-pet-local-orchestrator`](hatch-pet-local-orchestrator/)           | Design               | Local workflow for preparing, validating, and packaging Hatch Pet sprite atlases  |
 | [`multi-city-property-visualization`](multi-city-property-visualization/) | Design               | 3D comparison of property markets across cities                                   |
 | [`photos-only-app`](photos-only-app/)                                     | Research             | Paid, ad-free social network limited to photo posts                               |

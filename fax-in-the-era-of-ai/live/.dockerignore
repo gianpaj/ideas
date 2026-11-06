@@ -1,0 +1,6 @@
+.state
+.venv
+__pycache__
+evidence
+validation
+node_modules
