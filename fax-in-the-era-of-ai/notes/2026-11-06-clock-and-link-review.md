@@ -107,3 +107,70 @@ userspace impairment relay.
 These equations and the proposed matrix are review criteria, not completed
 measurements. Actual commands and outcomes will be recorded with the live
 implementation's validation evidence.
+
+## Development findings and completed checks
+
+Independent waveform inspection caught an initially reversed oscillator sign.
+After correction, a -1000 ppm injection measured 2247.75 Hz for the nominal
+2250 Hz tone, and +1000 ppm measured 2252.25 Hz. Burst-duration measurements
+also agreed within the test's 80 ppm tolerance for integer-sample quantization.
+The check measures samples, not the decoder's chosen clock hypothesis.
+
+Separate-process testing caught negative CLI numeric values being rejected
+before parsing entered the error handler, and invalid addresses leaving a
+decoder worker alive. Those configuration/lifecycle bugs were corrected and
+covered by regression tests. The initial report is preserved rather than
+counted as successful clock testing.
+
+On the erasure-hardened core, baseline, independent clocks plus asymmetric
+delay/jitter, dropped-first-response retry, wrong-key rejection, muted return
+and cancellation all passed. The separate Docker endpoints also completed
+the actual authenticated data exchange with +1 h/-2 h application clocks,
++200/-200 ppm audio clocks, 300/650 ms delay and 60 ms jitter. Containers had
+read-only roots, no privileged mode, all capabilities dropped, and no published
+host ports. The test containers were stopped after inspection.
+
+The predetermined 1% PCM-packet-loss trial (seed 20261106) failed at the
+application receipt phase after exhausting retries. It is preserved in
+`live/validation/evidence/parent-matrix-before-redundancy.json`; the six other
+scenarios passed. This is not a reason to call the failed trial successful.
+
+The mechanism is unsurprising: if a frame spans `N` packets and any erased
+symbol makes the frame unusable, independent packet loss `p` gives clean-frame
+probability `(1-p)^N`. At `p=0.01`, `N=120`, that is only 29.94%. A 1% packet
+loss rate is therefore not a 1% frame error rate. Two independently delivered
+copies of each media packet reduce the all-copies-lost probability to `p^2`;
+under that model the same clean-frame probability becomes approximately
+98.81%. These are model calculations, not measured carrier guarantees.
+
+The bounded follow-up is media-datagram redundancy/deduplication, not another
+signaling channel or an invented successful receipt. It cannot cure correlated
+long outages, all-return muting, the wrong key, or analog waveform corruption.
+Actual outcomes after that change must be recorded before adopting its claim.
+
+## Final corrected-source rerun, 2026-11-06
+
+The final parent-owned rerun on the media-redundancy correction passed all
+seven independent-process scenarios. Initiator elapsed completion times were
+15.88 s baseline, 20.08 s with independent clocks and asymmetric delay/jitter,
+25.58 s with the first responder burst erased (one actual retry), and 17.12 s
+for the originally failing seed-20261106 1% independent datagram-loss case.
+Each positive run verified the exact authenticated response and executed the
+responder operation once. Wrong-key and fully muted-return tests did not pair
+or execute the operation; explicit cancellation shut down both processes.
+All successful sessions had distinct fingerprints. Observed decoder history
+and transport queues stayed within the declared bounds.
+
+The Docker test was rebuilt and repeated against the corrected source, not
+inherited from the earlier build: both isolated endpoints exited successfully
+with actual application logs approximately three hours apart, +200/-200 ppm
+sample clocks, 300/650 ms configured path delays and 60 ms jitter. Inspection
+again verified read-only roots, dropped capabilities and no host ports. The
+test project was taken down after evidence collection. All 12 unit tests also
+passed. The independent waveform measurement remains separate from endpoint
+decoder assertions.
+
+Reproduction commands, immutable source hashes, final JSON evidence and the
+earlier failures are indexed in [live validation](../live/validation/README.md).
+Two-copy PCM is now the tested transport default; this is not modem FEC,
+protection against correlated loss, synchronized clocks or a carrier guarantee.

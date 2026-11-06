@@ -1,0 +1,211 @@
+{
+  "scope": "Separate Docker endpoint containers plus a PCM-only userspace impairment link; no real telephone or physical audio-device test",
+  "project": "phonepair-parent-20261106",
+  "endpoints": {
+    "initiator": {
+      "result": {
+        "event": "result",
+        "role": "initiator",
+        "wallTime": "2026-11-06T14:09:45.552Z",
+        "elapsedMs": 20307.059,
+        "success": true,
+        "reason": "authenticated-receipt-verified",
+        "state": "CLOSING",
+        "paired": true,
+        "receiptVerified": true,
+        "sessionFingerprint": "b173492d7bcce6c8",
+        "operationCount": 0,
+        "rejections": 0,
+        "retries": 0,
+        "totalRetries": 0,
+        "transport": {
+          "redundancy": 2,
+          "sent": 1016,
+          "sentDatagrams": 2032,
+          "received": 982,
+          "receivedDatagrams": 1961,
+          "duplicates": 979,
+          "lateDuplicates": 0,
+          "lost": 0,
+          "late": 0,
+          "invalid": 0,
+          "maxQueued": 13,
+          "maxSeen": 256,
+          "socketErrors": 0
+        },
+        "decoder": {
+          "maxBufferSamples": 64000,
+          "crcRejections": 16,
+          "erasureRejections": 0
+        }
+      },
+      "ready": {
+        "event": "ready",
+        "role": "initiator",
+        "wallTime": "2026-11-06T14:09:25.255Z",
+        "elapsedMs": 9.365,
+        "sampleClockPpm": 200,
+        "wallOffsetMs": 3600000,
+        "timeoutMs": 75000,
+        "retryMs": 7000,
+        "jitterMs": 200,
+        "redundancy": 2,
+        "transport": "UDP/8k-mono-s16le/20ms/PCM-only",
+        "profile": "experimental-AIP-FSK2"
+      },
+      "received": [
+        "CHALLENGE",
+        "READY",
+        "RECEIPT"
+      ],
+      "actualCommand": [
+        "endpoint",
+        "--role",
+        "initiator",
+        "--key",
+        "/state/pair.key",
+        "--bind",
+        "0.0.0.0:31001",
+        "--peer",
+        "link:31000",
+        "--sample-ppm",
+        "200",
+        "--wall-offset-ms",
+        "3600000",
+        "--jitter-ms",
+        "200",
+        "--timeout-ms",
+        "75000",
+        "--data",
+        "hello from two independent endpoint containers"
+      ],
+      "imageId": "sha256:29a345c10aa8d69b8313bbf00607b2f0923847504811a660f718430e73896244",
+      "privileged": false,
+      "readOnly": true,
+      "droppedCapabilities": [
+        "ALL"
+      ],
+      "hostPortsPublished": false
+    },
+    "responder": {
+      "result": {
+        "event": "result",
+        "role": "responder",
+        "wallTime": "2026-11-06T11:09:46.040Z",
+        "elapsedMs": 20805.367,
+        "success": true,
+        "reason": "authenticated-data-and-close",
+        "state": "DONE",
+        "paired": true,
+        "receiptVerified": false,
+        "sessionFingerprint": "b173492d7bcce6c8",
+        "operationCount": 1,
+        "rejections": 0,
+        "retries": 0,
+        "totalRetries": 0,
+        "transport": {
+          "redundancy": 2,
+          "sent": 1041,
+          "sentDatagrams": 2082,
+          "received": 1015,
+          "receivedDatagrams": 2030,
+          "duplicates": 1015,
+          "lateDuplicates": 0,
+          "lost": 0,
+          "late": 0,
+          "invalid": 0,
+          "maxQueued": 13,
+          "maxSeen": 256,
+          "socketErrors": 0
+        },
+        "decoder": {
+          "maxBufferSamples": 53853,
+          "crcRejections": 0,
+          "erasureRejections": 20
+        }
+      },
+      "ready": {
+        "event": "ready",
+        "role": "responder",
+        "wallTime": "2026-11-06T11:09:25.244Z",
+        "elapsedMs": 8.714,
+        "sampleClockPpm": -200,
+        "wallOffsetMs": -7200000,
+        "timeoutMs": 75000,
+        "retryMs": 7000,
+        "jitterMs": 200,
+        "redundancy": 2,
+        "transport": "UDP/8k-mono-s16le/20ms/PCM-only",
+        "profile": "experimental-AIP-FSK2"
+      },
+      "received": [
+        "HELLO",
+        "CONFIRM",
+        "DATA",
+        "CLOSE"
+      ],
+      "actualCommand": [
+        "endpoint",
+        "--role",
+        "responder",
+        "--key",
+        "/state/pair.key",
+        "--bind",
+        "0.0.0.0:31002",
+        "--peer",
+        "link:31000",
+        "--sample-ppm",
+        "-200",
+        "--wall-offset-ms",
+        "-7200000",
+        "--jitter-ms",
+        "200",
+        "--timeout-ms",
+        "75000"
+      ],
+      "imageId": "sha256:39f4f0295725ab80484d128e3d89dc1f107064643a45f38ff2e87d495faa33d9",
+      "privileged": false,
+      "readOnly": true,
+      "droppedCapabilities": [
+        "ALL"
+      ],
+      "hostPortsPublished": false
+    }
+  },
+  "link": {
+    "event": "ready",
+    "role": "link",
+    "wallTime": "2026-11-06T13:09:25.261Z",
+    "elapsedMs": 1.875,
+    "bind": {
+      "host": "0.0.0.0",
+      "port": 31000
+    },
+    "endpoints": {
+      "a": {
+        "host": "172.19.0.3",
+        "port": 31001
+      },
+      "b": {
+        "host": "172.19.0.2",
+        "port": 31002
+      }
+    },
+    "delayMs": {
+      "a": 300,
+      "b": 650
+    },
+    "jitterMs": 60,
+    "loss": 0,
+    "noiseDb": 24,
+    "echo": 0.1,
+    "seed": 4135578464,
+    "mute": "",
+    "dropBursts": {
+      "a": 0,
+      "b": 0
+    },
+    "maxMs": 90000
+  },
+  "status": "passed"
+}

@@ -243,6 +243,13 @@ noise robustness and actual bit rate are exposed rather than disguised.
 
 ## Code, tests and evidence
 
+Final independent rerun on 2026-11-06: **12/12 unit tests, 7/7 process
+scenarios, and the separate Docker clock/delay exchange passed**. The
+predetermined 1% independent datagram-loss case completed in 17.12 s at the
+initiator with two-copy PCM transport; the unprotected failed run is retained.
+These are selected test outcomes, not a measured reliability percentage.
+[Validation commands, results and source hashes](validation/README.md).
+
 - `src/signal.mjs`: actual waveform generator and bounded streaming acquisition.
 - `src/protocol.mjs`: pure authenticated causal session/operation state machine.
 - `src/transport.mjs`: PCM adapter, sequence/jitter handling and ADC clock model.

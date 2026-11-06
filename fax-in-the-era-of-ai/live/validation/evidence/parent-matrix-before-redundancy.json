@@ -1,0 +1,689 @@
+{
+  "scope": "Actual independent Node processes and UDP PCM; simulation parameters are not measured carrier properties",
+  "cases": [
+    {
+      "name": "baseline",
+      "status": "passed",
+      "expectedSuccess": true,
+      "parameters": {
+        "name": "baseline",
+        "expect": true,
+        "limit": 45000,
+        "link": {
+          "noise-db": 24,
+          "echo": 0.1
+        },
+        "wrongKey": false
+      },
+      "initiator": {
+        "event": "result",
+        "role": "initiator",
+        "wallTime": "2026-11-06T08:09:50.433Z",
+        "elapsedMs": 15942.126,
+        "success": true,
+        "reason": "authenticated-receipt-verified",
+        "state": "CLOSING",
+        "paired": true,
+        "receiptVerified": true,
+        "sessionFingerprint": "ab9f4353a8fc7244",
+        "operationCount": 0,
+        "rejections": 0,
+        "retries": 0,
+        "totalRetries": 0,
+        "transport": {
+          "sent": 798,
+          "received": 797,
+          "lost": 0,
+          "late": 0,
+          "invalid": 0,
+          "maxQueued": 11,
+          "socketErrors": 0
+        },
+        "decoder": {
+          "maxBufferSamples": 46880,
+          "crcRejections": 120,
+          "erasureRejections": 0
+        }
+      },
+      "responder": {
+        "event": "result",
+        "role": "responder",
+        "wallTime": "2026-11-06T08:09:50.660Z",
+        "elapsedMs": 16424.884,
+        "success": true,
+        "reason": "authenticated-data-and-close",
+        "state": "DONE",
+        "paired": true,
+        "receiptVerified": false,
+        "sessionFingerprint": "ab9f4353a8fc7244",
+        "operationCount": 1,
+        "rejections": 0,
+        "retries": 0,
+        "totalRetries": 0,
+        "transport": {
+          "sent": 822,
+          "received": 798,
+          "lost": 0,
+          "late": 0,
+          "invalid": 0,
+          "maxQueued": 12,
+          "socketErrors": 0
+        },
+        "decoder": {
+          "maxBufferSamples": 39040,
+          "crcRejections": 155,
+          "erasureRejections": 0
+        }
+      },
+      "retryEvents": 0,
+      "causalReceivedA": [
+        "CHALLENGE",
+        "READY",
+        "RECEIPT"
+      ],
+      "causalReceivedB": [
+        "HELLO",
+        "CONFIRM",
+        "DATA",
+        "CLOSE"
+      ],
+      "initiatorReadyWallTime": "2026-11-06T08:09:34.493Z",
+      "responderReadyWallTime": "2026-11-06T08:09:34.238Z",
+      "localRoundTrip": {
+        "event": "handshake-rtt",
+        "role": "initiator",
+        "wallTime": "2026-11-06T08:09:38.975Z",
+        "elapsedMs": 4484.224,
+        "roundTripMs": 4264,
+        "note": "local monotonic HELLO transmit-start to decoded CHALLENGE; includes both bursts, buffering and processing, not one-way latency"
+      }
+    },
+    {
+      "name": "global-delay-independent-clocks",
+      "status": "passed",
+      "expectedSuccess": true,
+      "parameters": {
+        "name": "global-delay-independent-clocks",
+        "expect": true,
+        "limit": 90000,
+        "a": {
+          "sample-ppm": 200,
+          "wall-offset-ms": 3600000
+        },
+        "b": {
+          "sample-ppm": -200,
+          "wall-offset-ms": -7200000
+        },
+        "link": {
+          "a-delay-ms": 300,
+          "b-delay-ms": 650,
+          "jitter-ms": 60,
+          "noise-db": 24,
+          "echo": 0.1
+        },
+        "wrongKey": false
+      },
+      "initiator": {
+        "event": "result",
+        "role": "initiator",
+        "wallTime": "2026-11-06T09:10:11.300Z",
+        "elapsedMs": 20063.626,
+        "success": true,
+        "reason": "authenticated-receipt-verified",
+        "state": "CLOSING",
+        "paired": true,
+        "receiptVerified": true,
+        "sessionFingerprint": "207962401b1c41dd",
+        "operationCount": 0,
+        "rejections": 0,
+        "retries": 0,
+        "totalRetries": 0,
+        "transport": {
+          "sent": 1004,
+          "received": 985,
+          "lost": 0,
+          "late": 0,
+          "invalid": 0,
+          "maxQueued": 13,
+          "socketErrors": 0
+        },
+        "decoder": {
+          "maxBufferSamples": 64000,
+          "crcRejections": 63,
+          "erasureRejections": 0
+        }
+      },
+      "responder": {
+        "event": "result",
+        "role": "responder",
+        "wallTime": "2026-11-06T06:10:11.872Z",
+        "elapsedMs": 20886.9,
+        "success": true,
+        "reason": "authenticated-data-and-close",
+        "state": "DONE",
+        "paired": true,
+        "receiptVerified": false,
+        "sessionFingerprint": "207962401b1c41dd",
+        "operationCount": 1,
+        "rejections": 0,
+        "retries": 0,
+        "totalRetries": 0,
+        "transport": {
+          "sent": 1045,
+          "received": 1004,
+          "lost": 3,
+          "late": 0,
+          "invalid": 0,
+          "maxQueued": 14,
+          "socketErrors": 0
+        },
+        "decoder": {
+          "maxBufferSamples": 52213,
+          "crcRejections": 46,
+          "erasureRejections": 3
+        }
+      },
+      "retryEvents": 0,
+      "causalReceivedA": [
+        "CHALLENGE",
+        "READY",
+        "RECEIPT"
+      ],
+      "causalReceivedB": [
+        "HELLO",
+        "CONFIRM",
+        "DATA",
+        "CLOSE"
+      ],
+      "initiatorReadyWallTime": "2026-11-06T09:09:51.240Z",
+      "responderReadyWallTime": "2026-11-06T06:09:50.988Z",
+      "localRoundTrip": {
+        "event": "handshake-rtt",
+        "role": "initiator",
+        "wallTime": "2026-11-06T09:09:56.721Z",
+        "elapsedMs": 5484.448,
+        "roundTripMs": 5264,
+        "note": "local monotonic HELLO transmit-start to decoded CHALLENGE; includes both bursts, buffering and processing, not one-way latency"
+      }
+    },
+    {
+      "name": "drop-first-response-retry",
+      "status": "passed",
+      "expectedSuccess": true,
+      "parameters": {
+        "name": "drop-first-response-retry",
+        "expect": true,
+        "limit": 60000,
+        "link": {
+          "drop-b-burst": 1,
+          "noise-db": 24,
+          "echo": 0.1
+        },
+        "wrongKey": false
+      },
+      "initiator": {
+        "event": "result",
+        "role": "initiator",
+        "wallTime": "2026-11-06T08:10:38.065Z",
+        "elapsedMs": 25623.054,
+        "success": true,
+        "reason": "authenticated-receipt-verified",
+        "state": "CLOSING",
+        "paired": true,
+        "receiptVerified": true,
+        "sessionFingerprint": "87d6096e5f8526a1",
+        "operationCount": 0,
+        "rejections": 0,
+        "retries": 0,
+        "totalRetries": 1,
+        "transport": {
+          "sent": 1282,
+          "received": 1281,
+          "lost": 0,
+          "late": 0,
+          "invalid": 0,
+          "maxQueued": 11,
+          "socketErrors": 0
+        },
+        "decoder": {
+          "maxBufferSamples": 64000,
+          "crcRejections": 74,
+          "erasureRejections": 0
+        }
+      },
+      "responder": {
+        "event": "result",
+        "role": "responder",
+        "wallTime": "2026-11-06T08:10:38.372Z",
+        "elapsedMs": 26184.207,
+        "success": true,
+        "reason": "authenticated-data-and-close",
+        "state": "DONE",
+        "paired": true,
+        "receiptVerified": false,
+        "sessionFingerprint": "87d6096e5f8526a1",
+        "operationCount": 1,
+        "rejections": 0,
+        "retries": 0,
+        "totalRetries": 0,
+        "transport": {
+          "sent": 1310,
+          "received": 1282,
+          "lost": 4,
+          "late": 0,
+          "invalid": 0,
+          "maxQueued": 12,
+          "socketErrors": 0
+        },
+        "decoder": {
+          "maxBufferSamples": 64000,
+          "crcRejections": 351,
+          "erasureRejections": 0
+        }
+      },
+      "retryEvents": 1,
+      "causalReceivedA": [
+        "CHALLENGE",
+        "READY",
+        "RECEIPT"
+      ],
+      "causalReceivedB": [
+        "HELLO",
+        "CONFIRM",
+        "DATA",
+        "CLOSE"
+      ],
+      "initiatorReadyWallTime": "2026-11-06T08:10:12.445Z",
+      "responderReadyWallTime": "2026-11-06T08:10:12.190Z",
+      "localRoundTrip": {
+        "event": "handshake-rtt",
+        "role": "initiator",
+        "wallTime": "2026-11-06T08:10:25.569Z",
+        "elapsedMs": 13127.142,
+        "roundTripMs": 12925,
+        "note": "local monotonic HELLO transmit-start to decoded CHALLENGE; includes both bursts, buffering and processing, not one-way latency"
+      }
+    },
+    {
+      "name": "wrong-key-rejected",
+      "status": "passed",
+      "expectedSuccess": false,
+      "parameters": {
+        "name": "wrong-key-rejected",
+        "expect": false,
+        "limit": 14000,
+        "wrongKey": true,
+        "a": {
+          "retry-ms": 3500
+        },
+        "b": {
+          "retry-ms": 3500
+        },
+        "link": {
+          "noise-db": 24
+        }
+      },
+      "initiator": {
+        "event": "result",
+        "role": "initiator",
+        "wallTime": "2026-11-06T08:10:52.998Z",
+        "elapsedMs": 14023.491,
+        "success": false,
+        "reason": "session-expired",
+        "state": "WAIT_CHALLENGE",
+        "paired": false,
+        "receiptVerified": false,
+        "sessionFingerprint": "65049b99e7863ee4",
+        "operationCount": 0,
+        "rejections": 0,
+        "retries": 2,
+        "totalRetries": 2,
+        "transport": {
+          "sent": 701,
+          "received": 687,
+          "lost": 3,
+          "late": 0,
+          "invalid": 0,
+          "maxQueued": 11,
+          "socketErrors": 0
+        },
+        "decoder": {
+          "maxBufferSamples": 64000,
+          "crcRejections": 0,
+          "erasureRejections": 0
+        }
+      },
+      "responder": {
+        "event": "result",
+        "role": "responder",
+        "wallTime": "2026-11-06T08:10:52.730Z",
+        "elapsedMs": 14003.877,
+        "success": false,
+        "reason": "session-expired",
+        "state": "LISTEN",
+        "paired": false,
+        "receiptVerified": false,
+        "sessionFingerprint": null,
+        "operationCount": 0,
+        "rejections": 3,
+        "retries": 0,
+        "totalRetries": 0,
+        "transport": {
+          "sent": 700,
+          "received": 688,
+          "lost": 0,
+          "late": 0,
+          "invalid": 0,
+          "maxQueued": 11,
+          "socketErrors": 0
+        },
+        "decoder": {
+          "maxBufferSamples": 41760,
+          "crcRejections": 50,
+          "erasureRejections": 0
+        }
+      },
+      "retryEvents": 2,
+      "causalReceivedA": [],
+      "causalReceivedB": [],
+      "initiatorReadyWallTime": "2026-11-06T08:10:38.977Z",
+      "responderReadyWallTime": "2026-11-06T08:10:38.729Z"
+    },
+    {
+      "name": "muted-return-cannot-succeed",
+      "status": "passed",
+      "expectedSuccess": false,
+      "parameters": {
+        "name": "muted-return-cannot-succeed",
+        "expect": false,
+        "limit": 14000,
+        "a": {
+          "retry-ms": 3500
+        },
+        "b": {
+          "retry-ms": 3500
+        },
+        "link": {
+          "mute": "b",
+          "noise-db": 24
+        },
+        "wrongKey": false
+      },
+      "initiator": {
+        "event": "result",
+        "role": "initiator",
+        "wallTime": "2026-11-06T08:11:07.572Z",
+        "elapsedMs": 14003.441,
+        "success": false,
+        "reason": "session-expired",
+        "state": "WAIT_CHALLENGE",
+        "paired": false,
+        "receiptVerified": false,
+        "sessionFingerprint": "ac1891f581977f58",
+        "operationCount": 0,
+        "rejections": 0,
+        "retries": 2,
+        "totalRetries": 2,
+        "transport": {
+          "sent": 700,
+          "received": 688,
+          "lost": 1,
+          "late": 0,
+          "invalid": 0,
+          "maxQueued": 11,
+          "socketErrors": 0
+        },
+        "decoder": {
+          "maxBufferSamples": 64000,
+          "crcRejections": 0,
+          "erasureRejections": 0
+        }
+      },
+      "responder": {
+        "event": "result",
+        "role": "responder",
+        "wallTime": "2026-11-06T08:11:07.336Z",
+        "elapsedMs": 14023.448,
+        "success": false,
+        "reason": "session-expired",
+        "state": "WAIT_CONFIRM",
+        "paired": false,
+        "receiptVerified": false,
+        "sessionFingerprint": "ac1891f581977f58",
+        "operationCount": 0,
+        "rejections": 0,
+        "retries": 0,
+        "totalRetries": 0,
+        "transport": {
+          "sent": 701,
+          "received": 689,
+          "lost": 0,
+          "late": 0,
+          "invalid": 0,
+          "maxQueued": 12,
+          "socketErrors": 0
+        },
+        "decoder": {
+          "maxBufferSamples": 41760,
+          "crcRejections": 106,
+          "erasureRejections": 0
+        }
+      },
+      "retryEvents": 2,
+      "causalReceivedA": [],
+      "causalReceivedB": [
+        "HELLO"
+      ],
+      "initiatorReadyWallTime": "2026-11-06T08:10:53.571Z",
+      "responderReadyWallTime": "2026-11-06T08:10:53.316Z"
+    },
+    {
+      "name": "cancel-releases-processes",
+      "status": "passed",
+      "expectedSuccess": false,
+      "parameters": {
+        "name": "cancel-releases-processes",
+        "expect": false,
+        "limit": 14000,
+        "cancelAfter": 1200,
+        "link": {
+          "noise-db": 24
+        },
+        "wrongKey": false
+      },
+      "initiator": {
+        "event": "result",
+        "role": "initiator",
+        "wallTime": "2026-11-06T08:11:09.321Z",
+        "elapsedMs": 1178.939,
+        "success": false,
+        "reason": "cancelled",
+        "state": "WAIT_CHALLENGE",
+        "paired": false,
+        "receiptVerified": false,
+        "sessionFingerprint": "072d2d5c91f3e561",
+        "operationCount": 0,
+        "rejections": 0,
+        "retries": 0,
+        "totalRetries": 0,
+        "transport": {
+          "sent": 59,
+          "received": 59,
+          "lost": 0,
+          "late": 0,
+          "invalid": 0,
+          "maxQueued": 11,
+          "socketErrors": 0
+        },
+        "decoder": {
+          "maxBufferSamples": 7680,
+          "crcRejections": 0,
+          "erasureRejections": 0
+        }
+      },
+      "responder": {
+        "event": "result",
+        "role": "responder",
+        "wallTime": "2026-11-06T08:11:09.322Z",
+        "elapsedMs": 1426.236,
+        "success": false,
+        "reason": "cancelled",
+        "state": "LISTEN",
+        "paired": false,
+        "receiptVerified": false,
+        "sessionFingerprint": null,
+        "operationCount": 0,
+        "rejections": 0,
+        "retries": 0,
+        "totalRetries": 0,
+        "transport": {
+          "sent": 72,
+          "received": 59,
+          "lost": 0,
+          "late": 0,
+          "invalid": 0,
+          "maxQueued": 11,
+          "socketErrors": 0
+        },
+        "decoder": {
+          "maxBufferSamples": 7680,
+          "crcRejections": 4,
+          "erasureRejections": 0
+        }
+      },
+      "retryEvents": 0,
+      "causalReceivedA": [],
+      "causalReceivedB": [],
+      "initiatorReadyWallTime": "2026-11-06T08:11:08.145Z",
+      "responderReadyWallTime": "2026-11-06T08:11:07.898Z"
+    },
+    {
+      "name": "seeded-one-percent-pcm-loss",
+      "status": "failed",
+      "reason": "{\"event\":\"result\",\"role\":\"initiator\",\"wallTime\":\"2026-11-06T08:12:59.276Z\",\"elapsedMs\":109385.024,\"success\":false,\"reason\":\"retry-exhausted\",\"state\":\"WAIT_RECEIPT\",\"paired\":true,\"receiptVerified\":false,\"sessionFingerprint\":\"d43baf0558077e81\",\"operationCount\":0,\"rejections\":0,\"retries\":6,\"totalRetries\":11,\"transport\":{\"sent\":5469,\"received\":4399,\"lost\":1059,\"late\":0,\"invalid\":0,\"maxQueued\":12,\"socketErrors\":0},\"decoder\":{\"maxBufferSamples\":64000,\"crcRejections\":1071,\"erasureRejections\":93942}}\n\n2 !== 0\n",
+      "recentLogs": [
+        {
+          "event": "provisioned",
+          "path": "/tmp/phonepair-parent-n8zKPd/pair.key",
+          "note": "private single-user key; copy separately over trusted channel, never commit"
+        },
+        {
+          "event": "burst",
+          "role": "link",
+          "wallTime": "2026-11-06T08:12:35.653Z",
+          "elapsedMs": 86265.742,
+          "direction": "a",
+          "ordinal": 14
+        },
+        {
+          "event": "burst",
+          "role": "link",
+          "wallTime": "2026-11-06T08:12:43.532Z",
+          "elapsedMs": 94144.509,
+          "direction": "a",
+          "ordinal": 15
+        },
+        {
+          "event": "burst",
+          "role": "link",
+          "wallTime": "2026-11-06T08:12:51.412Z",
+          "elapsedMs": 102024.093,
+          "direction": "a",
+          "ordinal": 16
+        },
+        {
+          "event": "tx-start",
+          "role": "responder",
+          "wallTime": "2026-11-06T08:12:30.999Z",
+          "elapsedMs": 81361.599,
+          "type": "READY",
+          "pcmSamples": 13120,
+          "reason": "timeout-retry"
+        },
+        {
+          "event": "tx-end",
+          "role": "responder",
+          "wallTime": "2026-11-06T08:12:32.618Z",
+          "elapsedMs": 82981.345,
+          "type": "READY"
+        },
+        {
+          "event": "result",
+          "role": "responder",
+          "wallTime": "2026-11-06T08:12:38.840Z",
+          "elapsedMs": 89203.364,
+          "success": false,
+          "reason": "retry-exhausted",
+          "state": "WAIT_DATA",
+          "paired": true,
+          "receiptVerified": false,
+          "sessionFingerprint": "d43baf0558077e81",
+          "operationCount": 0,
+          "rejections": 0,
+          "retries": 6,
+          "totalRetries": 7,
+          "transport": {
+            "sent": 4460,
+            "received": 4399,
+            "lost": 49,
+            "late": 0,
+            "invalid": 0,
+            "maxQueued": 11,
+            "socketErrors": 0
+          },
+          "decoder": {
+            "maxBufferSamples": 64000,
+            "crcRejections": 1729,
+            "erasureRejections": 159518
+          }
+        },
+        {
+          "event": "tx-start",
+          "role": "initiator",
+          "wallTime": "2026-11-06T08:12:51.412Z",
+          "elapsedMs": 101520.675,
+          "type": "DATA",
+          "pcmSamples": 23040,
+          "reason": "timeout-retry"
+        },
+        {
+          "event": "tx-end",
+          "role": "initiator",
+          "wallTime": "2026-11-06T08:12:54.273Z",
+          "elapsedMs": 104382.06,
+          "type": "DATA"
+        },
+        {
+          "event": "result",
+          "role": "initiator",
+          "wallTime": "2026-11-06T08:12:59.276Z",
+          "elapsedMs": 109385.024,
+          "success": false,
+          "reason": "retry-exhausted",
+          "state": "WAIT_RECEIPT",
+          "paired": true,
+          "receiptVerified": false,
+          "sessionFingerprint": "d43baf0558077e81",
+          "operationCount": 0,
+          "rejections": 0,
+          "retries": 6,
+          "totalRetries": 11,
+          "transport": {
+            "sent": 5469,
+            "received": 4399,
+            "lost": 1059,
+            "late": 0,
+            "invalid": 0,
+            "maxQueued": 12,
+            "socketErrors": 0
+          },
+          "decoder": {
+            "maxBufferSamples": 64000,
+            "crcRejections": 1071,
+            "erasureRejections": 93942
+          }
+        }
+      ]
+    }
+  ]
+}

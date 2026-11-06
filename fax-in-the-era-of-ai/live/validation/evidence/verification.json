@@ -1,0 +1,114 @@
+{
+  "verifiedAt": "2026-11-06T13:14:10.316Z",
+  "sourceCommit": "f3b02ace6ca065a8c8ae869f4f98338d5fb045bb",
+  "sourceNote": "Functional source unchanged after this commit; later commits add documentation and acceptance evidence.",
+  "runtimes": {
+    "hostNode": "v24.22.1",
+    "docker": "Docker version 29.5.0, build 98f1464",
+    "compose": "Docker Compose version v5.1.3"
+  },
+  "results": {
+    "unitTests": {
+      "passed": 12,
+      "total": 12
+    },
+    "independentProcessScenarios": {
+      "passed": 7,
+      "total": 7
+    },
+    "docker": "passed",
+    "waveform": "passed"
+  },
+  "sourceFiles": [
+    {
+      "file": "package.json",
+      "sha256": "b1e8160d9ef11e21b4883144d876dd86868bc5d8c753b8f3ff3ac7873f96089f"
+    },
+    {
+      "file": "Dockerfile",
+      "sha256": "f721d1e46a9cbde8ccedd5207399a5388fb959a1d58460686a091eebcb30d23b"
+    },
+    {
+      "file": "compose.yaml",
+      "sha256": "a9a9ab6b526503e9343a5cb24878274b8d257650008a9ce104adff57c64663e4"
+    },
+    {
+      "file": "src/cli.mjs",
+      "sha256": "ab77c2676a18bc031b931f803f3b00032c689a0d6f48a128721edb6acc38b9b4"
+    },
+    {
+      "file": "src/decoder-worker.mjs",
+      "sha256": "6f8d7ffe757542082362a89c77257398726c3d5aa154e60ec0b4af13b321af4e"
+    },
+    {
+      "file": "src/endpoint.mjs",
+      "sha256": "2ff5165a29b61e9fc57b916b42adc7328da2d0cd8f43b0e0236342b01c4700b6"
+    },
+    {
+      "file": "src/link.mjs",
+      "sha256": "84f7a6daab89702550f5d8e1d6901f76791fb568a31e5b8c94f43cfaf09ca66c"
+    },
+    {
+      "file": "src/log.mjs",
+      "sha256": "27456bc9fe25f4d1f61b310474d3ac2db2c057ffda8e3d80eb6b5749873bb2eb"
+    },
+    {
+      "file": "src/protocol.mjs",
+      "sha256": "33cd2b0ffc00e335020c9e557d8847418f3fc0162c4b8f6c90d547b407c12729"
+    },
+    {
+      "file": "src/signal.mjs",
+      "sha256": "2a4b9c2a25715fc7764fcba40f70a0c2e6a435b3a8e0682847b0ee732bc972f5"
+    },
+    {
+      "file": "src/transport.mjs",
+      "sha256": "1d35a0648d81af70987b13cb710a4f57e6da56f33f747f9c24cf598da4c21d1d"
+    },
+    {
+      "file": "tests/cli.test.mjs",
+      "sha256": "15442f7e4e8d418aa0130483e1cafc4b31a5d2b54328a65dc1c6efba87710210"
+    },
+    {
+      "file": "tests/media-redundancy.test.mjs",
+      "sha256": "8b4c1d795f9e3cf3e70d798f3dcf8b03a6ee1ae7833723be059496855b731482"
+    },
+    {
+      "file": "tests/protocol.test.mjs",
+      "sha256": "135cdaade79aa9256e4290a06bd39333f41a485a4cc36305868526e9686b026a"
+    },
+    {
+      "file": "tests/signal.test.mjs",
+      "sha256": "4dfcd1953a0a2c9a05e8c578cb09714902f26e67e886c51e1e433a84f889f253"
+    },
+    {
+      "file": "tests/transport.test.mjs",
+      "sha256": "2a04859ffd6c859f71dc02ac4ef1dcae1b1c59567400df60acad256fd46353e2"
+    }
+  ],
+  "reports": [
+    {
+      "file": "parent-matrix.json",
+      "sha256": "bf90302669e92a974d4d4d92988b5080a323d7f083a2d46f79e966ee19ebad79"
+    },
+    {
+      "file": "docker.json",
+      "sha256": "35eae1934424259bdd3be160edcf81d41e9256249ca67c8261aae34f113b6c3d"
+    },
+    {
+      "file": "clock-waveform.json",
+      "sha256": "f8b7cddac3d50c7ad686d40b4de10c94f6910e8efe93f5400154fa61dc845279"
+    },
+    {
+      "file": "unit-tests.log",
+      "sha256": "257bc6313ad6753395fa50277b215dd3eaad08e161cf290eb2775bd1e91d4a18"
+    },
+    {
+      "file": "parent-matrix-development.json",
+      "sha256": "832a4f138ca3a65d9a66fd86225ba7402b1801789c66d3676d0873ad432536e6"
+    },
+    {
+      "file": "parent-matrix-before-redundancy.json",
+      "sha256": "def7a1eb2a7b4f9d2615020d55547a8cadc554c7f3fe625d7bf76efc159e6d4a"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+
+> phonepair-live@0.1.0 test
+> node --test tests/*.test.mjs
+
+✔ negative numeric flags parse; invalid address exits promptly without DSP worker leak (36.453066ms)
+✔ already-used UDP port exits promptly and cleans up worker (45.162918ms)
+✔ actual UDP duplicate copies play once and retain identical transport metadata (19.322522ms)
+✔ relay stateful channel advances once per unique PCM; cache is bounded and rejects stale/colliding copies (0.54699ms)
+✔ actual causal mutual confirmation, protected echo once, duplicate receipt cached (2.343157ms)
+✔ wrong key, tampering, wrong session, replay and phase are rejected (0.66589ms)
+✔ CRC known vector and blind arbitrary prefix, phase, random data (526.716372ms)
+✔ truncated/malformed/noise has bounded memory and cannot invent packet (326.752497ms)
+✔ a physical erasure is rejected by confidence even when bit guesses match original bytes (42.574871ms)
+✔ actual opposite-tone bit changes are rejected by the CRC (44.259289ms)
+✔ independent TX/ADC sample clocks change real waveform, receiver learns no ppm (163.883958ms)
+✔ transport header is only independent sequence/sample counters plus PCM (0.18284ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 990.836292

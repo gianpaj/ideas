@@ -55,3 +55,14 @@ Report actual outcomes separately. A successful selected seed does not prove
 universal 1% reliability or any carrier/audio-modem FEC claim. This correction
 helps the **packet transport**, not erased sound inside a real phone codec,
 correlated outage, hardware dropout, hostile network or all-return mute.
+
+## Completed rerun
+
+The final independent process matrix passed **7/7** scenarios on the corrected
+source. The originally failing seed `20261106` completed with an authenticated
+receipt in 17.12 s at the initiator, with zero protocol retries and exactly one
+responder operation. This selected success does not replace the retained raw-
+transport failure or establish a success percentage. The Docker clock/delay
+exchange and all 12 unit tests also passed after the correction. See the
+[validation index](../live/validation/README.md) for commands, reports and source
+hashes.
