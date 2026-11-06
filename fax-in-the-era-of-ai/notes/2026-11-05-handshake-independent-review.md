@@ -165,6 +165,18 @@ python3 fax-in-the-era-of-ai/prototype/review_signal.py \
   --plot /tmp/phone-handshake-review.png
 ```
 
+## Completion check, 2026-11-06
+
+The parent reviewer inspected the additional `fsk_comparator.py` receiver.
+Acquisition searches nominal symbol phases and protocol sync; the decoder
+does not consult `EXPECTED`, generation timestamps or a payload template.
+CRC, version and length checks validate candidate packets. Re-decoding the
+saved noisy WAV recovered all three exact payload strings with valid CRCs.
+This is a functional experimental packet modem, not V.21/T.30 compliance or
+a complete live pairing/authentication service. The speech-free DTMF and FSK
+MP3s were delivered to the user on 2026-11-06; the user clarified that speech
+should not be the default machine-handshake demonstration.
+
 ## Primary references
 
 - [Counter Protocol experimental handshake specification](https://github.com/viva-lee/agent-handshake/blob/main/spec/handshake.md): framing, cadence and HTTPS binding.

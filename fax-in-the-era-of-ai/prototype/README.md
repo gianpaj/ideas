@@ -4,12 +4,18 @@ Research artifact, 2026-11-05. No real calls, bookings, or live registry.
 
 ## Listen
 
-- **[Realistic call with phone noise — MP3, 23.75 s](../assets/phone-handshake-2026-11-05/call-phone-noise.mp3)**: two synthetic voices disclose their roles, then exchange real, decodable PROBE → OFFER → BIND tones.
-- [Tones only — MP3, 6.18 s](../assets/phone-handshake-2026-11-05/tones-only-phone-noise.mp3): easier to compare with a fax/modem sound.
+- **[Primary demo: tones only — MP3, 6.18 s](../assets/phone-handshake-2026-11-05/tones-only-phone-noise.mp3)**: the real, decodable DTMF PROBE → OFFER → BIND exchange with phone noise. No speech is needed for the machine handshake.
+- [Optional spoken-context version — MP3, 23.75 s](../assets/phone-handshake-2026-11-05/call-phone-noise.mp3): two synthetic voices illustrate a shared human/agent reception line around the same tone exchange. The dialogue is not protocol data or a requirement.
 - [Noisy 8 kHz PCM WAV](../assets/phone-handshake-2026-11-05/call-phone-noise.wav) and [clean reference WAV](../assets/phone-handshake-2026-11-05/call-clean.wav).
 - **[Fax-like FSK alternative — MP3, 3.83 s](../assets/phone-handshake-2026-11-05/fsk-experimental-phone-noise.mp3)**: a separate, experimentally defined binary packet profile, not CP/V.21/T.30 compatible. Its CRC-checked packets carry the same three frame strings, and are genuinely decoded from the WAV/MP3. This one makes the familiar modem-like warble.
 
 The recommended design sounds like a short keypad exchange, **not a fax screech**. The audio is data, not sound effects. A decoder recovers every frame from the delivered WAVs and from the MP3s after decoding back to PCM; it does not read the timeline or expected frame positions.
+
+The fax-like FSK alternative is the closer *sound* to a modem. It carries the
+same messages using a different experimental physical layer. Neither demo
+requires an LLM, speech recognition or speech synthesis for the handshake;
+Flite is used only to generate the optional narrated scenario. Pairing can be
+all tones even when subsequent authentication and transactions use HTTPS.
 
 Read the [research notebook](../notes/2026-11-05-phone-handshake-research.md) for alternatives, mathematical budget, security assumptions, measurements, and limitations. The [manifest](results/manifest.json) records hashes and conditions; the [timeline](results/timeline.json) labels the voices and phases.
 

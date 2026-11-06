@@ -2,6 +2,15 @@
 
 Date: 2026-11-05. Scope: a reproducible, audible research prototype, not a new production telephony subsystem. The user asked for first-principles reasoning, alternative ideas, mathematical care, and a realistic noisy audio implementation of the [idea](../README.md), informed by the separate `gian.cool/research/fax-history` research.
 
+**2026-11-06 clarification:** the user expected a machine-only, tone-only
+handshake, like fax/dial-up, and questioned the added spoken dialogue. Speech
+was an explanatory choice for a shared human/AI reception-line scenario, not
+a physical or protocol requirement. The [tones-only demo](../assets/phone-handshake-2026-11-05/tones-only-phone-noise.mp3)
+is now primary; the spoken version is optional context. The separately defined
+[FSK comparator](../assets/phone-handshake-2026-11-05/fsk-experimental-phone-noise.mp3)
+provides an actual data-bearing modem-like alternative. Both are signal
+prototypes: neither demonstrates a live authenticated telephone/API session.
+
 ## 1. Design brief and first-principles decomposition
 
 We need two agents that have already reached each other by telephone to discover a shared machine interface, locate it, and tie the resulting data session to that particular call. We do **not** necessarily need to move the booking itself through the voice channel.
