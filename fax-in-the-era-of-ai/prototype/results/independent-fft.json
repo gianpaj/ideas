@@ -1,0 +1,171 @@
+{
+  "file": "fax-in-the-era-of-ai/assets/phone-handshake-2026-11-05/call-phone-noise.wav",
+  "sample_rate": 8000,
+  "duration_s": 23.75,
+  "peak_dbfs": -5.306944597901834,
+  "clipped_samples": 0,
+  "digits": "*#26#*#1048151623426#*#32718280#",
+  "events": [
+    {
+      "digit": "*",
+      "center_run_start_s": 9.855,
+      "center_run_end_s": 9.935
+    },
+    {
+      "digit": "#",
+      "center_run_start_s": 9.995,
+      "center_run_end_s": 10.08
+    },
+    {
+      "digit": "2",
+      "center_run_start_s": 10.135,
+      "center_run_end_s": 10.22
+    },
+    {
+      "digit": "6",
+      "center_run_start_s": 10.275,
+      "center_run_end_s": 10.355
+    },
+    {
+      "digit": "#",
+      "center_run_start_s": 10.415,
+      "center_run_end_s": 10.5
+    },
+    {
+      "digit": "*",
+      "center_run_start_s": 13.665,
+      "center_run_end_s": 13.745
+    },
+    {
+      "digit": "#",
+      "center_run_start_s": 13.805,
+      "center_run_end_s": 13.89
+    },
+    {
+      "digit": "1",
+      "center_run_start_s": 13.945,
+      "center_run_end_s": 14.03
+    },
+    {
+      "digit": "0",
+      "center_run_start_s": 14.085,
+      "center_run_end_s": 14.17
+    },
+    {
+      "digit": "4",
+      "center_run_start_s": 14.225,
+      "center_run_end_s": 14.3
+    },
+    {
+      "digit": "8",
+      "center_run_start_s": 14.365,
+      "center_run_end_s": 14.445
+    },
+    {
+      "digit": "1",
+      "center_run_start_s": 14.505,
+      "center_run_end_s": 14.585
+    },
+    {
+      "digit": "5",
+      "center_run_start_s": 14.645,
+      "center_run_end_s": 14.725
+    },
+    {
+      "digit": "1",
+      "center_run_start_s": 14.785,
+      "center_run_end_s": 14.865
+    },
+    {
+      "digit": "6",
+      "center_run_start_s": 14.925,
+      "center_run_end_s": 15.005
+    },
+    {
+      "digit": "2",
+      "center_run_start_s": 15.065,
+      "center_run_end_s": 15.15
+    },
+    {
+      "digit": "3",
+      "center_run_start_s": 15.205,
+      "center_run_end_s": 15.29
+    },
+    {
+      "digit": "4",
+      "center_run_start_s": 15.345,
+      "center_run_end_s": 15.42
+    },
+    {
+      "digit": "2",
+      "center_run_start_s": 15.485,
+      "center_run_end_s": 15.57
+    },
+    {
+      "digit": "6",
+      "center_run_start_s": 15.625,
+      "center_run_end_s": 15.705
+    },
+    {
+      "digit": "#",
+      "center_run_start_s": 15.765,
+      "center_run_end_s": 15.85
+    },
+    {
+      "digit": "*",
+      "center_run_start_s": 16.555,
+      "center_run_end_s": 16.635
+    },
+    {
+      "digit": "#",
+      "center_run_start_s": 16.695,
+      "center_run_end_s": 16.78
+    },
+    {
+      "digit": "3",
+      "center_run_start_s": 16.835,
+      "center_run_end_s": 16.92
+    },
+    {
+      "digit": "2",
+      "center_run_start_s": 16.975,
+      "center_run_end_s": 17.06
+    },
+    {
+      "digit": "7",
+      "center_run_start_s": 17.115,
+      "center_run_end_s": 17.19
+    },
+    {
+      "digit": "1",
+      "center_run_start_s": 17.255,
+      "center_run_end_s": 17.335
+    },
+    {
+      "digit": "8",
+      "center_run_start_s": 17.395,
+      "center_run_end_s": 17.475
+    },
+    {
+      "digit": "2",
+      "center_run_start_s": 17.535,
+      "center_run_end_s": 17.62
+    },
+    {
+      "digit": "8",
+      "center_run_start_s": 17.675,
+      "center_run_end_s": 17.755
+    },
+    {
+      "digit": "0",
+      "center_run_start_s": 17.815,
+      "center_run_end_s": 17.9
+    },
+    {
+      "digit": "#",
+      "center_run_start_s": 17.955,
+      "center_run_end_s": 18.04
+    }
+  ],
+  "method": "independent 40ms Hann FFT, 5ms hop; 245ms local-energy echo gate; no frame/timeline input"
+}

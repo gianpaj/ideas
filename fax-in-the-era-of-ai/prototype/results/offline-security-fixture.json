@@ -1,0 +1,40 @@
+{
+  "scope": "offline illustrative subset, NOT full CP authentication or backend",
+  "fixed_clock_unix_s": 1793865600,
+  "registry_public_jwk": {
+    "crv": "Ed25519",
+    "kty": "OKP",
+    "x": "ZzKQPvKQhZPP9pG4PnL0EtS9WKfB8lj_hoGLsPL0bDE",
+    "kid": "LKGbxu285QoSDZO-P7DWgqhpJf8FIB1FEHPd4DpOUuI"
+  },
+  "signed_rendezvous_jws": "eyJhbGciOiJFZERTQSIsInR5cCI6ImNwK2p3cyIsImtpZCI6IkxLR2J4dTI4NVFvU0RaTy1QN0RXZ3FocEpmOEZJQjFGRUhQZDREcE9VdUkifQ.eyJ0eXAiOiJjcC5yZW5kZXp2b3VzIiwiY29kZSI6IjQ4MTUxNjIzNDIiLCJzZXNzaW9uX2lkIjoiaHNfZGVtb18yMDI2MTEwNSIsImJ1c2luZXNzX2lkIjoiZXhhbXBsZS1jbGluaWMiLCJ0ZWwiOiIrMTIwMjU1NTAxMjMiLCJhcGkiOiJodHRwczovL2V4YW1wbGUuaW52YWxpZC9jcC92MC4xIiwiYnVzaW5lc3NfandrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoiWnpLUVB2S1FoWlBQOXBHNFBuTDBFdFM5V0tmQjhsal9ob0dMc1BMMGJERSIsImtpZCI6IkxLR2J4dTI4NVFvU0RaTy1QN0RXZ3FocEpmOEZJQjFGRUhQZDREcE9VdUkifSwiaWF0IjoxNzkzODY1NjAwLCJleHAiOjE3OTM4NjU3MjB9.gEjH6QJKT2RHDB871oOzJu1kEw6E__42-mKVryFEpMWW_8Mf57WxcvXj-3vNK5FadufljxLn69Kk4d4kcRdlDQ",
+  "record": {
+    "typ": "cp.rendezvous",
+    "code": "4815162342",
+    "session_id": "hs_demo_20261105",
+    "business_id": "example-clinic",
+    "tel": "+12025550123",
+    "api": "https://example.invalid/cp/v0.1",
+    "business_jwk": {
+      "crv": "Ed25519",
+      "kty": "OKP",
+      "x": "ZzKQPvKQhZPP9pG4PnL0EtS9WKfB8lj_hoGLsPL0bDE",
+      "kid": "LKGbxu285QoSDZO-P7DWgqhpJf8FIB1FEHPd4DpOUuI"
+    },
+    "iat": 1793865600,
+    "exp": 1793865720
+  },
+  "checks": {
+    "valid_signature_and_claims": true,
+    "tampered_record_rejected": true,
+    "expired_record_rejected": true,
+    "wrong_dialed_number_rejected": true,
+    "unbound_mutation_rejected": true,
+    "wrong_bind_rejected": true,
+    "wrong_call_rejected": true,
+    "correct_call_bind_accepted": true,
+    "bound_demo_mutation_permitted": true,
+    "replay_bind_rejected": true
+  },
+  "key_warning": "Signing seed is deterministic, public in source, and intentionally insecure; NEVER reuse."
+}

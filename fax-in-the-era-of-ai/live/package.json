@@ -1,0 +1,13 @@
+{
+  "name": "phonepair-live",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Two independent tones-only endpoint apps and a PCM-only fault link",
+  "engines": {"node": ">=24 <25"},
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "start": "node src/cli.mjs"
+  },
+  "license": "UNLICENSED"
+}

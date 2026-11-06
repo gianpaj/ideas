@@ -1,0 +1,34 @@
+{
+  "profile": "EXPERIMENTAL AIP-FSK1; NOT V.21, T.30, or CP modulation",
+  "sample_rate_hz": 8000,
+  "baud": 300,
+  "frames": [
+    {
+      "start_s": 0.93,
+      "end_s": 1.49,
+      "payload_ascii": "*#26#",
+      "packet_hex": "01052a23323623f8d1",
+      "crc16_valid": true,
+      "preamble_bit_errors": 0,
+      "sample_phase": 0
+    },
+    {
+      "start_s": 1.99,
+      "end_s": 2.84333,
+      "payload_ascii": "*#1048151623426#",
+      "packet_hex": "01102a233130343831353136323334323623d892",
+      "crc16_valid": true,
+      "preamble_bit_errors": 0,
+      "sample_phase": 0
+    },
+    {
+      "start_s": 3.34338,
+      "end_s": 4.06333,
+      "payload_ascii": "*#32718280#",
+      "packet_hex": "010b2a23333237313832383023dbd6",
+      "crc16_valid": true,
+      "preamble_bit_errors": 0,
+      "sample_phase": 0
+    }
+  ]
+}

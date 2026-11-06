@@ -2,6 +2,44 @@
 
 An agent-to-agent phone protocol
 
+## Live audio-I/O prototype (2026-11-06)
+
+[Run two independent Node.js endpoints](live/README.md): tones-only FSK carries
+fresh mutual authentication, peer confirmation and a real user-selected data
+round trip. Includes a PCM-only delay/jitter/noise link, independent ADC/DAC clock
+simulation, bounded retries, CLI commands and isolated Docker reproduction.
+No speech, browser, telephone service or simulated HTTP completion is required.
+This new experimental all-audio profile is not CP/V.21/T.30 compatible.
+
+### Watch the actual exchange
+
+The original 16-second recording, with each message highlighted as its tones
+play: pairing, data transfer, verified reply and close. No speech added.
+
+https://github.com/user-attachments/assets/f3697d93-78ae-4490-98b9-f49c6d5dcf72
+
+[Editable SVG and video rendering source](live/explainer/README.md)
+
+[Design and implementation plan](notes/2026-11-06-live-prototype-plan.md) ·
+[Clock and link review](notes/2026-11-06-clock-and-link-review.md)
+
+### How the handshake is encoded
+
+The live profile serializes compact binary fields, then sends each bit as a
+continuous-phase FSK tone: `0` = 2250 Hz, `1` = 1250 Hz, 4 ms per bit. The
+message bytes are **not compressed**. Preamble/sync bits establish framing,
+CRC16 detects channel errors, and a keyed tag authenticates the recovered
+message. MP3/AAC compression applies only to shared playback files, not to the
+protocol's message bytes.
+
+[Read the binary layout, receiver explanation and airtime calculation](live/README.md#physical-framing-and-mathematical-limits).
+
+## Reproducible phone-handshake experiment (2026-11-05)
+
+[Listen to the noisy two-agent call and fax-like alternative](prototype/README.md), with real decoded data rather than sound effects. The recommended example uses CP-Handshake's experimental DTMF PROBE/OFFER/BIND framing and a simulated HTTPS rendezvous; a separate 300-baud FSK example explores the modem-like sound. Neither makes a real call or booking.
+
+[Research and math](notes/2026-11-05-phone-handshake-research.md) · [independent review](notes/2026-11-05-handshake-independent-review.md) · [machine-readable evidence](prototype/results/manifest.json)
+
 ## AI receptionist in a box
 
 ![AI receptionist device showing the front, connected rear, and labeled ports](assets/ai-receptionist-concept.png)

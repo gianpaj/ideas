@@ -1,0 +1,17 @@
+{"event":"ready","role":"initiator","wallTime":"2026-11-06T07:58:26.984Z","elapsedMs":3.974,"sampleClockPpm":0,"wallOffsetMs":0,"timeoutMs":90000,"retryMs":7000,"jitterMs":160,"transport":"UDP/8k-mono-s16le/20ms/PCM-only","profile":"experimental-AIP-FSK2"}
+{"event":"tx-start","role":"initiator","wallTime":"2026-11-06T07:58:27.204Z","elapsedMs":223.128,"type":"HELLO","pcmSamples":13120,"reason":"initial"}
+{"event":"tx-end","role":"initiator","wallTime":"2026-11-06T07:58:28.822Z","elapsedMs":1841.476,"type":"HELLO"}
+{"event":"audio-frame","role":"initiator","wallTime":"2026-11-06T07:58:31.451Z","elapsedMs":4470.733,"type":"CHALLENGE","payloadBytes":51,"clockHypothesisPeriodPpm":0,"startSample":16960,"endSample":33600}
+{"event":"transition","role":"initiator","wallTime":"2026-11-06T07:58:31.452Z","elapsedMs":4471.412,"received":"CHALLENGE","state":"WAIT_READY","paired":false,"sessionFingerprint":"cf5733da6b9a571d"}
+{"event":"handshake-rtt","role":"initiator","wallTime":"2026-11-06T07:58:31.452Z","elapsedMs":4471.473,"roundTripMs":4250,"note":"local monotonic HELLO transmit-start to decoded CHALLENGE; includes both bursts, buffering and processing, not one-way latency"}
+{"event":"tx-start","role":"initiator","wallTime":"2026-11-06T07:58:31.542Z","elapsedMs":4561.754,"type":"CONFIRM","pcmSamples":13120,"reason":"received-audio"}
+{"event":"tx-end","role":"initiator","wallTime":"2026-11-06T07:58:33.163Z","elapsedMs":6182.224,"type":"CONFIRM"}
+{"event":"audio-frame","role":"initiator","wallTime":"2026-11-06T07:58:35.285Z","elapsedMs":8304.448,"type":"READY","payloadBytes":35,"clockHypothesisPeriodPpm":0,"startSample":51840,"endSample":64384}
+{"event":"transition","role":"initiator","wallTime":"2026-11-06T07:58:35.285Z","elapsedMs":8304.697,"received":"READY","state":"WAIT_RECEIPT","paired":true,"sessionFingerprint":"cf5733da6b9a571d"}
+{"event":"tx-start","role":"initiator","wallTime":"2026-11-06T07:58:35.403Z","elapsedMs":8422.716,"type":"DATA","pcmSamples":16160,"reason":"received-audio"}
+{"event":"tx-end","role":"initiator","wallTime":"2026-11-06T07:58:37.402Z","elapsedMs":10421.183,"type":"DATA"}
+{"event":"audio-frame","role":"initiator","wallTime":"2026-11-06T07:58:40.403Z","elapsedMs":13422.621,"type":"RECEIPT","payloadBytes":63,"clockHypothesisPeriodPpm":0,"startSample":85600,"endSample":105312}
+{"event":"transition","role":"initiator","wallTime":"2026-11-06T07:58:40.403Z","elapsedMs":13422.84,"received":"RECEIPT","state":"CLOSING","paired":true,"sessionFingerprint":"cf5733da6b9a571d"}
+{"event":"tx-start","role":"initiator","wallTime":"2026-11-06T07:58:40.522Z","elapsedMs":13541.761,"type":"CLOSE","pcmSamples":13120,"reason":"received-audio"}
+{"event":"tx-end","role":"initiator","wallTime":"2026-11-06T07:58:42.142Z","elapsedMs":15161.132,"type":"CLOSE"}
+{"event":"result","role":"initiator","wallTime":"2026-11-06T07:58:42.145Z","elapsedMs":15164.3,"success":true,"reason":"authenticated-receipt-verified","state":"CLOSING","paired":true,"receiptVerified":true,"sessionFingerprint":"cf5733da6b9a571d","operationCount":0,"rejections":0,"retries":0,"transport":{"sent":759,"received":757,"lost":0,"late":0,"invalid":0,"maxQueued":10},"decoder":{"maxBufferSamples":41600,"crcRejections":114}}

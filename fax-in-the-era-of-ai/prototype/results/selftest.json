@@ -1,0 +1,70 @@
+{
+  "selftest": "passed",
+  "expected_frames": [
+    "*#26#",
+    "*#1048151623426#",
+    "*#32718280#"
+  ],
+  "repeated_digit_waveform_checks": [
+    {
+      "wire": "*#1000000000009#",
+      "condition": "clean",
+      "passed": true
+    },
+    {
+      "wire": "*#1000000000009#",
+      "condition": "phone_noise",
+      "passed": true
+    },
+    {
+      "wire": "*#1011111111114#",
+      "condition": "clean",
+      "passed": true
+    },
+    {
+      "wire": "*#1011111111114#",
+      "condition": "phone_noise",
+      "passed": true
+    },
+    {
+      "wire": "*#1099999999999#",
+      "condition": "clean",
+      "passed": true
+    },
+    {
+      "wire": "*#1099999999999#",
+      "condition": "phone_noise",
+      "passed": true
+    },
+    {
+      "wire": "*#30000004#",
+      "condition": "clean",
+      "passed": true
+    },
+    {
+      "wire": "*#30000004#",
+      "condition": "phone_noise",
+      "passed": true
+    },
+    {
+      "wire": "*#31111115#",
+      "condition": "clean",
+      "passed": true
+    },
+    {
+      "wire": "*#31111115#",
+      "condition": "phone_noise",
+      "passed": true
+    },
+    {
+      "wire": "*#39999990#",
+      "condition": "clean",
+      "passed": true
+    },
+    {
+      "wire": "*#39999990#",
+      "condition": "phone_noise",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "scope": "Synthetic closed-set negatives, two Flite voices; NOT measured human-speech talk-off probability",
+  "cases": [
+    {
+      "name": "flite_speech_120s",
+      "duration_s": 120.0,
+      "detected_digits": 0,
+      "accepted_frames": []
+    },
+    {
+      "name": "bandlimited_noise_120s",
+      "duration_s": 120.0,
+      "detected_digits": 0,
+      "accepted_frames": []
+    },
+    {
+      "name": "fax_and_call_progress_sines_120s",
+      "duration_s": 120.0,
+      "detected_digits": 0,
+      "accepted_frames": []
+    },
+    {
+      "name": "unframed_digits_and_bad_checksum",
+      "duration_s": 5.6,
+      "detected_digits": 40,
+      "accepted_frames": []
+    }
+  ],
+  "total_duration_s": 365.6,
+  "zero_accepted_frames": true
+}

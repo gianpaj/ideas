@@ -9,7 +9,7 @@ dedicated repository.
 | Idea                                                                      | Stage                | Purpose                                                                           |
 | ------------------------------------------------------------------------- | -------------------- | --------------------------------------------------------------------------------- |
 | [`brrra`](brrra/)                                                         | Design               | Privacy-first Android push notifications delivered through a webhook              |
-| [`fax-in-the-era-of-ai`](fax-in-the-era-of-ai/)                           | Design               | Agent-to-agent phone booking protocol and local AI receptionist device concept         |
+| [`fax-in-the-era-of-ai`](fax-in-the-era-of-ai/)                           | Live prototype       | Independent tones-only audio endpoints, clock/delay tests, DTMF/FSK research and receptionist concept    |
 | [`hatch-pet-local-orchestrator`](hatch-pet-local-orchestrator/)           | Design               | Local workflow for preparing, validating, and packaging Hatch Pet sprite atlases  |
 | [`multi-city-property-visualization`](multi-city-property-visualization/) | Design               | 3D comparison of property markets across cities                                   |
 | [`photos-only-app`](photos-only-app/)                                     | Research             | Paid, ad-free social network limited to photo posts                               |
@@ -21,6 +21,22 @@ dedicated repository.
 | [`twitter-engagement-analysis`](twitter-engagement-analysis/)             | Prototype            | Analysis of the accounts and posts a user engages with most on X                  |
 | [`vibe-world`](vibe-world/)                                               | Design and prototype | Multiplayer voxel sandbox for creating and remixing worlds with prompts           |
 | [`wearable-leash-pod`](wearable-leash-pod/)                               | Product model        | Harness-mounted leash handle pod with closed, cutaway, and released Blender views |
+
+## Audio handshake prototype
+
+Two independent Node.js apps pair and exchange authenticated data through tones.
+This 16-second recording highlights each real message as it plays, with no speech
+added.
+
+https://github.com/user-attachments/assets/f3697d93-78ae-4490-98b9-f49c6d5dcf72
+
+[Run the prototype](fax-in-the-era-of-ai/live/README.md) ·
+[Editable SVG and rendering source](fax-in-the-era-of-ai/live/explainer/README.md)
+
+The handshake sends compact, **uncompressed binary messages** using two tones:
+`0` is 2250 Hz and `1` is 1250 Hz, at 250 bits/second. The
+[encoding and framing explanation](fax-in-the-era-of-ai/live/README.md#physical-framing-and-mathematical-limits)
+covers message fields, synchronization, error checks, authentication and airtime.
 
 ## Loose notes
 

@@ -1,0 +1,107 @@
+[
+  {
+    "role": "channel",
+    "kind": "silence",
+    "value": "connected call, no ringing simulation",
+    "start_s": 0.0,
+    "end_s": 0.35
+  },
+  {
+    "role": "business",
+    "kind": "speech",
+    "value": "Hello. I am the automated receptionist for Example Clinic.",
+    "start_s": 0.35,
+    "end_s": 4.14
+  },
+  {
+    "role": "channel",
+    "kind": "silence",
+    "value": "turn-taking gap",
+    "start_s": 4.14,
+    "end_s": 4.39
+  },
+  {
+    "role": "caller",
+    "kind": "speech",
+    "value": "I am an AI agent calling on behalf of a person. Can we connect directly?",
+    "start_s": 4.39,
+    "end_s": 9.655
+  },
+  {
+    "role": "channel",
+    "kind": "silence",
+    "value": "turn-taking gap",
+    "start_s": 9.655,
+    "end_s": 9.855
+  },
+  {
+    "role": "caller",
+    "kind": "probe",
+    "value": "*#26#",
+    "start_s": 9.855,
+    "end_s": 10.555
+  },
+  {
+    "role": "channel",
+    "kind": "silence",
+    "value": "turn-taking gap",
+    "start_s": 10.555,
+    "end_s": 10.775
+  },
+  {
+    "role": "business",
+    "kind": "speech",
+    "value": "Agent connect is available on this line.",
+    "start_s": 10.775,
+    "end_s": 13.465
+  },
+  {
+    "role": "channel",
+    "kind": "silence",
+    "value": "turn-taking gap",
+    "start_s": 13.465,
+    "end_s": 13.665
+  },
+  {
+    "role": "business",
+    "kind": "offer",
+    "value": "*#1048151623426#",
+    "start_s": 13.665,
+    "end_s": 15.905
+  },
+  {
+    "role": "channel",
+    "kind": "silence",
+    "value": "SIMULATED HTTPS: resolve signed rendezvous, validate, accept, receive bind challenge; no audio data",
+    "start_s": 15.905,
+    "end_s": 16.555
+  },
+  {
+    "role": "caller",
+    "kind": "bind",
+    "value": "*#32718280#",
+    "start_s": 16.555,
+    "end_s": 18.095
+  },
+  {
+    "role": "channel",
+    "kind": "silence",
+    "value": "turn-taking gap",
+    "start_s": 18.095,
+    "end_s": 18.315
+  },
+  {
+    "role": "business",
+    "kind": "speech",
+    "value": "The data session is connected. This is a demonstration. No booking has been made.",
+    "start_s": 18.315,
+    "end_s": 23.25
+  },
+  {
+    "role": "channel",
+    "kind": "silence",
+    "value": "end of demonstration",
+    "start_s": 23.25,
+    "end_s": 23.75
+  }
+]

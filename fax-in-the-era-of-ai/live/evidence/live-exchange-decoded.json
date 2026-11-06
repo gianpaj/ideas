@@ -1,0 +1,70 @@
+{
+  "artifactSha256": "8224e9dd9ab13f3f909d6e66f7c023df49b1614a95db3b71a88dde94cfb4132d",
+  "durationSeconds": 15.943125,
+  "note": "Blind CRC-confirmed replay from actual live link-delivery recording; MAC verified separately by live endpoint results. No key or expected payload input.",
+  "frames": [
+    {
+      "channel": "initiator-to-responder",
+      "type": "HELLO",
+      "payloadBytes": 35,
+      "startSeconds": 0.823,
+      "endSeconds": 2.391,
+      "packetSha256": "2e611c6b85b716dda5fc74f8d076a0bdf26a6407e6217601c578b95301dd4788",
+      "clockHypothesisPeriodPpm": 0
+    },
+    {
+      "channel": "responder-to-initiator",
+      "type": "CHALLENGE",
+      "payloadBytes": 51,
+      "startSeconds": 2.74375,
+      "endSeconds": 4.82375,
+      "packetSha256": "9b5703c67fba6ae8327a3437b1cf976e12ca0db49571dc0feb02676cfed55962",
+      "clockHypothesisPeriodPpm": 0
+    },
+    {
+      "channel": "initiator-to-responder",
+      "type": "CONFIRM",
+      "payloadBytes": 35,
+      "startSeconds": 5.16375,
+      "endSeconds": 6.73175,
+      "packetSha256": "52c4c19dd812a3af0f5d1a26829d622ee2ead3ebf802e4642967d02c297bec0b",
+      "clockHypothesisPeriodPpm": 0
+    },
+    {
+      "channel": "responder-to-initiator",
+      "type": "READY",
+      "payloadBytes": 35,
+      "startSeconds": 7.10375,
+      "endSeconds": 8.67175,
+      "packetSha256": "2cedce77dd2050a4863e63452921b4bf4eca82b36ff0bd9d6727d5b6ec68cda6",
+      "clockHypothesisPeriodPpm": 0
+    },
+    {
+      "channel": "initiator-to-responder",
+      "type": "DATA",
+      "payloadBytes": 47,
+      "startSeconds": 9.02375,
+      "endSeconds": 10.97575,
+      "packetSha256": "6e9678e594099b357e310d626ce8b6cca9b90301a9223b4330c892ed70e7982d",
+      "clockHypothesisPeriodPpm": 0
+    },
+    {
+      "channel": "responder-to-initiator",
+      "type": "RECEIPT",
+      "payloadBytes": 63,
+      "startSeconds": 11.32375,
+      "endSeconds": 13.78775,
+      "packetSha256": "333559e3dd35a3ce1628151e96b9a909558784084e528747a3f77e855fbe982e",
+      "clockHypothesisPeriodPpm": 0
+    },
+    {
+      "channel": "initiator-to-responder",
+      "type": "CLOSE",
+      "payloadBytes": 35,
+      "startSeconds": 14.14375,
+      "endSeconds": 15.71175,
+      "packetSha256": "6785f445131bb312800c3c15ea29a7d1ff99a8cd6b98379632053df5556cd726",
+      "clockHypothesisPeriodPpm": 0
+    }
+  ]
+}
