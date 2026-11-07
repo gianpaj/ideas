@@ -8,7 +8,7 @@
   "retail_tasks_finished": 10,
   "retail_tasks_expected": 10,
   "retail_status": "completed",
-  "nanbeige_status": "smoke_passed",
+  "nanbeige_status": "eq_collection",
   "voice_latency_status": "not measured in this text pilot",
   "tts_animal_training_status": "not started",
   "voice_service": "see retail recovery evidence"

@@ -27,7 +27,7 @@ The independent customer uses Codex CLI `gpt-6.1-sol` / `xhigh` through the exis
 
 Database replay and applicable communication/assertion checks determine the reward. State success does not establish that every spoken turn was concise, polite or policy-perfect; inspect the transcripts and component rewards. The retail slice does not measure speech recognition, synthesis or end-to-end audio latency.
 
-Candidate generation calls observed: 115. Peak aggregate GPU: 10655 MiB. These monitoring values include the archived first-task pilot and the resumed run.
+Candidate generation calls attempted: 116; completed timing records: 115. The capped call remains in raw streams but has no completed-call timing row; timing medians describe the completed records only, not all attempts. Peak aggregate GPU: 10655 MiB. Monitoring includes archived pilot and resumed runs.
 
 Full completed trajectories are `<task-id>.json`. Per-task output includes component rewards, actions, messages, seed and language provenance. `recovery-checkpoints/` preserves the integration pilot; the final `restore.json` must be checked against independent service verification after the complete run. Raw per-token and CLI diagnostic logs remain local.
 

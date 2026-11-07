@@ -1,0 +1,11 @@
+{
+  "finished": 1,
+  "expected": 10,
+  "rows": [
+    {
+      "id": "1",
+      "status": "error",
+      "error": "Debrief Run Error: "
+    }
+  ]
+}
