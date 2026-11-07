@@ -1,6 +1,11 @@
 # Matched Nanbeige companion/support pilot
 
-Current phase: **eq_collection**. EQ: 0/10 complete response sets; retail: 0/10 cases finished, 0 passed. Do not treat unfinished cases as failures.
+Current phase: **completed**. EQ: 10/10 complete response sets; retail: 10/10 cases finished, 8 passed. Do not treat unfinished cases as failures.
+
+## Final result
+
+**EQ 5.57/20 (10/10 scored), retail 8/10.** Qwen: EQ 4.30/20, retail 8/10.
+See the [final matched comparison](../../COMPARISON.md) for per-case scores, retained failures, branch sensitivity, coverage and independently verified voice restoration.
 
 ## Matching contract
 

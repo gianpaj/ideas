@@ -24,18 +24,19 @@ sound. A plausible-looking control tag is not evidence that a model learned it.
 
 - [Companion/support benchmark selection](notes/2026-11-07-benchmark-selection.md)
 - [Qwen-first pilot: setup, progress, results and rerun instructions](benchmarks/companion-support-2026-11-07/README.md)
+- [Final matched Qwen–Nanbeige comparison and audited evidence](benchmarks/companion-support-2026-11-07/COMPARISON.md)
 - [Non-speech and animal-sound control: what to verify before fine-tuning](notes/non-speech-and-animal-sound-tags.md)
 
 ## Current scope
 
-The first evaluation uses the current Qwen3.5 9B Q4_K_M weights, followed by a
-planned matched Nanbeige4.3-33B IQ2_M comparison. Ten EQ-Bench 3 scenarios and
-ten retail tasks are a **custom local pilot**, not official full-suite scores.
-Their setup, dependencies and partial/complete status belong in the run report.
-Qwen's ten EQ response sets have independent Codex CLI rubric grading; the
-retail pilot uses Codex as customer simulator and semantic judge. See the
-linked run reports for observed results rather than treating response
-collection as a pass score.
+The matched Qwen3.5 9B Q4_K_M and Nanbeige4.3-33B IQ2_M evaluation is complete.
+Both have ten independently graded EQ scenarios and ten retail outcomes.
+EQ custom-rubric means are **4.30/20 vs 5.57/20**; retail is **8/10 for both**.
+These are custom local pilots, not official full-suite scores or evidence of
+statistical superiority. Codex CLI is the independent rubric judge and customer
+simulator. The original Qwen voice service was independently verified restored;
+audio latency was not measured. See the final comparison for retained failures
+and runtime, quantization, cache and debrief-order differences.
 
 No custom TTS training or animal-sound fine-tune has been performed yet. This
 folder is the learning record and experiment home, not a claim of a working

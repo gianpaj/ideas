@@ -2,6 +2,7 @@
 
 ## Recorded results
 
+- [Final matched comparison: scores, failures, coverage and voice restoration](COMPARISON.md)
 - [Run audit: interpretation, fixed controls and known differences](RUN-AUDIT.md)
 - [Matched Nanbeige IQ2_M run: progress, protocol and replay](results/nanbeige-iq2m/RESULTS.md)
 - [Audited generation results and limitations](results/qwen-eq10/RESULTS.md)
@@ -20,13 +21,15 @@ Codex CLI judge scored all ten scenarios: **4.30/20 mean qualitative rubric**.
 This is a custom-judge subset score, not official leaderboard Elo or a pass
 rate. The retail run uses the same independent CLI model as customer simulator
 and semantic judge; its observed progress/outcomes are in the linked summary.
-The matched Nanbeige controller is authorized and its observed phase is recorded
-in the linked run report; do not infer a completed score from a started runner.
+The matched Nanbeige run is complete: **5.57/20 EQ (10/10 graded), 8/10 retail**,
+versus Qwen **4.30/20 EQ, 8/10 retail**. The original voice service was restored
+and independently checked. Read the final comparison for failures, matching
+controls and deliberate differences; no audio latency was measured.
 
 ## Purpose and scope
 
-Evaluate the actual local **Qwen3.5 9B Q4_K_M** artifact for companion and
-customer-support behavior before a planned matched Nanbeige IQ2_M run.
+Evaluate the actual local **Qwen3.5 9B Q4_K_M** and **Nanbeige IQ2_M** artifacts
+for companion and customer-support behavior in a completed matched text pilot.
 The earlier coding run was a poor match for this product.
 
 This is a custom pilot, not an official EQ-Bench, τ-bench, or Artificial
