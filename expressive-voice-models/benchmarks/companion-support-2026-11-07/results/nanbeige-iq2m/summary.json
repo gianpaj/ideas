@@ -1,7 +1,7 @@
 {
   "candidate": "Nanbeige4.3-33B IQ2_M",
   "phase": "eq_collection",
-  "eq_cases_attempted": 1,
+  "eq_cases_attempted": 3,
   "eq_complete_response_sets": 0,
   "eq_expected": 10,
   "eq_rubric": null,

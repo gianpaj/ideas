@@ -7,7 +7,7 @@ Current phase: **eq_collection**. EQ: 0/10 complete response sets; retail: 0/10 
 - Same immutable ten EQ scenarios, upstream prompts, debriefs, 12,000-token output cap and 600-second call budget.
 - Same ten English retail tasks, policy/tools/environment evaluation, 1,024-token reply cap, 180-second candidate-call budget, 200 steps and 1,800 seconds per task.
 - Candidate output-cap/context/format failures are retained at reward zero without retry. Task 19 hit the Qwen cap; only its last unattempted task was subsequently run.
-- Same per-stage sampling: EQ temperature 0.7; retail 0.5; min_p 0.1/top_p 0.95/top_k 20/presence 0/repeat 1/seed 42. Both candidates use their supported non-thinking mode.
+- Same actual per-stage sampling: EQ dialogue temperature0.7/min_p0.1; EQ debrief temperature0.5/min_p0.0 (Qwen sent null, retaining Ollama default zero); retail temperature0.5/min_p0.1. Shared top_p0.95/top_k20/presence0/repeat1/seed42. Both candidates use supported non-thinking mode.
 - Same independent Codex CLI `gpt-6.1-sol` / `xhigh` rubric judge, customer simulator and applicable semantic checks; fresh isolated calls and unchanged aggregate criteria.
 - Expected actions are not given to the customer; the benchmark engine evaluates database state and applicable criteria.
 
@@ -24,6 +24,8 @@ EQ measures judged quality of long social roleplays and debriefs. Retail measure
 The controller waits for the Qwen baseline, verifies its recorded outcomes and voice recovery, verifies the cached weight hash, freezes voice processing, unloads Qwen, starts loopback-only Nanbeige, checks CUDA placement/text/tool calls, then performs EQ → Codex grading → retail. It stops only its own Nanbeige server and reloads/thaws the ordinary Qwen voice profile in `finally`.
 
 Pre-inference process-wait compatibility and startup logging/placement-observability failures were preserved locally. They were fixed before smoke or scored inference, without retrying a scored case. Runtime/model failures and unscored EQ coverage remain explicit in the artifacts.
+
+An initial adapter assertion incorrectly allowed only the dialogue sampling tuple and blocked debriefs before any debrief inference. Completed dialogue responses are preserved. The guarded recovery runs only those previously uncalled debriefs with the correct upstream temperature0.5/min_p0.0, before grading; original error states are archived. This batches missing debriefs after dialogue collection instead of interleaving them, so cache/prefill timing is not matched. It does not regenerate or replace candidate answers. See `eq10/adapter-debrief-recovery.json` and recovery progress for the recorded repair.
 
 ## Replay
 

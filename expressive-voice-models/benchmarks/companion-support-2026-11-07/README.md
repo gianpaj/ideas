@@ -67,7 +67,7 @@ uses the **same weights** with a separate benchmark configuration:
 | --- | --- |
 | Context | 32,768; full-GPU placement checked before the run |
 | Hidden thinking | Off, supported by this Qwen runtime |
-| Sampling | temperature 0.7, min_p 0.1, top_p 0.95, top_k 20 |
+| Sampling | Dialogue: temperature 0.7/min_p 0.1; debrief: temperature 0.5/min_p default 0; shared top_p 0.95/top_k 20 |
 | Penalties | presence 0, repeat 1 |
 | Seed / concurrency | 42 / 1 |
 | Output cap | 12,000 tokens, as in upstream scenario/debrief calls |
@@ -79,6 +79,13 @@ uses the **same weights** with a separate benchmark configuration:
 The Ollama server version for the recorded run is 0.24.0 (the separate CLI
 version is not used as server-version evidence). A fixed seed does not promise
 bit-identical GPU execution.
+
+The upstream debrief stage overrides temperature to 0.5 and supplies `min_p=None`;
+the Qwen adapter sent JSON null, retaining Ollama's default zero (the alias has
+no min_p override). This differs from the dialogue profile in the initial
+manifest. The [actual per-stage sampling audit](results/qwen-eq10/sampling-audit.json)
+and raw retained requests establish the executed settings. Nanbeige's debrief
+adapter explicitly uses 0.5/0.0 to match them.
 
 The controller records requests, raw NDJSON responses, usage/timing/resource
 samples, per-scenario transcripts and recovery evidence. It refuses to

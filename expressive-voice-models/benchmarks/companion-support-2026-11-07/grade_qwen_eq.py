@@ -30,6 +30,9 @@ def main():
     parser.add_argument("--allow-incomplete", action="store_true", help="Retain incomplete collection cases as explicitly unscored")
     args = parser.parse_args()
     run = args.run.resolve()
+    if args.allow_incomplete and (run/'adapter-debrief-recovery.json').exists():
+        from repair_nanbeige_debriefs import recover
+        recover(run,ScenarioTask)
     out = run / "codex-judge"
     out.mkdir(exist_ok=True)
     source = ROOT / "vendor/eqbench3/data"

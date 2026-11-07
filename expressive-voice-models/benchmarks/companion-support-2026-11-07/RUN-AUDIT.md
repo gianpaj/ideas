@@ -50,6 +50,11 @@ errors must not silently become model failures or trigger a clean rerun.
 
 ## What is matched
 
+- Actual EQ stage sampling differs: dialogue temperature0.7/min_p0.1;
+  debrief temperature0.5/min_p0.0. Qwen's raw debrief request used null min_p,
+  retaining the pinned Ollama zero default. The original manifest described
+  the dialogue profile, not this upstream debrief override. The sampling audit
+  preserves the actual 28-dialogue/10-debrief evidence.
 - Exact frozen EQ and retail IDs, prompts, policy/tools, language bindings,
   judge/rubric and aggregation; one candidate attempt per case.
 - Per-stage sampling, output/context/time budgets, sequential candidate use,
@@ -64,6 +69,14 @@ uses CUDA llama.cpp b12064 with Q4_0 K/V cache to fit the 16GB card. Each needs
 its own native chat template/tokenizer, so token counts and cache costs differ.
 Backend/cache/quantization effects are therefore part of the measured package,
 not isolated architectural effects.
+
+The initial Nanbeige adapter incorrectly asserted that every EQ call used the
+dialogue sampling tuple. This blocked debriefs **before model inference**, while
+leaving complete dialogue responses intact. A guarded recovery invokes only
+those previously uncalled debriefs before grading and archives the original
+adapter-error states. No candidate answer is regenerated. The recorded run
+therefore batches those debriefs after dialogue collection rather than
+interleaving them; cache/prefill latency is not a matched comparison.
 
 ## What remains a separate experiment
 

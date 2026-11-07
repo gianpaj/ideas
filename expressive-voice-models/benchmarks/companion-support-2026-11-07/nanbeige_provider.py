@@ -18,12 +18,12 @@ def post(endpoint, payload):
     return r.json()
 
 
-def generate(messages, tools, directory, *, cap, temperature, deadline):
+def generate(messages, tools, directory, *, cap, temperature, deadline, min_p=0.1):
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=True)
     payload = {'model':MODEL, 'messages':messages, 'stream':True,
         'stream_options':{'include_usage':True},
-        'temperature':temperature, 'top_p':0.95, 'top_k':20, 'min_p':0.1,
+        'temperature':temperature, 'top_p':0.95, 'top_k':20, 'min_p':min_p,
         'presence_penalty':0, 'repeat_penalty':1.0, 'seed':42, 'max_tokens':cap,
         'chat_template_kwargs':{'enable_thinking':False,'preserve_thinking':False,'tool_call_format':'xml'}}
     if tools:
@@ -96,10 +96,12 @@ class EQAPI:
         self.run,self.index,self.case,self.stage=Path(run),0,'',''
 
     def generate(self, model, messages, temperature=0.7,max_tokens=12000,min_p=0.1):
-        assert temperature==0.7 and max_tokens==12000 and min_p==0.1
+        assert max_tokens==12000
+        assert (temperature,min_p) in ((0.7,0.1),(0.5,None))
         self.index+=1
         path=self.run/'calls'/f'{self.index:03d}-{self.case}-{self.stage}'
-        answer=generate(messages,[],path,cap=max_tokens,temperature=temperature,deadline=600)
+        answer=generate(messages,[],path,cap=max_tokens,temperature=temperature,deadline=600,
+                        min_p=0.0 if min_p is None else min_p)
         if answer['tool_calls']:raise RuntimeError('Unexpected tool call in EQ response')
         return answer['content']
 

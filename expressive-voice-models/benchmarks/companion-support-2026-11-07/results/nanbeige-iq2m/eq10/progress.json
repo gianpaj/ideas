@@ -1,9 +1,14 @@
 {
-  "finished": 1,
+  "finished": 2,
   "expected": 10,
   "rows": [
     {
       "id": "1",
+      "status": "error",
+      "error": "Debrief Run Error: "
+    },
+    {
+      "id": "2",
       "status": "error",
       "error": "Debrief Run Error: "
     }
