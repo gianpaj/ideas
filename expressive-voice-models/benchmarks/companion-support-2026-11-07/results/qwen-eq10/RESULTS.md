@@ -1,8 +1,13 @@
 # Qwen EQ pilot: generation results
 
+This is the **19:30 UTC collection audit checkpoint**. Subsequent independent
+Codex CLI grading is complete: **4.30/20 on the custom ten-scenario rubric**.
+See the [grading report](codex-judge/RESULTS.md) and [current progress](progress.json)
+for the follow-up retail stage. The collection metrics below remain unchanged.
+
 Response sets complete: **10/10**; API calls: 38/38; collection errors: 0.
-**EQ quality score: not assigned.** Independent rubric judging is still pending.
-**Retail outcome: not run.** The independent customer simulator/judge route remains unresolved.
+At collection time, EQ quality was unassigned and retail had not run; the
+independent customer simulator/judge route was not yet selected.
 These are not ten passed EQ tasks and not an official leaderboard result.
 
 Generated tokens: 53743; median server decode: 43.287 tokens/s.
@@ -47,4 +52,7 @@ Collection controller: 2026-11-07T19:07:48.514796+00:00 → 2026-11-07T19:29:56.
 
 Independent restoration check: 2026-11-07T19:30:11.284446+00:00; service active/running and thawed, HTTP ready/idle, original Qwen context 4096. No fresh end-to-end voice call was made in this check.
 
-See progress.json for the deliberately unfinished scoring/support stages. The simulator/judge choice remains with the user; no paid requests were made. The prepared retail task selection is unchanged and can resume once the route is resolved.
+The user subsequently selected Codex CLI `gpt-6.1-sol` / `xhigh` through the
+existing ChatGPT login. The [follow-up grading report](codex-judge/RESULTS.md)
+records the custom judge protocol and retail checkpoint. No API-key billing
+route was used; Codex usage is recorded separately from local Qwen inference.

@@ -3,6 +3,8 @@
 ## Recorded results
 
 - [Audited generation results and limitations](results/qwen-eq10/RESULTS.md)
+- [Codex CLI rubric grading and individual assessments](results/qwen-eq10/codex-judge/RESULTS.md)
+- [Retail task outcomes and current status](results/qwen-retail10/summary.json)
 - [Progress / unfinished stages](results/qwen-eq10/progress.json)
 - [Machine-readable summary](results/qwen-eq10/summary.json)
 - [Scenario collection results](results/qwen-eq10/scenario-results.csv)
@@ -11,9 +13,12 @@
 - [Service recovery verification](results/qwen-eq10/post-run-verification.json)
 
 Qwen response collection: **10/10 scenarios, 38/38 calls, no collection errors**.
-This is **not an EQ quality score**. Independent judging and the ten retail
-tasks remain pending an explicit simulator/judge route. Nanbeige has not been
-run on this new pilot.
+Collection completion is **not an EQ quality score**. A subsequent independent
+Codex CLI judge scored all ten scenarios: **4.30/20 mean qualitative rubric**.
+This is a custom-judge subset score, not official leaderboard Elo or a pass
+rate. The retail run uses the same independent CLI model as customer simulator
+and semantic judge; its observed progress/outcomes are in the linked summary.
+Nanbeige has not been run on this new pilot.
 
 ## Purpose and scope
 
@@ -34,8 +39,10 @@ not converted into a quality score or a failed support task.
 OpenClaw hosts the chat/tools/session. The Codex agent in that session prepared
 the fixtures and launched the local Python controller. The controller owns
 sequential inference and service restoration. Qwen is the model under test,
-not its own controller or semantic judge. No separate background Codex worker
-was used for this run.
+not its own controller or semantic judge. Response collection used no separate
+Codex worker. The follow-up judging/customer simulation uses fresh ephemeral
+Codex CLI sessions; those do not control Qwen, access tools, or share dialogue
+history across scenarios.
 
 ## Fixed selection
 
@@ -115,7 +122,57 @@ The published runner only replaces original machine-specific path literals
 with environment variables. Its generation settings and scenario logic are
 unchanged. Full upstream code is fetched at pinned revisions, not vendored here.
 
-## Retail and judge dependencies
+## Codex CLI judge and retail simulator
+
+The user selected `gpt-6.1-sol` with `xhigh` reasoning through the existing
+Codex CLI ChatGPT login. The ordinary CLI profile was authenticated even though
+OpenClaw's inherited separate `CODEX_HOME` was not. Check the intended profile
+with `CODEX_HOME="$HOME/.codex" codex login status`; do not conclude that no
+hosted evaluator is available from a missing API key alone.
+
+`codex_cli_judge.py` selects the model/effort explicitly, ignores user config
+and rules, disables shell/multi-agent/apps/skill search/web, suppresses project
+instructions, and requests schema-constrained final output in a read-only
+fresh ephemeral session. It uses the existing login without reading/copying
+credentials. This consumes Codex usage; no dollar charge is inferred from
+subscription inference and no API-key fallback is attempted.
+
+`grade_qwen_eq.py` uses upstream full-transcript rubric preparation, with brief
+evidence assessments replacing the detailed-reasoning output field. It
+validates all 18 numerical rubric fields; only the six higher-is-better fields
+are averaged for the quality mean. Original collected states stay unchanged.
+See the [judge report](results/qwen-eq10/codex-judge/RESULTS.md) for exact replay
+commands and limitations.
+
+`run_qwen_retail.py` intercepts the upstream provider seam, not the policy,
+environment tools, state replay, task evaluation or customer instructions.
+Qwen uses native local Ollama tool calls; Codex CLI supplies the separate
+customer and semantic judgments. A task cannot pass just because the model
+claims success. An unexpected provider or customer tool schema aborts instead
+of silently making a paid API call or faking a tool.
+
+Retail profile: frozen English task IDs, one attempt, 32K context, thinking
+off, temperature 0.5/min_p 0.1/top_p 0.95/top_k 20, presence 0/repeat 1,
+seed 42, output cap 1,024; task seed 300, max 200 steps/10 tool errors,
+1,800-second task budget. A conservative full-request GGUF-vocabulary count
+plus a template margin prevents silent history truncation. Raw request/stream
+evidence remains local. The first scored task was retained during resume;
+its monitoring and restoration files are archived, not discarded.
+
+```sh
+# Requires the same local runtime/weights/service environment as EQ collection.
+CODEX_JUDGE_HOME="$HOME/.codex" .venv/bin/python run_qwen_retail.py --preflight
+CODEX_JUDGE_HOME="$HOME/.codex" .venv/bin/python -u run_qwen_retail.py
+# If extending the preserved one-task pilot, use --resume instead.
+```
+
+The retail runner temporarily freezes voice processing, preserves STT and
+embedding residency, and restores the ordinary 4K Qwen profile in `finally`.
+Do not interrupt its recovery; inspect `restore.json` and independently check
+service readiness after completion. Completed task outcomes, not just an
+earlier integration-pilot restore, determine current run status.
+
+## General evaluator dependency checks
 
 Retail needs an independent customer simulator. τ-bench 2.0 defaults also
 require semantic communication/NL-assertion judges. Those must be fixed for
