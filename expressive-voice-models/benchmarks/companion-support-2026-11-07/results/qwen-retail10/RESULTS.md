@@ -1,6 +1,6 @@
 # Qwen retail-10 pilot
 
-**3/10 tasks finished; 3 passed. Status: running.**
+**10/10 tasks finished; 8 passed. Status: completed.**
 
 This is a frozen English task subset using an independently simulated customer, not an official full-suite score. Unfinished tasks are not failures; no model failure is silently retried.
 
@@ -9,6 +9,13 @@ This is a frozen English task subset using an independently simulated customer, 
 | Task | Reward | Termination | Messages |
 | --- | ---: | --- | ---: |
 | 11 | 1.0 | user_stop | 24 |
+| 13 | 1.0 | user_stop | 28 |
+| 14 | 0.0 | user_stop | 24 |
+| 16 | 1.0 | user_stop | 28 |
+| 17 | 1.0 | user_stop | 16 |
+| 18 | 1.0 | user_stop | 26 |
+| 19 | 0.0 | candidate_output_cap | None |
+| 21 | 1.0 | user_stop | 34 |
 | 6 | 1.0 | user_stop | 28 |
 | 8 | 1.0 | user_stop | 24 |
 
@@ -20,7 +27,7 @@ The independent customer uses Codex CLI `gpt-6.1-sol` / `xhigh` through the exis
 
 Database replay and applicable communication/assertion checks determine the reward. State success does not establish that every spoken turn was concise, polite or policy-perfect; inspect the transcripts and component rewards. The retail slice does not measure speech recognition, synthesis or end-to-end audio latency.
 
-Candidate generation calls observed: 43. Peak aggregate GPU: 10653 MiB. These monitoring values include the archived first-task pilot and the resumed run.
+Candidate generation calls observed: 115. Peak aggregate GPU: 10655 MiB. These monitoring values include the archived first-task pilot and the resumed run.
 
 Full completed trajectories are `<task-id>.json`. Per-task output includes component rewards, actions, messages, seed and language provenance. `recovery-checkpoints/` preserves the integration pilot; the final `restore.json` must be checked against independent service verification after the complete run. Raw per-token and CLI diagnostic logs remain local.
 

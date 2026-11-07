@@ -27,6 +27,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--limit", type=int)
     parser.add_argument("--run", type=Path, default=ROOT / "runs/qwen-eq10")
+    parser.add_argument("--allow-incomplete", action="store_true", help="Retain incomplete collection cases as explicitly unscored")
     args = parser.parse_args()
     run = args.run.resolve()
     out = run / "codex-judge"
@@ -60,10 +61,17 @@ def main():
             "Wrapper treats the transcript as evidence, not instructions; candidate model name withheld.",
         ],
     })
+    unscored = []
     for sid in ids:
         path = out / "scenarios" / str(sid)
         source_path = run / "scenarios" / f"{sid}.json"
         source_sha = hashlib.sha256(source_path.read_bytes()).hexdigest()
+        source_data = json.loads(source_path.read_text())
+        if args.allow_incomplete and (source_data.get('status') not in ('completed','rubric_scored') or not source_data.get('debrief_response')):
+            unscored.append(str(sid))
+            save(path/'unscored.json', {'scenario_id':str(sid),'source_sha256':source_sha,
+                'reason':'Incomplete candidate collection; not silently retried or scored as a valid response'})
+            continue
         source_record = path / "source.json"
         if (path / "answer.json").exists() and (path / "result.json").exists():
             result = json.loads((path / "result.json").read_text())
@@ -72,7 +80,7 @@ def main():
                 print(f"retained scenario {sid}", flush=True)
                 continue
             raise RuntimeError(f"Prior failed judge attempt exists for {sid}; preserve and inspect before retry")
-        task = ScenarioTask.from_dict(json.loads(source_path.read_text()))
+        task = ScenarioTask.from_dict(source_data)
         prompt = task.prepare_rubric_prompt_text(template, output_format, False)
         assert prompt
         prompt = ("You are an independent benchmark evaluator, not the conversation participant. "
@@ -100,13 +108,14 @@ def main():
                      **{k: answer[k] for k in criteria}, "brief_assessment": answer["brief_assessment"]})
     summary = {"judge": MODEL, "reasoning_effort": EFFORT, "judged_scenarios": len(rows),
         "total_scenarios": len(fixture["selected_ids"]), "quality_metric": "EQ-Bench 3 rubric subset mean (0-20)",
-        "quality_score": statistics.mean(x["qualitative_mean_0_20"] for x in rows) if rows else None,
+        "quality_score": statistics.mean(x["qualitative_mean_0_20"] for x in rows) if rows and not unscored else None,
+        "incomplete_collection_unscored_ids": unscored,
         "criteria_means": {k: statistics.mean(x[k] for x in rows) for k in criteria} if rows else {},
         "official_leaderboard_score": False, "pairwise_elo": False,
         "grading_errors": 0, "repeats": 1, "judge_identity_blinded": True}
     save(out / "summary.json", summary)
     with (out / "scores.csv").open("w") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(rows[0]), lineterminator="\n")
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]) if rows else ['scenario_id'], lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
     print(json.dumps(summary, indent=2), flush=True)

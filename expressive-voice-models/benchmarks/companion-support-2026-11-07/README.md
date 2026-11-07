@@ -2,6 +2,8 @@
 
 ## Recorded results
 
+- [Run audit: interpretation, fixed controls and known differences](RUN-AUDIT.md)
+- [Matched Nanbeige IQ2_M run: progress, protocol and replay](results/nanbeige-iq2m/RESULTS.md)
 - [Audited generation results and limitations](results/qwen-eq10/RESULTS.md)
 - [Codex CLI rubric grading and individual assessments](results/qwen-eq10/codex-judge/RESULTS.md)
 - [Retail task outcomes and current status](results/qwen-retail10/summary.json)
@@ -18,7 +20,8 @@ Codex CLI judge scored all ten scenarios: **4.30/20 mean qualitative rubric**.
 This is a custom-judge subset score, not official leaderboard Elo or a pass
 rate. The retail run uses the same independent CLI model as customer simulator
 and semantic judge; its observed progress/outcomes are in the linked summary.
-Nanbeige has not been run on this new pilot.
+The matched Nanbeige controller is authorized and its observed phase is recorded
+in the linked run report; do not infer a completed score from a started runner.
 
 ## Purpose and scope
 

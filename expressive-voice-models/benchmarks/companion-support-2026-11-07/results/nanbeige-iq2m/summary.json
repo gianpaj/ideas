@@ -1,0 +1,14 @@
+{
+  "candidate": "Nanbeige4.3-33B IQ2_M",
+  "phase": "eq_collection",
+  "eq_cases_attempted": 1,
+  "eq_complete_response_sets": 0,
+  "eq_expected": 10,
+  "eq_rubric": null,
+  "retail_cases_finished": 0,
+  "retail_expected": 10,
+  "retail_passed": 0,
+  "retail_candidate_failures": 0,
+  "official_leaderboard_score": false,
+  "voice_latency_measured": false
+}

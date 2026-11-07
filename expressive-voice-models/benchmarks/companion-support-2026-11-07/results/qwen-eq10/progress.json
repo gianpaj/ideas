@@ -5,11 +5,11 @@
   "quality_score": 4.3,
   "quality_scale": "0-20",
   "quality_status": "custom-judge rubric subset; not official Elo",
-  "retail_tasks_finished": 3,
+  "retail_tasks_finished": 10,
   "retail_tasks_expected": 10,
-  "retail_status": "running",
-  "nanbeige_status": "not started for this companion/support pilot",
+  "retail_status": "completed",
+  "nanbeige_status": "smoke_passed",
   "voice_latency_status": "not measured in this text pilot",
   "tts_animal_training_status": "not started",
-  "voice_service": "temporarily frozen for retail; controller owns restoration"
+  "voice_service": "see retail recovery evidence"
 }

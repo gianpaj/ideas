@@ -19,6 +19,7 @@ import requests
 from loguru import logger
 
 from codex_cli_judge import generate as codex_generate, save, MODEL, EFFORT
+from candidate_failure import CandidateFailure
 import run_qwen_eq as ownership
 
 from tau2.data_model.message import AssistantMessage, ToolCall
@@ -85,7 +86,7 @@ class Provider:
             _, counted = ownership.token_count([{"role": "user", "content": request_text}])
             counted += 1024
             if counted + 1024 > 32768:
-                raise RuntimeError(f"Context preflight {counted}+1024 >32768; no truncation")
+                raise CandidateFailure(f"Context preflight {counted}+1024 >32768; no truncation")
             payload = {"model": CANDIDATE, "messages": native, "tools": schemas,
                 "stream": True, "think": False, "keep_alive": "5m", "options": {
                     "num_ctx": 32768, "num_predict": 1024, "temperature": 0.5,
@@ -113,9 +114,9 @@ class Provider:
                         if event.get("done"):
                             done = event
                         if time.monotonic() - started > 180:
-                            raise TimeoutError("180-second candidate call deadline")
+                            raise CandidateFailure("180-second candidate call deadline")
             if not done or done.get("done_reason") == "length":
-                raise RuntimeError("Incomplete candidate generation; retained, not retried")
+                raise CandidateFailure("Incomplete candidate generation; retained, not retried")
             message = AssistantMessage(role="assistant", content="".join(parts) or None,
                 tool_calls=[ToolCall(id=f"call_{self.index}_{i}", name=c["function"]["name"],
                     arguments=c["function"]["arguments"]) for i,c in enumerate(calls)] or None,
@@ -209,15 +210,23 @@ def main():
         assert model["context_length"] == 32768 and model["size_vram"] >= 0.98 * model["size"]
         for task in tasks[:args.limit] if args.limit else tasks:
             destination = RUN / "tasks" / f"{task.id}.json"
-            if destination.exists():
+            if destination.exists() or (RUN/'tasks'/f'{task.id}.failure.json').exists():
                 print(f"Retaining completed task {task.id}", flush=True)
                 continue
             provider.task_id = task.id
             save(RUN / "tasks" / f"{task.id}.input.json", task.model_dump(mode="json"))
             print(f"Starting retail task {task.id}", flush=True)
-            simulation = run_single_task(config, task, seed=300, save_dir=None, auto_review=False)
-            save(destination, simulation.model_dump(mode="json"))
-            print(f"Completed retail task {task.id}: reward={simulation.reward_info.reward}", flush=True)
+            try:
+                simulation = run_single_task(config, task, seed=300, save_dir=None, auto_review=False)
+            except CandidateFailure as exc:
+                save(RUN/'tasks'/f'{task.id}.failure.json', {'task_id':task.id,
+                    'status':'candidate_budget_or_format_failure','reward':0.0,
+                    'candidate_budget_failure':True,'trajectory_complete':False,
+                    'upstream_outcome_evaluation_completed':False,'reason':str(exc)})
+                print(f"Candidate task failure {task.id}: {exc}; no retry",flush=True)
+            else:
+                save(destination, simulation.model_dump(mode="json"))
+                print(f"Completed retail task {task.id}: reward={simulation.reward_info.reward}", flush=True)
             completed = list((RUN / "tasks").glob("*.json"))
             completed = [p for p in completed if not p.name.endswith(".input.json")]
             save(RUN / "progress.json", {"finished": len(completed), "total": len(tasks)})

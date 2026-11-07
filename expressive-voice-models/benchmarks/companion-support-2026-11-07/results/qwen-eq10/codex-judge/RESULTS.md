@@ -51,6 +51,6 @@ Official OpenAI references: [model and supported reasoning effort](https://devel
 
 ## Retail status
 
-At this publication checkpoint: **3/10 finished, 3 passed**, status **running**. See [retail results](../../qwen-retail10/summary.json). Unfinished cases are not failures.
+At this publication checkpoint: **10/10 finished, 8 passed**, status **completed**. See [retail results](../../qwen-retail10/summary.json). Unfinished cases are not failures.
 
 Codex also supplies the independent customer simulator and semantic judge in separate fresh calls. The pinned tau2 orchestrator, policy, tools and database replay perform task evaluation; Qwen does not grade itself. This custom provider does not reproduce the default simulator/leaderboard setting.
