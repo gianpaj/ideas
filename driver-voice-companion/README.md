@@ -57,6 +57,15 @@ Two distinct jobs to test:
 
 Drivers might want both, but acquisition messaging, retention, willingness to pay, and usage costs could be very different. Do not assume which drives demand.
 
+## Competitor: TruckBuddy
+
+**[TruckBuddy](https://truckbuddy.io/)** (reviewed 2026-11-08) positions itself as a voice copilot for truck drivers. Its landing page describes a tap-to-talk assistant that finds parking, hotels, fuel, and mechanics, then provides spoken directions and routes tailored to a truck's dimensions, weight, and hazmat status. It also describes satellite-based parking and entrance checks, and breakdown-service research. These are vendor claims, not independently tested capabilities.
+
+- **Overlap:** Voice-first, location-aware help for drivers, including truck-friendly stops and spoken answers.
+- **Difference:** TruckBuddy emphasizes practical stop-finding and truck-specific navigation. This idea explicitly prioritizes open-ended conversation and companionship alongside journey information, and initially excludes turn-by-turn navigation.
+- **Availability and pricing:** The site says the iPhone and Android apps are **coming soon**; no public price was found on the landing page. Product functionality and pricing remain unverified.
+- **Validation question:** Would drivers value sustained, natural conversation enough to use a companion alongside a truck-navigation copilot, or would TruckBuddy's practical tools meet most of their needs?
+
 ## Finding drivers and validating demand
 
 **Recruit 15–20 drivers before building a large product.** Potential channels:
