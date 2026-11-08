@@ -9,6 +9,7 @@ dedicated repository.
 | Idea                                                                      | Stage                | Purpose                                                                           |
 | ------------------------------------------------------------------------- | -------------------- | --------------------------------------------------------------------------------- |
 | [`brrra`](brrra/)                                                         | Design               | Privacy-first Android push notifications delivered through a webhook              |
+| [`driver-voice-companion`](driver-voice-companion/)                       | Idea / validation    | Hands-free, GPS-aware AI voice assistant and companion for professional drivers   |
 | [`expressive-voice-models`](expressive-voice-models/)                     | Matched text pilot complete; voice/TTS research | Audited Qwen–Nanbeige companion/support comparison; custom TTS/non-speech/animal-sound learning |
 | [`fax-in-the-era-of-ai`](fax-in-the-era-of-ai/)                           | Live prototype       | Independent tones-only audio endpoints, clock/delay tests, DTMF/FSK research and receptionist concept    |
 | [`hatch-pet-local-orchestrator`](hatch-pet-local-orchestrator/)           | Design               | Local workflow for preparing, validating, and packaging Hatch Pet sprite atlases  |
