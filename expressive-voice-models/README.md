@@ -1,54 +1,50 @@
-# Expressive local voice models
+# Expressive voice models — custom TTS
 
-Research and reproducible experiments for a companion/customer-support voice
-product, including custom speech with controllable non-speech sounds.
+Research and reproducible experiments for **custom text-to-speech models**:
+fine-tuning, LoRA/adapters, training, and controllable non-speech sounds.
+This is the learning record for speech synthesis, not the voice agent's LLM
+benchmark archive.
+
+## Scope
+
+- TTS model architecture, conditioning, audio codecs and representation limits.
+- Dataset sourcing, cleaning, event labels, alignment and held-out evaluation.
+- Fine-tuning/LoRA and training workflows with an exact compatible trainer,
+  trainable-module mapping and export/runtime path.
+- Human non-speech controls such as laughter, breathing, sighs and coughs.
+- Custom animal-sound controls, distinguishing real sounds, human imitations
+  and stylized character voices.
+- Synthesis evaluation: intelligibility, speaker consistency, requested-event
+  accuracy, false insertions and listening tests.
+
+A plausible bracket tag is not evidence that a model learned the event.
+Native human vocalizations do not establish animal-sound support; codec
+representability and exact-runtime behavior must be checked separately.
+
+## Learning notes
+
+- [Non-speech and animal-sound control: baseline checks, datasets, codec limits and training prerequisites](notes/non-speech-and-animal-sound-tags.md)
+
+## Results status and hardware
+
+**No custom TTS training or animal-sound fine-tune has been performed yet.**
+The existing notes describe research and proposed experiments, not a proven
+training recipe, data requirement or quality result.
 
 The target development machine is Linux with an NVIDIA RTX 4060 Ti (16 GB
-VRAM). Available memory must include speech recognition, speech synthesis,
-embeddings and inference buffers—not just an LLM's weight file.
+VRAM). Estimate training weights, gradients, optimizer state and activations
+separately from inference. Do not infer a training fit from a quantized model
+loading successfully.
 
-## Keep the questions separate
+## Separate voice-agent repository
 
-| Question | Evidence to collect |
-| --- | --- |
-| Which local LLM makes a good companion? | Multi-turn emotional/social responses and independent preference/rubric scoring |
-| Which LLM resolves support requests? | Policies, tools and verified task outcomes |
-| Does the whole voice product feel responsive? | Recorded caller → STT → LLM → TTS, including pauses and interruptions |
-| Can speech synthesis render laughter/coughs? | Native documented controls, runtime verification and listening tests |
-| Can it generate animal sounds on command? | A separate labeled-audio/codec/training experiment; not inferred from human vocalizations |
+The application, LLM selection, **Qwen versus Nanbeige benchmarks**, quality
+results, first-text/prefill/decode measurements, charts and reproduction scripts
+belong in **gianpaj/local-voice-agent**:
 
-An LLM benchmark is not evidence that a TTS model can synthesize an animal
-sound. A plausible-looking control tag is not evidence that a model learned it.
+- [Canonical LLM benchmark index](https://github.com/gianpaj/local-voice-agent/blob/e3afaf93a2c125bae19ca3aa769c1a929c1c7daa/benchmarks/README.md)
+- [Preserved Qwen–Nanbeige comparison and timing charts](https://github.com/gianpaj/local-voice-agent/blob/e3afaf93a2c125bae19ca3aa769c1a929c1c7daa/benchmarks/companion-support-2026-11-07/COMPARISON.md)
 
-## Experiments and learning notes
-
-- [Companion/support benchmark selection](notes/2026-11-07-benchmark-selection.md)
-- [Qwen-first pilot: setup, progress, results and rerun instructions](benchmarks/companion-support-2026-11-07/README.md)
-- [Final matched Qwen–Nanbeige comparison and audited evidence](benchmarks/companion-support-2026-11-07/COMPARISON.md)
-- [Retained Qwen–Nanbeige latency, prefill counters and decode evidence](benchmarks/companion-support-2026-11-07/PERFORMANCE.md)
-- [Non-speech and animal-sound control: what to verify before fine-tuning](notes/non-speech-and-animal-sound-tags.md)
-
-## Current scope
-
-![Qwen versus Nanbeige: average EQ rubric 4.30 vs 5.57 out of 20; both pass 8 of 10 retail tasks. Custom text pilot, not official leaderboard scores.](benchmarks/companion-support-2026-11-07/assets/qwen-nanbeige-comparison.svg)
-
-The matched Qwen3.5 9B Q4_K_M and Nanbeige4.3-33B IQ2_M evaluation is complete.
-Both have ten independently graded EQ scenarios and ten retail outcomes.
-EQ custom-rubric means are **4.30/20 vs 5.57/20**; retail is **8/10 for both**.
-These are custom local pilots, not official full-suite scores or evidence of
-statistical superiority. Codex CLI is the independent rubric judge and customer
-simulator. The original Qwen voice service was independently verified restored;
-audio latency was not measured. See the final comparison for retained failures
-and runtime, quantization, cache and debrief-order differences.
-
-No custom TTS training or animal-sound fine-tune has been performed yet. This
-folder is the learning record and experiment home, not a claim of a working
-training recipe.
-
-## Retained LLM performance
-
-![Saved Qwen versus Nanbeige p50/p95 first-text latency, prompt-processing time, native-token decode speed and complete-call time for EQ and retail.](benchmarks/companion-support-2026-11-07/assets/qwen-nanbeige-performance.svg)
-
-Solid = p50 (median); hatched = p95. This visualizes saved text calls, not audio
-latency or a controlled speed ranking. Tokenizers, caching and call histories differ.
-[Performance report, prompt/cache counters and exact chart data](benchmarks/companion-support-2026-11-07/PERFORMANCE.md).
+The links pin the migrated archive revision so they work before or after branch
+merges. Legacy benchmark paths here contain redirects only; no benchmark data
+or chart copies are maintained in this TTS research folder.

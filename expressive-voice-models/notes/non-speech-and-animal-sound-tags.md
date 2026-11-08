@@ -94,5 +94,10 @@ into/out of speech separately.
   verification belongs in a separately recorded test.
 - Animal controls: proposed, not validated.
 - Animal-sound fine-tune: not started.
-- Qwen/Nanbeige dialogue evaluation: tracked separately in the
-  [benchmark run folder](../benchmarks/companion-support-2026-11-07/README.md).
+
+## Separate product evaluation
+
+Voice-agent LLM selection and Qwen/Nanbeige dialogue benchmarks belong in
+[local-voice-agent](https://github.com/gianpaj/local-voice-agent/blob/e3afaf93a2c125bae19ca3aa769c1a929c1c7daa/benchmarks/README.md),
+not this TTS training research folder. Those results do not establish synthesis
+capability or successful fine-tuning.
