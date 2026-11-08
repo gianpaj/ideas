@@ -1,0 +1,226 @@
+{
+  "sample_rate_hz": 8000,
+  "duration_s": 23.75,
+  "digit_stream": "*#26# *#1048151623426# *#32718280#",
+  "digits": [
+    {
+      "digit": "*",
+      "start_s": 9.86,
+      "end_s": 9.93,
+      "confidence_ratio_min": 0.701
+    },
+    {
+      "digit": "#",
+      "start_s": 10.0,
+      "end_s": 10.07,
+      "confidence_ratio_min": 0.715
+    },
+    {
+      "digit": "2",
+      "start_s": 10.14,
+      "end_s": 10.21,
+      "confidence_ratio_min": 0.709
+    },
+    {
+      "digit": "6",
+      "start_s": 10.28,
+      "end_s": 10.35,
+      "confidence_ratio_min": 0.707
+    },
+    {
+      "digit": "#",
+      "start_s": 10.42,
+      "end_s": 10.49,
+      "confidence_ratio_min": 0.717
+    },
+    {
+      "digit": "*",
+      "start_s": 13.67,
+      "end_s": 13.74,
+      "confidence_ratio_min": 0.697
+    },
+    {
+      "digit": "#",
+      "start_s": 13.81,
+      "end_s": 13.88,
+      "confidence_ratio_min": 0.705
+    },
+    {
+      "digit": "1",
+      "start_s": 13.95,
+      "end_s": 14.02,
+      "confidence_ratio_min": 0.703
+    },
+    {
+      "digit": "0",
+      "start_s": 14.09,
+      "end_s": 14.16,
+      "confidence_ratio_min": 0.717
+    },
+    {
+      "digit": "4",
+      "start_s": 14.23,
+      "end_s": 14.295,
+      "confidence_ratio_min": 0.706
+    },
+    {
+      "digit": "8",
+      "start_s": 14.37,
+      "end_s": 14.44,
+      "confidence_ratio_min": 0.705
+    },
+    {
+      "digit": "1",
+      "start_s": 14.51,
+      "end_s": 14.58,
+      "confidence_ratio_min": 0.705
+    },
+    {
+      "digit": "5",
+      "start_s": 14.65,
+      "end_s": 14.72,
+      "confidence_ratio_min": 0.702
+    },
+    {
+      "digit": "1",
+      "start_s": 14.79,
+      "end_s": 14.86,
+      "confidence_ratio_min": 0.699
+    },
+    {
+      "digit": "6",
+      "start_s": 14.93,
+      "end_s": 15.0,
+      "confidence_ratio_min": 0.699
+    },
+    {
+      "digit": "2",
+      "start_s": 15.07,
+      "end_s": 15.14,
+      "confidence_ratio_min": 0.701
+    },
+    {
+      "digit": "3",
+      "start_s": 15.21,
+      "end_s": 15.28,
+      "confidence_ratio_min": 0.697
+    },
+    {
+      "digit": "4",
+      "start_s": 15.35,
+      "end_s": 15.415,
+      "confidence_ratio_min": 0.71
+    },
+    {
+      "digit": "2",
+      "start_s": 15.49,
+      "end_s": 15.56,
+      "confidence_ratio_min": 0.704
+    },
+    {
+      "digit": "6",
+      "start_s": 15.63,
+      "end_s": 15.7,
+      "confidence_ratio_min": 0.712
+    },
+    {
+      "digit": "#",
+      "start_s": 15.77,
+      "end_s": 15.84,
+      "confidence_ratio_min": 0.715
+    },
+    {
+      "digit": "*",
+      "start_s": 16.56,
+      "end_s": 16.63,
+      "confidence_ratio_min": 0.696
+    },
+    {
+      "digit": "#",
+      "start_s": 16.7,
+      "end_s": 16.77,
+      "confidence_ratio_min": 0.712
+    },
+    {
+      "digit": "3",
+      "start_s": 16.84,
+      "end_s": 16.91,
+      "confidence_ratio_min": 0.695
+    },
+    {
+      "digit": "2",
+      "start_s": 16.98,
+      "end_s": 17.05,
+      "confidence_ratio_min": 0.706
+    },
+    {
+      "digit": "7",
+      "start_s": 17.12,
+      "end_s": 17.185,
+      "confidence_ratio_min": 0.703
+    },
+    {
+      "digit": "1",
+      "start_s": 17.26,
+      "end_s": 17.33,
+      "confidence_ratio_min": 0.708
+    },
+    {
+      "digit": "8",
+      "start_s": 17.4,
+      "end_s": 17.47,
+      "confidence_ratio_min": 0.704
+    },
+    {
+      "digit": "2",
+      "start_s": 17.54,
+      "end_s": 17.61,
+      "confidence_ratio_min": 0.713
+    },
+    {
+      "digit": "8",
+      "start_s": 17.68,
+      "end_s": 17.75,
+      "confidence_ratio_min": 0.714
+    },
+    {
+      "digit": "0",
+      "start_s": 17.82,
+      "end_s": 17.89,
+      "confidence_ratio_min": 0.711
+    },
+    {
+      "digit": "#",
+      "start_s": 17.96,
+      "end_s": 18.03,
+      "confidence_ratio_min": 0.704
+    }
+  ],
+  "frames": [
+    {
+      "kind": "probe",
+      "wire": "*#26#",
+      "start_s": 9.86,
+      "end_s": 10.49,
+      "luhn_valid": true
+    },
+    {
+      "kind": "offer",
+      "registry": "0",
+      "rendezvous_code": "4815162342",
+      "wire": "*#1048151623426#",
+      "start_s": 13.67,
+      "end_s": 15.84,
+      "luhn_valid": true
+    },
+    {
+      "kind": "bind",
+      "bind_code": "271828",
+      "wire": "*#32718280#",
+      "start_s": 16.56,
+      "end_s": 18.03,
+      "luhn_valid": true
+    }
+  ],
+  "timestamp_note": "center-of-analysis-window estimates, not sample-exact onset/offset"
+}

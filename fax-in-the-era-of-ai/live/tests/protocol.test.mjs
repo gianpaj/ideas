@@ -1,0 +1,43 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {randomBytes} from 'node:crypto';
+import {Session, TYPES, makeMessage} from '../src/protocol.mjs';
+
+test('actual causal mutual confirmation, protected echo once, duplicate receipt cached', () => {
+  const key = randomBytes(32), a = new Session({role: 'initiator', key: Buffer.from(key), data: Buffer.from('arbitrary üser input')}), b = new Session({role: 'responder', key: Buffer.from(key)});
+  const hello = a.start();
+  assert.equal(a.paired, false);
+  assert.equal(b.receive(makeMessage(key, TYPES.DATA, 3, a.sid, Buffer.from('premature'))).rejected, 'unbound');
+  const challenge = b.receive(hello).outbound;
+  assert.deepEqual(b.receive(hello).outbound, challenge);
+  const confirm = a.receive(challenge).outbound;
+  assert.equal(a.paired, false);
+  const ready = b.receive(confirm).outbound;
+  assert.equal(b.paired, true);
+  const data = a.receive(ready).outbound;
+  assert.equal(a.paired, true);
+  const receipt = b.receive(data).outbound;
+  assert.equal(b.operationCount, 1);
+  assert.deepEqual(b.receive(data).outbound, receipt);
+  assert.equal(b.operationCount, 1);
+  const close = a.receive(receipt).outbound;
+  assert.equal(a.receiptVerified, true);
+  b.receive(close);
+  assert.equal(b.completed, true);
+  assert.equal(a.completed, true);
+});
+test('wrong key, tampering, wrong session, replay and phase are rejected', () => {
+  const key = randomBytes(32), a = new Session({role: 'initiator', key}), b = new Session({role: 'responder', key});
+  const hello = a.start(), wrong = new Session({role: 'responder', key: randomBytes(32)});
+  assert.equal(wrong.receive(hello).rejected, 'authentication-or-role');
+  const tampered = Buffer.from(hello); tampered[5] ^= 1;
+  assert.equal(b.receive(tampered).rejected, 'authentication-or-role');
+  const challenge = b.receive(hello).outbound;
+  const wrongSid = makeMessage(key, TYPES.CHALLENGE, 1, randomBytes(16), randomBytes(16));
+  assert.equal(a.receive(wrongSid).rejected, 'wrong-session');
+  a.receive(challenge);
+  assert.equal(a.receive(makeMessage(a.sessionKey, TYPES.RECEIPT, 3, a.sid)).rejected, 'phase-sequence-or-shape');
+  const fresh = new Session({role: 'initiator', key}); fresh.start();
+  assert.notDeepEqual(fresh.sid, a.sid);
+  assert.equal(fresh.receive(challenge).rejected, 'wrong-session');
+});

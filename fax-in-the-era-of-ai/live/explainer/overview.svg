@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Actual capture SHA-256: 8224e9dd9ab13f3f909d6e66f7c023df49b1614a95db3b71a88dde94cfb4132d. Timing source: ../evidence/live-exchange-decoded.json. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+<title id="title">Two Node.js apps exchange authenticated data through audio</title>
+<desc id="desc">Seven audio frames: initiator HELLO, responder CHALLENGE, initiator CONFIRM, responder READY, initiator DATA, responder RECEIPT, initiator CLOSE. A shared private key is provisioned beforehand. The receipt echoes the data and a digest; CLOSE is best effort. Data is authenticated but not encrypted. This is the custom experimental AIP-FSK2 protocol, not a fax standard.</desc>
+<g font-family="DejaVu Sans, sans-serif"><rect width="1280" height="720" fill="#0b1322"/>
+  <path d="M0 0H1280V110H0Z" fill="#0e1a2c"/>
+  <text x="64" y="59" font-size="40" fill="#f1f5fc" font-weight="700">Two apps, talking in tones</text>
+  <text x="64" y="97" font-size="22" fill="#a4b4cc" >Actual live audio. Each reply is triggered by the frame it decodes.</text>
+  <rect x="1003" y="30" width="213" height="34" rx="17" fill="#1c2b40"/>
+  <text x="1109.5" y="53" font-size="16" fill="#f1f5fc" text-anchor="middle" font-weight="700">15.94 s · REAL CAPTURE</text>
+  <rect x="66" y="127" width="284" height="63" rx="15" fill="#123546" stroke="#63deef" stroke-width="1.5"/>
+  <text x="208" y="155" font-size="25" fill="#63deef" text-anchor="middle" font-weight="700">A · INITIATOR</text>
+  <text x="208" y="178" font-size="17" fill="#f1f5fc" text-anchor="middle">Independent Node.js app</text>
+  <rect x="930" y="127" width="284" height="63" rx="15" fill="#3a2e23" stroke="#ffc977" stroke-width="1.5"/>
+  <text x="1072" y="155" font-size="25" fill="#ffc977" text-anchor="middle" font-weight="700">B · RESPONDER</text>
+  <text x="1072" y="178" font-size="17" fill="#f1f5fc" text-anchor="middle">Independent Node.js app</text>
+  <text x="640" y="150" font-size="23" fill="#f1f5fc" text-anchor="middle" font-weight="600">Same private key</text>
+  <text x="640" y="177" font-size="18" fill="#a4b4cc" text-anchor="middle">provisioned before the exchange</text>
+  <path d="M208 199V550M1072 199V550" fill="none" stroke="#33455f" stroke-width="2"/><g opacity="1">
+
+      <circle cx="92" cy="228" r="14" fill="#111e31" stroke="#63deef"/>
+      <text x="92" y="234" font-size="17" fill="#63deef" text-anchor="middle" font-weight="700">1</text>
+      <line x1="222" y1="228" x2="1058" y2="228" stroke="#63deef" stroke-width="2.5"/>
+      <path d="M1046 221L1058 228L1046 235" fill="none" stroke="#63deef" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="332" y="209" width="616" height="38" rx="7" fill="#0b1322"/>
+      <text x="350" y="236" font-size="24" fill="#63deef" font-weight="700">HELLO</text>
+      <text x="555" y="236" font-size="23" fill="#f1f5fc" >Start a fresh session</text>
+    </g><g opacity="1">
+
+      <circle cx="92" cy="278" r="14" fill="#111e31" stroke="#ffc977"/>
+      <text x="92" y="284" font-size="17" fill="#ffc977" text-anchor="middle" font-weight="700">2</text>
+      <line x1="1058" y1="278" x2="222" y2="278" stroke="#ffc977" stroke-width="2.5"/>
+      <path d="M234 271L222 278L234 285" fill="none" stroke="#ffc977" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="332" y="259" width="616" height="38" rx="7" fill="#0b1322"/>
+      <text x="350" y="286" font-size="24" fill="#ffc977" font-weight="700">CHALLENGE</text>
+      <text x="555" y="286" font-size="23" fill="#f1f5fc" >Add a fresh challenge</text>
+    </g><g opacity="1">
+
+      <circle cx="92" cy="328" r="14" fill="#111e31" stroke="#63deef"/>
+      <text x="92" y="334" font-size="17" fill="#63deef" text-anchor="middle" font-weight="700">3</text>
+      <line x1="222" y1="328" x2="1058" y2="328" stroke="#63deef" stroke-width="2.5"/>
+      <path d="M1046 321L1058 328L1046 335" fill="none" stroke="#63deef" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="332" y="309" width="616" height="38" rx="7" fill="#0b1322"/>
+      <text x="350" y="336" font-size="24" fill="#63deef" font-weight="700">CONFIRM</text>
+      <text x="555" y="336" font-size="23" fill="#f1f5fc" >Prove the derived key</text>
+    </g><g opacity="1">
+
+      <circle cx="92" cy="378" r="14" fill="#111e31" stroke="#ffc977"/>
+      <text x="92" y="384" font-size="17" fill="#ffc977" text-anchor="middle" font-weight="700">4</text>
+      <line x1="1058" y1="378" x2="222" y2="378" stroke="#ffc977" stroke-width="2.5"/>
+      <path d="M234 371L222 378L234 385" fill="none" stroke="#ffc977" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="332" y="359" width="616" height="38" rx="7" fill="#0b1322"/>
+      <text x="350" y="386" font-size="24" fill="#ffc977" font-weight="700">READY</text>
+      <text x="555" y="386" font-size="23" fill="#f1f5fc" >Confirm the pairing</text>
+    </g><g opacity="1">
+
+      <circle cx="92" cy="428" r="14" fill="#111e31" stroke="#63deef"/>
+      <text x="92" y="434" font-size="17" fill="#63deef" text-anchor="middle" font-weight="700">5</text>
+      <line x1="222" y1="428" x2="1058" y2="428" stroke="#63deef" stroke-width="2.5"/>
+      <path d="M1046 421L1058 428L1046 435" fill="none" stroke="#63deef" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="332" y="409" width="616" height="38" rx="7" fill="#0b1322"/>
+      <text x="350" y="436" font-size="24" fill="#63deef" font-weight="700">DATA</text>
+      <text x="555" y="436" font-size="23" fill="#f1f5fc" >Send the user’s bytes</text>
+    </g><g opacity="1">
+
+      <circle cx="92" cy="478" r="14" fill="#111e31" stroke="#ffc977"/>
+      <text x="92" y="484" font-size="17" fill="#ffc977" text-anchor="middle" font-weight="700">6</text>
+      <line x1="1058" y1="478" x2="222" y2="478" stroke="#ffc977" stroke-width="2.5"/>
+      <path d="M234 471L222 478L234 485" fill="none" stroke="#ffc977" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="332" y="459" width="616" height="38" rx="7" fill="#0b1322"/>
+      <text x="350" y="486" font-size="24" fill="#ffc977" font-weight="700">RECEIPT</text>
+      <text x="555" y="486" font-size="23" fill="#f1f5fc" >Echo bytes + digest</text>
+    </g><g opacity="1">
+
+      <circle cx="92" cy="528" r="14" fill="#111e31" stroke="#63deef"/>
+      <text x="92" y="534" font-size="17" fill="#63deef" text-anchor="middle" font-weight="700">7</text>
+      <line x1="222" y1="528" x2="1058" y2="528" stroke="#63deef" stroke-width="2.5"/>
+      <path d="M1046 521L1058 528L1046 535" fill="none" stroke="#63deef" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="332" y="509" width="616" height="38" rx="7" fill="#0b1322"/>
+      <text x="350" y="536" font-size="24" fill="#63deef" font-weight="700">CLOSE</text>
+      <text x="555" y="536" font-size="23" fill="#f1f5fc" >Finish (best effort)</text>
+    </g><text x="640" y="580" font-size="23" fill="#a4b4cc" text-anchor="middle" font-weight="600">PAIR → SEND DATA → VERIFY THE REPLY → CLOSE</text>
+    <text x="64" y="607" font-size="16" fill="#a4b4cc" >Original recording</text>
+    <text x="1216" y="607" font-size="16" fill="#a4b4cc" text-anchor="end">Normal speed · no speech added</text>
+    <rect x="64" y="620" width="1152" height="10" rx="5" fill="#27364c"/><rect x="123.4674" y="620" width="113.2987" height="10" rx="3" fill="#63deef" opacity="1"/><rect x="262.2547" y="620" width="150.2942" height="10" rx="3" fill="#ffc977" opacity="1"/><rect x="437.1163" y="620" width="113.2987" height="10" rx="3" fill="#63deef" opacity="1"/><rect x="577.2946" y="620" width="113.2987" height="10" rx="3" fill="#ffc977" opacity="1"/><rect x="716.0278" y="620" width="141.0454" height="10" rx="3" fill="#63deef" opacity="1"/><rect x="882.2185" y="620" width="178.0409" height="10" rx="3" fill="#ffc977" opacity="1"/><rect x="1085.9828" y="620" width="113.2987" height="10" rx="3" fill="#63deef" opacity="1"/><text x="640" y="665" font-size="23" fill="#f1f5fc" text-anchor="middle">Shared-secret authentication. Data is NOT encrypted.</text>
+    <text x="640" y="699" font-size="17" fill="#a4b4cc" text-anchor="middle">CUSTOM AIP-FSK2 · NOT A FAX STANDARD · NO PHONE OR WEB CONNECTION</text></g></svg>

@@ -1,0 +1,264 @@
+{
+  "profile": "EXPERIMENTAL AIP-FSK1, locally invented research packet wrapper",
+  "not_compatible_with": [
+    "V.21 complete modem",
+    "T.30 fax",
+    "CP in-band DTMF transport"
+  ],
+  "baud": 300,
+  "one_hz": 1650,
+  "zero_hz": 1850,
+  "sample_rate_hz": 8000,
+  "bits_order": "MSB first",
+  "preamble": "01 repeated32times (64bits)",
+  "sync_hex": "ddaa96e7",
+  "body_format": "version(1byte)=01 | payload_length(1byte) | ASCII_payload | CRC16(2bytes,big-endian)",
+  "crc": {
+    "name": "CRC-16/CCITT-FALSE",
+    "polynomial_hex": "1021",
+    "init_hex": "ffff",
+    "refin": false,
+    "refout": false,
+    "xorout_hex": "0000",
+    "covers": "version+length+payload"
+  },
+  "authentication": "NONE: CRC and CP Luhn detect errors, not identity or tampering",
+  "audio": {
+    "fsk-experimental-clean": {
+      "wav": "assets/phone-handshake-2026-11-05/fsk-experimental-clean.wav",
+      "sha256": "96e095ff20bb30af611ede2f6cb87179043f5eaf6f5a256a4d430bc8ca3f6c01",
+      "duration_s": 3.833375,
+      "decoded_exact_payloads": true
+    },
+    "fsk-experimental-phone-noise": {
+      "wav": "assets/phone-handshake-2026-11-05/fsk-experimental-phone-noise.wav",
+      "sha256": "4a70f0ec3f249edcf4f569f524b81cf1063ceb4eebe3dfcc07b306637bab7f24",
+      "duration_s": 3.833375,
+      "decoded_exact_payloads": true
+    },
+    "mp3": {
+      "path": "assets/phone-handshake-2026-11-05/fsk-experimental-phone-noise.mp3",
+      "sha256": "91d0e5ec7d16350ced95e1d5c4f569983200ecb6cf5ccaf819ded8cb6a03bb32",
+      "decoded_exact_payloads": true
+    }
+  },
+  "timeline": [
+    {
+      "role": "caller",
+      "payload_ascii": "*#26#",
+      "packet_hex": "01052a23323623f8d1",
+      "bits_including_preamble_and_sync": 168,
+      "start_s": 0.2,
+      "end_s": 0.76
+    },
+    {
+      "role": "business",
+      "payload_ascii": "*#1048151623426#",
+      "packet_hex": "01102a233130343831353136323334323623d892",
+      "bits_including_preamble_and_sync": 256,
+      "start_s": 1.26,
+      "end_s": 2.113375
+    },
+    {
+      "role": "caller",
+      "payload_ascii": "*#32718280#",
+      "packet_hex": "010b2a23333237313832383023dbd6",
+      "bits_including_preamble_and_sync": 216,
+      "start_s": 2.613375,
+      "end_s": 3.333375
+    }
+  ],
+  "raw_burst_duration_s": 2.1333333333333333,
+  "synthetic_snr_trials": [
+    {
+      "snr_db": 24,
+      "seed": 0,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 24,
+      "seed": 1,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 24,
+      "seed": 2,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 24,
+      "seed": 3,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 24,
+      "seed": 4,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 16,
+      "seed": 0,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 16,
+      "seed": 1,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 16,
+      "seed": 2,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 16,
+      "seed": 3,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 16,
+      "seed": 4,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 8,
+      "seed": 0,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 8,
+      "seed": 1,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 8,
+      "seed": 2,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 8,
+      "seed": 3,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 8,
+      "seed": 4,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 4,
+      "seed": 0,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 4,
+      "seed": 1,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 4,
+      "seed": 2,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 4,
+      "seed": 3,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 4,
+      "seed": 4,
+      "exact_sequence": true,
+      "frames_received": 3
+    },
+    {
+      "snr_db": 0,
+      "seed": 0,
+      "exact_sequence": false,
+      "frames_received": 2
+    },
+    {
+      "snr_db": 0,
+      "seed": 1,
+      "exact_sequence": false,
+      "frames_received": 1
+    },
+    {
+      "snr_db": 0,
+      "seed": 2,
+      "exact_sequence": false,
+      "frames_received": 1
+    },
+    {
+      "snr_db": 0,
+      "seed": 3,
+      "exact_sequence": false,
+      "frames_received": 2
+    },
+    {
+      "snr_db": 0,
+      "seed": 4,
+      "exact_sequence": false,
+      "frames_received": 1
+    }
+  ],
+  "summary": [
+    {
+      "snr_db": 24,
+      "exact_sequence_passes": 5,
+      "trials": 5
+    },
+    {
+      "snr_db": 16,
+      "exact_sequence_passes": 5,
+      "trials": 5
+    },
+    {
+      "snr_db": 8,
+      "exact_sequence_passes": 5,
+      "trials": 5
+    },
+    {
+      "snr_db": 4,
+      "exact_sequence_passes": 5,
+      "trials": 5
+    },
+    {
+      "snr_db": 0,
+      "exact_sequence_passes": 0,
+      "trials": 5
+    }
+  ],
+  "checks": {
+    "clean_and_noisy_WAV_payloads_exact": true,
+    "MP3_payloads_exact": true,
+    "unknown_prefix_and_minus14dB_gain": true,
+    "corrupted_payload_rejected_by_CRC": true,
+    "speech_DTMF_call_rejected_as_FSK": true
+  },
+  "limitations": [
+    "No trained timing/clock/frequency tracking or adaptive equalizer.",
+    "No ARQ, FEC, capabilities, discovery, signature, or live binding state.",
+    "Known nominal300baud; scan integer sample timing phases only.",
+    "25seeded trials are synthetic; cannot rank real carrier reliability against DTMF."
+  ]
+}

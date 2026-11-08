@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "method": "waveform spectral scan and nonzero-burst duration; no decoder timing oracle",
+  "measurements": [
+    {
+      "injectedPpm": -1000,
+      "measuredCarrierHz": 2247.75,
+      "expectedCarrierHz": 2247.75,
+      "durationDerivedPpm": -1026.9752156647494,
+      "finalNonzeroSample": 29212
+    },
+    {
+      "injectedPpm": 0,
+      "measuredCarrierHz": 2250,
+      "expectedCarrierHz": 2250,
+      "durationDerivedPpm": 0,
+      "finalNonzeroSample": 29182
+    },
+    {
+      "injectedPpm": 1000,
+      "measuredCarrierHz": 2252.25,
+      "expectedCarrierHz": 2252.2499999999995,
+      "durationDerivedPpm": 994.7518265702727,
+      "finalNonzeroSample": 29153
+    }
+  ]
+}

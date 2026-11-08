@@ -1,0 +1,63 @@
+{
+  "seed": 20261105,
+  "prefix_s": 0.731,
+  "suffix_s": 0.331,
+  "gain": 0.2,
+  "shifted_wav_frames": [
+    {
+      "kind": "probe",
+      "wire": "*#26#",
+      "start_s": 10.595,
+      "end_s": 11.22,
+      "luhn_valid": true
+    },
+    {
+      "kind": "offer",
+      "registry": "0",
+      "rendezvous_code": "4815162342",
+      "wire": "*#1048151623426#",
+      "start_s": 14.405,
+      "end_s": 16.57,
+      "luhn_valid": true
+    },
+    {
+      "kind": "bind",
+      "bind_code": "271828",
+      "wire": "*#32718280#",
+      "start_s": 17.295,
+      "end_s": 18.76,
+      "luhn_valid": true
+    }
+  ],
+  "stereo_channel_gains": [
+    0.2,
+    0.12
+  ],
+  "stereo_wav_frames": [
+    {
+      "kind": "probe",
+      "wire": "*#26#",
+      "start_s": 9.86,
+      "end_s": 10.49,
+      "luhn_valid": true
+    },
+    {
+      "kind": "offer",
+      "registry": "0",
+      "rendezvous_code": "4815162342",
+      "wire": "*#1048151623426#",
+      "start_s": 13.67,
+      "end_s": 15.84,
+      "luhn_valid": true
+    },
+    {
+      "kind": "bind",
+      "bind_code": "271828",
+      "wire": "*#32718280#",
+      "start_s": 16.56,
+      "end_s": 18.03,
+      "luhn_valid": true
+    }
+  ],
+  "status": "both exact sequences passed; sourceWAVonly, no timeline input"
+}
