@@ -25,11 +25,14 @@ representability and exact-runtime behavior must be checked separately.
 
 - [Non-speech and animal-sound control: baseline checks, datasets, codec limits and training prerequisites](notes/non-speech-and-animal-sound-tags.md)
 
-## Results status and hardware
+- [Drama 3 LoRA feasibility study](drama3-lora/REPORT.md)
+- [MOSS v2 LoRA smoke test](moss-v2-smoke/README.md)
 
-**No custom TTS training or animal-sound fine-tune has been performed yet.**
-The existing notes describe research and proposed experiments, not a proven
-training recipe, data requirement or quality result.
+## Pilot results and hardware
+
+The MOSS v2 LoRA pilot ran on the RTX 4060 Ti and produced one
+audible roar between spoken phrases across 21 tagged takes.
+[Training recipe, source credits, and confirmed audio](animals-tts/README.md).
 
 The target development machine is Linux with an NVIDIA RTX 4060 Ti (16 GB
 VRAM). Estimate training weights, gradients, optimizer state and activations
