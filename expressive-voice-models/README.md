@@ -44,3 +44,11 @@ and runtime, quantization, cache and debrief-order differences.
 No custom TTS training or animal-sound fine-tune has been performed yet. This
 folder is the learning record and experiment home, not a claim of a working
 training recipe.
+
+## Retained LLM performance
+
+![Saved Qwen versus Nanbeige p50/p95 first-text latency, prompt-processing time, native-token decode speed and complete-call time for EQ and retail.](benchmarks/companion-support-2026-11-07/assets/qwen-nanbeige-performance.svg)
+
+Solid = p50 (median); hatched = p95. This visualizes saved text calls, not audio
+latency or a controlled speed ranking. Tokenizers, caching and call histories differ.
+[Performance report, prompt/cache counters and exact chart data](benchmarks/companion-support-2026-11-07/PERFORMANCE.md).

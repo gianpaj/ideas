@@ -29,6 +29,18 @@ versus Qwen **4.30/20 EQ, 8/10 retail**. The original voice service was restored
 and independently checked. Read the final comparison for failures, matching
 controls and deliberate differences; no audio latency was measured.
 
+### Retained performance
+
+![Qwen versus Nanbeige: first-text and prompt-processing latency, native-token decode speed and full-call time, with separate p50/p95 bars for EQ and retail.](assets/qwen-nanbeige-performance.svg)
+
+[Performance report and prompt/cache-counter chart](PERFORMANCE.md) ·
+[Timing PNG](assets/qwen-nanbeige-performance.png) ·
+[Exact chart data](assets/qwen-nanbeige-performance.json) ·
+[Regeneration script](plot-performance.py).
+Saved completed-call distributions, not a controlled speed ranking or an audio
+test. Solid = p50; hatched = p95. Missing first-text and capped-call timings
+are not replaced with zeros.
+
 ## Purpose and scope
 
 Evaluate the actual local **Qwen3.5 9B Q4_K_M** and **Nanbeige IQ2_M** artifacts

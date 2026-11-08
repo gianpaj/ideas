@@ -68,6 +68,15 @@ Both EQ candidates completed all 28 dialogue calls and ten debrief calls (38/38 
 - Qwen uses installed Ollama Q4_K_M; Nanbeige uses the recorded IQ2_M weights and CUDA llama.cpp b12064 with Q4_0 K/V cache, all 53/53 layers on GPU. Native tokenizers/chat templates and cache precision differ. This compares actual deployable packages, not architecture or full-precision quality in isolation.
 - The initial Nanbeige adapter blocked ten debrief calls **before inference** because it accepted only dialogue sampling. The ten previously uncalled debriefs were recovered after dialogue collection. Archived dialogue responses/history were independently compared and remain unchanged; zero previous model calls were retried. This changed debrief ordering/cache behavior, so cache/prefill timing is not matched. Two startup-only compatibility/logging errors were also preserved locally before any scored inference, not counted as model-quality outcomes.
 
+## Retained performance
+
+![Saved Qwen and Nanbeige EQ/retail performance: paired p50/p95 bars for first text, server prompt processing, native-token decode and complete candidate calls.](assets/qwen-nanbeige-performance.svg)
+
+Solid bars show p50; hatched bars show p95, not confidence intervals. These are
+saved text-call distributions, not a controlled speed ranking or audible latency.
+See [performance definitions, coverage and prompt/cache-counter chart](PERFORMANCE.md)
+and [exact plotted values with source hashes](assets/qwen-nanbeige-performance.json).
+
 ## Voice restoration
 
 The independent check at **2026-11-07 21:58:33 UTC**, after controller/server exit, confirmed the original voice service active/running/thawed, `/api/health` ready=true and busy=false, original `local-voice-qwen:latest` loaded at **4096 context**, Nanbeige port 8083 closed, and no Nanbeige controller/server process. This confirms service/model readiness, **not a new end-to-end audio call**. No STT/TTS, first useful spoken response, interruption, browser playback or acoustic latency was measured. No DNS/access configuration was changed.

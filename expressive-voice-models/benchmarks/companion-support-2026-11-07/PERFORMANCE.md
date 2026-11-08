@@ -5,6 +5,32 @@ uses saved candidate streams/timing files only: **no inference was rerun**.
 Quality scores and all ten-task outcome denominators remain unchanged in
 [the matched comparison](COMPARISON.md).
 
+## Visual comparison
+
+![Qwen and Nanbeige EQ and retail p50/p95: first-text latency, cache-affected prompt processing, native-token decode speed and full-call wall time, with per-metric sample counts.](assets/qwen-nanbeige-performance.svg)
+
+Solid bars are **p50 (median)**; hatched bars are **p95 (95th percentile)**,
+not error bars or confidence intervals. Every axis starts at zero. Decode p95
+is an upper-throughput percentile, not a slow-tail rate. The first-text panel
+excludes tool-only nulls; other panels use all completed timing records.
+
+![Separate p50/p95 prompt-counter panels: Qwen reported count; Nanbeige total input, cache hits and fresh tokens. Qwen cache split is unavailable, not zero.](assets/qwen-nanbeige-prompt-counters.svg)
+
+Prompt counts use each backend's native counter semantics. **Do not stack
+independent percentiles**: the p50/p95 of total input is not generally the sum
+of cached and fresh p50/p95 values. The fresh-token panel uses a smaller,
+explicitly labeled zero-based axis. Qwen's unavailable cache split is not
+plotted as zero, and these counts are not a prefill-throughput ranking.
+
+[Timing PNG](assets/qwen-nanbeige-performance.png) ·
+[Prompt-counter PNG](assets/qwen-nanbeige-prompt-counters.png) ·
+[Exact plotted values and source hashes](assets/qwen-nanbeige-performance.json) ·
+[Reproducible chart script](plot-performance.py).
+Regenerate with `python3 plot-performance.py` (Matplotlib required). The script
+recomputes all distributions from the committed per-call CSV and checks them
+against the summary before drawing. It makes no model calls and does not
+modify source evidence.
+
 ## Completed-call distributions
 
 Each cell is **p50 / p95**, not an average of scenario summaries. First text,
