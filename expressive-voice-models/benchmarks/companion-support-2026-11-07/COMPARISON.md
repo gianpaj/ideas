@@ -74,6 +74,7 @@ The independent check at **2026-11-07 21:58:33 UTC**, after controller/server ex
 
 ## Evidence and replay
 
+- [Retained performance: first text, prefill counters, decode, wall time and per-call evidence](PERFORMANCE.md)
 - [Machine-readable matching, coverage and component-reward audit](results/nanbeige-iq2m/matched-audit.json)
 - [Independent post-run service verification](results/nanbeige-iq2m/post-run-verification.json)
 - [Nanbeige run protocol, recovery and replay](results/nanbeige-iq2m/RESULTS.md)

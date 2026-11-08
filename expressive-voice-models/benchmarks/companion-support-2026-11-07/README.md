@@ -5,6 +5,7 @@
 ![Qwen versus Nanbeige: average EQ rubric 4.30 vs 5.57 out of 20; retail 8 of 10 passed for each. Custom ten-case text pilots on separate scales.](assets/qwen-nanbeige-comparison.svg)
 
 - [Final matched comparison: scores, failures, coverage and voice restoration](COMPARISON.md)
+- [Saved performance evidence: first text, prompt processing, decode and wall-time distributions](PERFORMANCE.md)
 - [Run audit: interpretation, fixed controls and known differences](RUN-AUDIT.md)
 - [Matched Nanbeige IQ2_M run: progress, protocol and replay](results/nanbeige-iq2m/RESULTS.md)
 - [Audited generation results and limitations](results/qwen-eq10/RESULTS.md)

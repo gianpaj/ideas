@@ -25,6 +25,7 @@ sound. A plausible-looking control tag is not evidence that a model learned it.
 - [Companion/support benchmark selection](notes/2026-11-07-benchmark-selection.md)
 - [Qwen-first pilot: setup, progress, results and rerun instructions](benchmarks/companion-support-2026-11-07/README.md)
 - [Final matched Qwen–Nanbeige comparison and audited evidence](benchmarks/companion-support-2026-11-07/COMPARISON.md)
+- [Retained Qwen–Nanbeige latency, prefill counters and decode evidence](benchmarks/companion-support-2026-11-07/PERFORMANCE.md)
 - [Non-speech and animal-sound control: what to verify before fine-tuning](notes/non-speech-and-animal-sound-tags.md)
 
 ## Current scope
