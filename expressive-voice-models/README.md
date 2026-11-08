@@ -29,6 +29,8 @@ sound. A plausible-looking control tag is not evidence that a model learned it.
 
 ## Current scope
 
+![Qwen versus Nanbeige: average EQ rubric 4.30 vs 5.57 out of 20; both pass 8 of 10 retail tasks. Custom text pilot, not official leaderboard scores.](benchmarks/companion-support-2026-11-07/assets/qwen-nanbeige-comparison.svg)
+
 The matched Qwen3.5 9B Q4_K_M and Nanbeige4.3-33B IQ2_M evaluation is complete.
 Both have ten independently graded EQ scenarios and ten retail outcomes.
 EQ custom-rubric means are **4.30/20 vs 5.57/20**; retail is **8/10 for both**.

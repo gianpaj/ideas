@@ -9,6 +9,17 @@ Completed 2026-11-07. These are **custom ten-case text pilots**, not official le
 | Qwen3.5 9B Q4_K_M / Ollama | 4.30 | 10/10 | 8/10 |
 | Nanbeige4.3-33B IQ2_M / llama.cpp | 5.57 | 10/10 | 8/10 |
 
+![Qwen versus Nanbeige: EQ rubric averages 4.30 and 5.57 out of 20; both pass 8 of 10 retail tasks. Custom text pilot, not official scores.](assets/qwen-nanbeige-comparison.svg)
+
+The chart uses separate zero-based scales: EQ is a mean quality score, retail
+is a passed-task count. They are not averaged into one overall score.
+[PNG](assets/qwen-nanbeige-comparison.png) ·
+[Plotted data and source hashes](assets/qwen-nanbeige-comparison.json) ·
+[Reproducible plot script](plot-comparison.py).
+Regenerate with `python3 plot-comparison.py` from this directory (Matplotlib
+required); it checks the ten per-scenario CSV scores against the saved summaries
+and makes no model calls.
+
 Nanbeige is **+1.27 points** on this selected EQ rubric, with no retail pass-count improvement. This single judge, one-trial, ten-case pilot does not establish statistical superiority, normal spoken naturalness, or a reason by itself to replace the production model.
 
 Both EQ candidates completed all 28 dialogue calls and ten debrief calls (38/38 each). All ten complete response sets per candidate were scored, using the mean of six higher-is-better criteria within each scenario, then the mean across scenarios. The other twelve style/safety fields are retained but are not added to that score. There were **zero final EQ collection/grading errors or unscored scenarios**.
