@@ -202,6 +202,8 @@ route is explicit. The same applies to assigning an EQ rubric score.
 - EQ-Bench 3: `affc5a000bbdb965b807e09ca7875f8530fa8f56`.
 - τ-bench: `033bf082f48e4a3c6a1256208e93cf2ce9c3bb6f` (2.0.0 source).
 - Python 3.12; package versions in [requirements.lock](requirements.lock).
+- `setup.sh` adjusts the pinned τ-bench LiteLLM requirement to allow the
+  security-patched 1.84.0 release and checks installed dependency compatibility.
 - `llama-tokenize`: llama.cpp b12064 / `51fe42c5d`.
 - Fixture/software notices: [EQ-Bench license](licenses/eqbench3/LICENSE),
   [Sierra license](licenses/tau2-bench/LICENSE).
