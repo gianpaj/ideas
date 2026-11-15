@@ -13,6 +13,7 @@ dedicated repository.
 | [`expressive-voice-models`](expressive-voice-models/)                     | TTS research / roar pilot | Custom TTS fine-tuning/LoRA, datasets, codecs and non-speech/animal-sound controls; agent LLM benchmarks live in local-voice-agent |
 | [`fax-in-the-era-of-ai`](fax-in-the-era-of-ai/)                           | Live prototype       | Independent tones-only audio endpoints, clock/delay tests, DTMF/FSK research and receptionist concept    |
 | [`hatch-pet-local-orchestrator`](hatch-pet-local-orchestrator/)           | Design               | Local workflow for preparing, validating, and packaging Hatch Pet sprite atlases  |
+| [`mobile-reels-video-feed`](mobile-reels-video-feed/)                     | Research             | Mobile web short-video feed, preloading, delivery and cost experiments            |
 | [`multi-city-property-visualization`](multi-city-property-visualization/) | Design               | 3D comparison of property markets across cities                                   |
 | [`photos-only-app`](photos-only-app/)                                     | Research             | Paid, ad-free social network limited to photo posts                               |
 | [`puffy-3d-text-renderer`](puffy-3d-text-renderer/)                       | Prototype            | Browser-based 3D text renderer with fonts, gradients, and lighting controls       |
