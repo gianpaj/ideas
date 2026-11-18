@@ -12,6 +12,7 @@ dedicated repository.
 | [`driver-voice-companion`](driver-voice-companion/)                       | Idea / validation    | Hands-free, GPS-aware AI voice assistant and companion for professional drivers   |
 | [`expressive-voice-models`](expressive-voice-models/)                     | TTS research / roar pilot | Custom TTS fine-tuning/LoRA, datasets, codecs and non-speech/animal-sound controls; agent LLM benchmarks live in local-voice-agent |
 | [`fax-in-the-era-of-ai`](fax-in-the-era-of-ai/)                           | Live prototype       | Independent tones-only audio endpoints, clock/delay tests, DTMF/FSK research and receptionist concept    |
+| [`founder-accountability-coach`](founder-accountability-coach/)             | Concept / MLP design | Proactive OpenClaw coach for founder focus, weekly commitments, and wellbeing      |
 | [`hatch-pet-local-orchestrator`](hatch-pet-local-orchestrator/)           | Design               | Local workflow for preparing, validating, and packaging Hatch Pet sprite atlases  |
 | [`multi-city-property-visualization`](multi-city-property-visualization/) | Design               | 3D comparison of property markets across cities                                   |
 | [`photos-only-app`](photos-only-app/)                                     | Research             | Paid, ad-free social network limited to photo posts                               |
