@@ -2,7 +2,7 @@ import csv
 import json
 from pathlib import Path
 
-import httpx
+import httpx2
 import pytest
 from anthropic import AsyncAnthropic
 from inspect_ai import Task
@@ -248,9 +248,9 @@ def test_installed_anthropic_adapter_payload_and_saved_config_offline(
 ) -> None:
     requests = []
 
-    def respond(request: httpx.Request) -> httpx.Response:
+    def respond(request: httpx2.Request) -> httpx2.Response:
         requests.append(json.loads(request.content))
-        return httpx.Response(
+        return httpx2.Response(
             200,
             json={
                 "id": "msg_offline",
@@ -267,7 +267,7 @@ def test_installed_anthropic_adapter_payload_and_saved_config_offline(
     def offline_client(self):
         return AsyncAnthropic(
             api_key="offline-dummy-key",
-            http_client=httpx.AsyncClient(transport=httpx.MockTransport(respond)),
+            http_client=httpx2.AsyncClient(transport=httpx2.MockTransport(respond)),
         )
 
     monkeypatch.setattr(
@@ -303,7 +303,8 @@ def test_installed_anthropic_adapter_payload_and_saved_config_offline(
     config = log.eval.model_generate_config
     assert config.reasoning_effort is None
     assert config.effort is None
-    assert "thinking" not in requests[0]
+    # Inspect may send the model's default adaptive mode; effort must not toggle it.
+    assert requests[0].get("thinking", {}).get("type", "adaptive") == "adaptive"
     if effort is None:
         assert "output_config" not in requests[0]
         assert config.extra_body is None
