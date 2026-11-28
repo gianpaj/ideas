@@ -15,6 +15,7 @@ dedicated repository.
 | [`founder-accountability-coach`](founder-accountability-coach/)             | Concept / MLP design | Proactive OpenClaw coach for founder focus, weekly commitments, and wellbeing      |
 | [`hatch-pet-local-orchestrator`](hatch-pet-local-orchestrator/)           | Design               | Local workflow for preparing, validating, and packaging Hatch Pet sprite atlases  |
 | [`multi-city-property-visualization`](multi-city-property-visualization/) | Design               | 3D comparison of property markets across cities                                   |
+| [`multiplayer-agent-docs`](multiplayer-agent-docs/)                       | Concept / MLP plan   | Shared thread where people and an agent co-write plans, each change linked to the turn behind it |
 | [`photos-only-app`](photos-only-app/)                                     | Research             | Paid, ad-free social network limited to photo posts                               |
 | [`puffy-3d-text-renderer`](puffy-3d-text-renderer/)                       | Prototype            | Browser-based 3D text renderer with fonts, gradients, and lighting controls       |
 | [`react-chat-pet-companion`](react-chat-pet-companion/)                   | Design               | Animated sprite companion driven by React chat events                             |
